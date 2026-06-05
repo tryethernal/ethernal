@@ -11,7 +11,7 @@
                     <span class="current">Sepolia</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">TESTNET · ETHEREUM</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Sepolia Testnet</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Sepolia Testnet Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Sepolia, Ethereum's primary testnet. Get transaction decoding, contract verification, and token tracking for your Sepolia development environment without running any infrastructure.
                         </p>
@@ -283,11 +283,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Sepolia Testnet — Ethernal',
+    title: 'Sepolia Testnet Explorer | Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Free hosted block explorer for Sepolia testnet. Contract verification, transaction decoding, call traces, and built-in faucet for Ethereum development.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Sepolia Testnet — Ethernal' },
+        { property: 'og:title', content: 'Sepolia Testnet Explorer | Ethernal Block Explorer' },
         { property: 'og:description', content: 'Free hosted block explorer for Sepolia testnet. Contract verification, transaction decoding, call traces, and built-in faucet for Ethereum development.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/sepolia' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-sepolia.png' },

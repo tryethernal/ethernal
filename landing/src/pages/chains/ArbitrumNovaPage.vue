@@ -11,7 +11,7 @@
                     <span class="current">Arbitrum Nova</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 · ARBITRUM ANYTRUST</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Arbitrum Nova</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Arbitrum Nova Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Arbitrum Nova that connects to your RPC endpoint and provides real-time transaction decoding, contract verification, and AnyTrust data availability monitoring. Arbitrum Nova uses a committee-based DA model instead of posting all data to Ethereum, making it significantly cheaper for high-volume applications like gaming and social platforms. Deploy your Nova explorer in under 5 minutes.
                         </p>
@@ -328,11 +328,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Arbitrum Nova — Ethernal',
+    title: 'Arbitrum Nova Explorer: Block Explorer for Arbitrum Nova | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Arbitrum Nova (AnyTrust). Transaction decoding, contract verification, AnyTrust DA monitoring, and low-cost gaming transaction tracking.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Arbitrum Nova — Ethernal' },
+        { property: 'og:title', content: 'Arbitrum Nova Explorer: Block Explorer for Arbitrum Nova | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Arbitrum Nova (AnyTrust). Transaction decoding, contract verification, AnyTrust DA monitoring, and low-cost gaming transaction tracking.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/arbitrum-nova' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-arbitrum-nova.png' },

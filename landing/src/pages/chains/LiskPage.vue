@@ -11,7 +11,7 @@
                     <span class="current">Lisk</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Lisk</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Lisk Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Lisk, the established blockchain project that migrated to the OP Stack as an Ethereum L2. Lisk brings its JavaScript/TypeScript developer heritage and LSK token to the Superchain ecosystem, with a focus on real-world asset (RWA) tokenization. Deploy a Lisk explorer in under 5 minutes.
                         </p>
@@ -148,11 +148,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Lisk — Ethernal',
+    title: 'Lisk Explorer: Block Explorer for Lisk | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Lisk (OP Stack). LSK token tracking, RWA visibility, L2-to-L1 withdrawal tracking, and contract verification for the Lisk Superchain L2.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Lisk — Ethernal' },
+        { property: 'og:title', content: 'Lisk Explorer: Block Explorer for Lisk | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Lisk (OP Stack). LSK token tracking, RWA visibility, L2-to-L1 withdrawal tracking, and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/lisk' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-lisk.png' },

@@ -11,7 +11,7 @@
                     <span class="current">Arbitrum Sepolia</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">TESTNET · ARBITRUM ORBIT</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Arbitrum Sepolia Testnet</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Arbitrum Sepolia Testnet Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Arbitrum Sepolia, the official testnet for Arbitrum's Nitro stack. Get transaction decoding, contract verification, retryable ticket tracing, and a built-in faucet for your Arbitrum Sepolia development environment.
                         </p>
@@ -267,11 +267,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Arbitrum Sepolia Testnet — Ethernal',
+    title: 'Arbitrum Sepolia Testnet Explorer | Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Free hosted block explorer for Arbitrum Sepolia testnet. Orbit bridge monitoring, retryable ticket tracing, contract verification, and built-in faucet.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Arbitrum Sepolia Testnet — Ethernal' },
+        { property: 'og:title', content: 'Arbitrum Sepolia Testnet Explorer | Ethernal Block Explorer' },
         { property: 'og:description', content: 'Free hosted block explorer for Arbitrum Sepolia testnet. Orbit bridge monitoring, retryable ticket tracing, contract verification, and built-in faucet.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/arbitrum-sepolia' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-arbitrum-sepolia.png' },
