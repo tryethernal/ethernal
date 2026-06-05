@@ -17,6 +17,7 @@ export const routes = [
     { path: '/privacy', name: 'privacy', component: () => import('./pages/PrivacyPage.vue') },
     { path: '/arbitrum-orbit', name: 'arbitrum-orbit', component: () => import('./pages/OrbitPage.vue') },
     { path: '/op-stack', name: 'op-stack', component: () => import('./pages/OpStackPage.vue') },
+    { path: '/launch-block-explorer', name: 'launch-block-explorer', component: () => import('./pages/LaunchBlockExplorerPage.vue') },
 
     // Competitor comparison pages
     { path: '/blockscout-alternative', name: 'blockscout-alternative', component: () => import('./pages/compare/BlockscoutAlternativePage.vue') },

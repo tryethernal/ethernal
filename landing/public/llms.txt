@@ -18,6 +18,7 @@
 - [Features](https://tryethernal.com/features): Full feature list including contract verification, transaction tracing, token tracking, and analytics
 - [Transaction Tracing](https://tryethernal.com/transaction-tracing): Deep transaction trace visualization with call trees, state diffs, and gas profiling
 - [App Chains](https://tryethernal.com/app-chains): Block explorer for application-specific chains
+- [Launch a Custom EVM Block Explorer](https://tryethernal.com/launch-block-explorer): Launch a hosted or self-hosted EVM block explorer for any chain from an RPC URL in under 5 minutes. Block explorer hosting, white-label branding, MIT-licensed self-host.
 
 ## Developer Integrations
 

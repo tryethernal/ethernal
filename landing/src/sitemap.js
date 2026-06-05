@@ -11,6 +11,7 @@ const PRIORITY_MAP = {
     '/': { priority: '1.0', changefreq: 'weekly' },
     '/pricing': { priority: '0.8', changefreq: 'monthly' },
     '/features': { priority: '0.8', changefreq: 'monthly' },
+    '/launch-block-explorer': { priority: '0.8', changefreq: 'monthly' },
     '/developers': { priority: '0.7', changefreq: 'monthly' },
     '/teams': { priority: '0.7', changefreq: 'monthly' },
     '/contact-us': { priority: '0.5', changefreq: 'yearly' },

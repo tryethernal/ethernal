@@ -58,6 +58,27 @@
                 </v-col>
             </v-row>
 
+            <!-- Common conversions reference (always rendered for SEO/extractability) -->
+            <div class="my-16" style="max-width: 720px; margin-left: auto; margin-right: auto;">
+                <h2 class="font-heading mb-3" style="font-size: 1.6rem; color: var(--text-primary);">
+                    Common Ethereum unit conversions
+                </h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 20px;">
+                    Wei is the smallest unit of Ether and Gwei is the unit used for gas prices. To convert Wei to ETH, divide by 10<sup>18</sup>. To convert ETH to Wei, multiply by 10<sup>18</sup>. Gwei sits in between at 10<sup>9</sup> Wei. The reference values below cover the most common conversions.
+                </p>
+                <table class="conv-table">
+                    <thead>
+                        <tr><th>Conversion</th><th>Value</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in conversionRows" :key="row.label">
+                            <td>{{ row.label }}</td>
+                            <td class="conv-value">{{ row.value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- FAQ -->
             <div class="my-16">
                 <h2 class="font-heading text-center mb-8" style="font-size: 1.8rem; color: var(--text-primary);">
@@ -137,12 +158,39 @@ async function copyToClipboard(text) {
     try { await navigator.clipboard.writeText(text); } catch {}
 }
 
+// --- Common conversions reference table (static, extractable content) ---
+const conversionRows = [
+    { label: '1 Wei to ETH', value: '0.000000000000000001 ETH (10\u207B\u00B9\u2078)' },
+    { label: '1 Gwei to ETH', value: '0.000000001 ETH (10\u207B\u2079)' },
+    { label: '1 Gwei to Wei', value: '1,000,000,000 Wei (10\u2079)' },
+    { label: '1 ETH to Wei', value: '1,000,000,000,000,000,000 Wei (10\u00B9\u2078)' },
+    { label: '1 ETH to Gwei', value: '1,000,000,000 Gwei (10\u2079)' },
+    { label: '1 ETH to Finney', value: '1,000 Finney (10\u00B3)' },
+    { label: '1 ETH to Szabo', value: '1,000,000 Szabo (10\u2076)' },
+];
+
 // --- FAQ ---
 const openFaqs = ref([]);
 const faqs = [
     {
-        q: 'What is Wei?',
-        a: 'Wei is the smallest denomination of Ether. 1 Ether = 10^18 Wei. The EVM internally represents all values in Wei. Named after Wei Dai, the cryptographer who created b-money.'
+        q: 'How much is 1 ETH in Wei?',
+        a: '1 ETH equals 1,000,000,000,000,000,000 Wei (10^18 Wei, or one quintillion Wei). Wei is the smallest unit of Ether, so every ETH amount is just this number scaled up or down. To convert ETH to Wei, multiply by 10^18; to convert Wei to ETH, divide by 10^18.'
+    },
+    {
+        q: 'How much is 1 Wei in ETH?',
+        a: '1 Wei equals 0.000000000000000001 ETH (10^-18 ETH). Wei is the smallest indivisible unit of Ether, so 1 Wei is the smallest amount of value the EVM can represent. You cannot send a fraction of a Wei.'
+    },
+    {
+        q: 'How much is 1 Gwei in Wei and ETH?',
+        a: '1 Gwei equals 1,000,000,000 Wei (10^9 Wei) and 0.000000001 ETH (10^-9 ETH). Gwei is the denomination most people use to read gas prices: a 20 Gwei gas price means each unit of gas costs 20,000,000,000 Wei.'
+    },
+    {
+        q: 'How much is 1 Wei in dollars?',
+        a: '1 Wei is 10^-18 ETH, so to get its dollar value you divide the current ETH price by 10^18 (one quintillion). For example, divide whatever ETH trades at today by 10^18. The result is far smaller than a cent, which is why Wei is never priced in dollars directly and gas costs are read in Gwei instead.'
+    },
+    {
+        q: 'What is Wei in Ethereum?',
+        a: 'Wei is the smallest denomination of Ether. 1 Ether = 10^18 Wei. The EVM internally represents all values in Wei, so contracts and transactions always work in whole Wei integers. Named after Wei Dai, the cryptographer who created b-money.'
     },
     {
         q: 'What is Gwei?',
@@ -202,12 +250,12 @@ const structuredData = [
 ];
 
 useHead({
-    title: 'Ethereum Unit Converter - Wei, Gwei, ETH | Ethernal',
+    title: 'Wei to ETH & Gwei Converter | Ethereum Unit Converter',
     meta: [
-        { name: 'description', content: 'Free Ethereum unit converter. Convert between Wei, Gwei, Ether, Finney, Szabo, and all EVM denominations. Arbitrary-precision, runs in your browser.' },
+        { name: 'description', content: 'Convert Wei to ETH, Gwei to ETH, ETH to Wei, and every Ethereum denomination instantly. Free, arbitrary-precision, runs in your browser with no rounding errors.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Ethereum Unit Converter - Wei, Gwei, ETH | Ethernal' },
-        { property: 'og:description', content: 'Convert between Wei, Gwei, Ether, and all Ethereum denominations. Free, runs in your browser.' },
+        { property: 'og:title', content: 'Wei to ETH & Gwei Converter | Ethereum Unit Converter' },
+        { property: 'og:description', content: 'Convert Wei to ETH, Gwei to ETH, ETH to Wei, and every Ethereum denomination instantly. Free and runs in your browser.' },
         { property: 'og:url', content: 'https://tryethernal.com/tools/unit-converter' },
         { name: 'twitter:card', content: 'summary_large_image' }
     ],
@@ -262,6 +310,13 @@ useHead({
 }
 .inline-cta p { color: var(--text-secondary); font-size: 14px; margin: 0; }
 .btn-sm { padding: 8px 18px !important; font-size: 13px !important; white-space: nowrap; }
+
+/* Common conversions table */
+.conv-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.conv-table th { text-align: left; color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; border-bottom: 1px solid rgba(30,41,59,0.6); }
+.conv-table td { color: var(--text-secondary); padding: 12px; border-bottom: 1px solid rgba(30,41,59,0.4); }
+.conv-table td:first-child { color: var(--text-primary); font-weight: 500; }
+.conv-value { font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; }
 
 /* FAQ */
 .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }

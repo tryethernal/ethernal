@@ -290,12 +290,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Routescan Alternative: Open-Source Block Explorer',
+    title: 'Routescan Alternative You Can Self-Host (MIT)',
     meta: [
-        { name: 'description', content: 'Self-hostable block explorer for Avalanche L1s, Subnets, and any EVM chain. MIT-licensed, transparent pricing, 5-minute deploy. Compare to Routescan.' },
+        { name: 'description', content: 'Routescan is a hosted multi-chain explorer you cannot run yourself. Ethernal is MIT-licensed, self-hostable on any Avalanche L1, Subnet, or EVM chain, and deploys in 5 minutes.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Routescan Alternative: Open-Source Block Explorer' },
-        { property: 'og:description', content: 'Self-hostable block explorer for Avalanche L1s, Subnets, and any EVM chain. MIT-licensed, transparent pricing, 5-minute deploy. Compare to Routescan.' },
+        { property: 'og:title', content: 'Routescan Alternative You Can Self-Host (MIT)' },
+        { property: 'og:description', content: 'Routescan is a hosted multi-chain explorer you cannot run yourself. Ethernal is MIT-licensed, self-hostable on any Avalanche L1, Subnet, or EVM chain, and deploys in 5 minutes.' },
         { property: 'og:url', content: 'https://tryethernal.com/routescan-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],

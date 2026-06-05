@@ -11,7 +11,7 @@
                     <span class="current">Arbitrum One</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · ARBITRUM ORBIT</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Arbitrum One</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Arbitrum Explorer for Arbitrum One</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Arbitrum One that provides real-time transaction decoding, contract verification, and Nitro-native features. Connect your RPC, configure your Orbit settings, and have a branded explorer running in minutes.
                         </p>
@@ -342,12 +342,12 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Arbitrum One — Ethernal',
+    title: 'Arbitrum Explorer: Block Explorer for Arbitrum One | Ethernal',
     meta: [
-        { name: 'description', content: 'Hosted block explorer for Arbitrum One (Nitro). Transaction decoding, contract verification, retryable ticket tracking, and Orbit bridge monitoring.' },
+        { name: 'description', content: 'An Arbitrum One explorer with transaction decoding, contract verification, retryable ticket tracking, and Orbit bridge monitoring. Hosted or self-host your own in 5 minutes.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Arbitrum One — Ethernal' },
-        { property: 'og:description', content: 'Hosted block explorer for Arbitrum One (Nitro). Transaction decoding, contract verification, retryable ticket tracking, and Orbit bridge monitoring.' },
+        { property: 'og:title', content: 'Arbitrum Explorer: Block Explorer for Arbitrum One | Ethernal' },
+        { property: 'og:description', content: 'An Arbitrum One explorer with transaction decoding, contract verification, retryable ticket tracking, and Orbit bridge monitoring. Hosted or self-host your own in 5 minutes.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/arbitrum-one' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-arbitrum-one.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
