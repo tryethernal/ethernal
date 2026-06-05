@@ -11,7 +11,7 @@
                     <span class="current">Degen Chain</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L3 APPCHAIN · ARBITRUM ORBIT</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Degen Chain</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Degen Chain Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Degen Chain, the community-driven L3 built on Base using Arbitrum Orbit. Degen Chain powers the DEGEN tipping token ecosystem on Farcaster, processing thousands of micro-transactions daily. Connect your RPC, configure Orbit bridge monitoring, and have a branded explorer running in minutes.
                         </p>
@@ -332,11 +332,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Degen Chain — Ethernal',
+    title: 'Degen Chain Explorer: Block Explorer for Degen Chain | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Degen Chain (L3 on Base, Arbitrum Orbit). DEGEN token tracking, transaction decoding, contract verification, and Farcaster ecosystem visibility.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Degen Chain — Ethernal' },
+        { property: 'og:title', content: 'Degen Chain Explorer: Block Explorer for Degen Chain | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Degen Chain (L3 on Base, Arbitrum Orbit). DEGEN token tracking, transaction decoding, contract verification, and Farcaster ecosystem visibility.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/degen-chain' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-degen-chain.png' },

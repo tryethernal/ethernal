@@ -11,7 +11,7 @@
                     <span class="current">Zora</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Zora Network</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Zora Network Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Zora Network (chain ID 7777777) that connects to your RPC endpoint and provides real-time transaction decoding, NFT tracking, and contract verification. Zora is an NFT and creator-focused OP Stack chain purpose-built for minting, collecting, and trading digital media. Deploy a full-featured explorer in under 5 minutes.
                         </p>
@@ -331,11 +331,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Zora Network — Ethernal',
+    title: 'Zora Network Explorer: Block Explorer for Zora Network | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Zora Network (OP Stack). NFT mint decoding, ERC-721/ERC-1155 tracking, contract verification, and L2-to-L1 withdrawal monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Zora Network — Ethernal' },
+        { property: 'og:title', content: 'Zora Network Explorer: Block Explorer for Zora Network | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Zora Network (OP Stack). NFT mint decoding, ERC-721/ERC-1155 tracking, contract verification, and L2-to-L1 withdrawal monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/zora' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-zora.png' },

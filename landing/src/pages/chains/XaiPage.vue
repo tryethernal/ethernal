@@ -11,7 +11,7 @@
                     <span class="current">Xai</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L3 APPCHAIN · ARBITRUM ORBIT</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Xai</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Xai Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Xai, the gaming-focused L3 built on Arbitrum One using Arbitrum Orbit. Developed by Offchain Labs, Xai enables gas-free gameplay for players through its Sentry node network. Connect your RPC, configure Orbit bridge monitoring, and deploy a branded Xai explorer in minutes.
                         </p>
@@ -135,7 +135,7 @@
 
             <!-- Feature Grid -->
             <ChainFeatureGrid :features="[
-                { icon: 'mdi-check-decagram', title: 'Contract Verification', description: 'Verify Solidity source, read and write contract state from the UI' },
+                { icon: 'mdi-check-decagram', title: 'Xai Explorer | Ethernal Block Explorer', description: 'Verify Solidity source, read and write contract state from the UI' },
                 { icon: 'mdi-swap-horizontal', title: 'Token Tracking', description: 'ERC-20, ERC-721, and ERC-1155 transfers and balance changes' },
                 { icon: 'mdi-bug', title: 'Call Traces', description: 'Full execution traces with nested internal calls and revert reasons' },
                 { icon: 'mdi-web', title: 'Custom Domain', description: 'Your brand, your domain, full whitelabel on paid plans' }
@@ -338,11 +338,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Xai — Ethernal',
+    title: 'Xai Explorer: Block Explorer for Xai | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Xai (gaming L3, Arbitrum Orbit). Gas-free gaming transactions, XAI token tracking, ERC-1155 NFT support, and Orbit bridge monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Xai — Ethernal' },
+        { property: 'og:title', content: 'Xai Explorer: Block Explorer for Xai | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Xai (gaming L3, Arbitrum Orbit). Gas-free gaming transactions, XAI token tracking, ERC-1155 NFT support, and Orbit bridge monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/xai' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-xai.png' },

@@ -11,7 +11,7 @@
                     <span class="current">Redstone</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Redstone</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Redstone Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Redstone, the OP Stack L2 built by Lattice for on-chain games and autonomous worlds. Redstone powers applications built with the MUD framework, where entire game states live on-chain. Connect your RPC, configure OP Stack bridge monitoring, and deploy a full-featured explorer in under 5 minutes.
                         </p>
@@ -115,7 +115,7 @@
 
             <!-- Feature Grid -->
             <ChainFeatureGrid :features="[
-                { icon: 'mdi-check-decagram', title: 'Contract Verification', description: 'Verify Solidity source, read and write contract state from the UI' },
+                { icon: 'mdi-check-decagram', title: 'Redstone Explorer | Ethernal Block Explorer', description: 'Verify Solidity source, read and write contract state from the UI' },
                 { icon: 'mdi-arrow-up-bold-circle-outline', title: 'Withdrawal Tracking', description: 'Full L2-to-L1 withdrawal lifecycle with challenge period monitoring' },
                 { icon: 'mdi-bug', title: 'Call Traces', description: 'Full execution traces with nested internal calls and revert reasons' },
                 { icon: 'mdi-swap-horizontal', title: 'Token Tracking', description: 'ERC-20, ERC-721, and ERC-1155 transfers and balance changes' },
@@ -309,11 +309,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Redstone — Ethernal',
+    title: 'Redstone Explorer: Block Explorer for Redstone | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Redstone (OP Stack). MUD framework decoding, autonomous world visibility, L2-to-L1 withdrawal tracking, and on-chain game transaction monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Redstone — Ethernal' },
+        { property: 'og:title', content: 'Redstone Explorer: Block Explorer for Redstone | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Redstone (OP Stack). MUD framework decoding, autonomous world visibility, L2-to-L1 withdrawal tracking, and on-chain game transaction monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/redstone' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-redstone.png' },

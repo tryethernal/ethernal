@@ -11,7 +11,7 @@
                     <span class="current">Base Sepolia</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">TESTNET · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Base Sepolia Testnet</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Base Sepolia Testnet Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Base Sepolia, the official testnet for Base (Coinbase's OP Stack L2). Get transaction decoding, contract verification, OP Stack bridge monitoring, and a built-in faucet for your Base Sepolia development environment.
                         </p>
@@ -268,11 +268,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Base Sepolia Testnet — Ethernal',
+    title: 'Base Sepolia Testnet Explorer | Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Free hosted block explorer for Base Sepolia testnet. OP Stack bridge monitoring, contract verification, transaction decoding, and built-in faucet.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Base Sepolia Testnet — Ethernal' },
+        { property: 'og:title', content: 'Base Sepolia Testnet Explorer | Ethernal Block Explorer' },
         { property: 'og:description', content: 'Free hosted block explorer for Base Sepolia testnet. OP Stack bridge monitoring, contract verification, transaction decoding, and built-in faucet.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/base-sepolia' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-base-sepolia.png' },

@@ -11,7 +11,7 @@
                     <span class="current">Mode</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Mode Network</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Mode Network Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Mode Network (chain ID 34443) that connects to your RPC endpoint and provides real-time transaction decoding, contract verification, and DeFi protocol debugging. Mode is a DeFi-focused OP Stack chain with Sequencer Fee Sharing (SFS), rewarding developers with a share of the sequencer revenue their contracts generate. Deploy a full-featured explorer in under 5 minutes.
                         </p>
@@ -349,11 +349,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Mode Network — Ethernal',
+    title: 'Mode Network Explorer: Block Explorer for Mode Network | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Mode Network (OP Stack). Transaction decoding, DeFi debugging, Sequencer Fee Sharing visibility, contract verification, and EIP-4844 blob monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Mode Network — Ethernal' },
+        { property: 'og:title', content: 'Mode Network Explorer: Block Explorer for Mode Network | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Mode Network (OP Stack). Transaction decoding, DeFi debugging, Sequencer Fee Sharing visibility, contract verification, and EIP-4844 blob monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/mode' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-mode.png' },

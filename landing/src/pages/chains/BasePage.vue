@@ -11,7 +11,7 @@
                     <span class="current">Base</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Base</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Base Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                     Ethernal is a hosted block explorer for Base that connects to your RPC endpoint and provides real-time transaction decoding, contract verification, and L2-to-L1 withdrawal tracking. Deploy a full-featured explorer for your Base chain in under 5 minutes.
                 </p>
@@ -134,7 +134,7 @@
 
             <!-- Feature Grid -->
             <ChainFeatureGrid :features="[
-                { icon: 'mdi-code-json', title: 'Transaction Decoding', description: 'Function names, parameters, and events decoded against verified ABIs' },
+                { icon: 'mdi-code-json', title: 'Base Explorer | Ethernal Block Explorer', description: 'Function names, parameters, and events decoded against verified ABIs' },
                 { icon: 'mdi-check-decagram', title: 'Contract Verification', description: 'Verify Solidity source, read and write contract state from the UI' },
                 { icon: 'mdi-bug', title: 'Call Traces', description: 'Full execution traces with nested internal calls and revert reasons' },
                 { icon: 'mdi-swap-horizontal', title: 'Token Tracking', description: 'ERC-20, ERC-721, and ERC-1155 transfers and balance changes' },
@@ -339,11 +339,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Base — Ethernal',
+    title: 'Base Explorer: Block Explorer for Base | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Base (OP Stack). Transaction decoding, contract verification, L2-to-L1 withdrawal tracking, and EIP-4844 blob monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Base — Ethernal' },
+        { property: 'og:title', content: 'Base Explorer: Block Explorer for Base | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Base (OP Stack). Transaction decoding, contract verification, L2-to-L1 withdrawal tracking, and EIP-4844 blob monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/base' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-base.png' },

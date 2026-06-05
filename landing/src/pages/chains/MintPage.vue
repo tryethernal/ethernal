@@ -11,7 +11,7 @@
                     <span class="current">Mint</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Mint</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Mint Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Mint, the NFT-focused OP Stack L2 designed for low-cost minting and green NFT infrastructure. Mint provides a dedicated chain optimized for NFT creators, collectors, and marketplaces. Connect your RPC, configure OP Stack bridge monitoring, and deploy a branded explorer in under 5 minutes.
                         </p>
@@ -66,7 +66,7 @@
 
             <!-- Feature Grid -->
             <ChainFeatureGrid :features="[
-                { icon: 'mdi-code-json', title: 'Transaction Decoding', description: 'Function names, parameters, and events decoded against verified ABIs' },
+                { icon: 'mdi-code-json', title: 'Mint Explorer | Ethernal Block Explorer', description: 'Function names, parameters, and events decoded against verified ABIs' },
                 { icon: 'mdi-check-decagram', title: 'Contract Verification', description: 'Verify Solidity source, read and write contract state from the UI' },
                 { icon: 'mdi-arrow-up-bold-circle-outline', title: 'Withdrawal Tracking', description: 'Full L2-to-L1 withdrawal lifecycle with challenge period monitoring' },
                 { icon: 'mdi-bug', title: 'Call Traces', description: 'Full execution traces with nested internal calls and revert reasons' },
@@ -148,11 +148,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Mint — Ethernal',
+    title: 'Mint Explorer: Block Explorer for Mint | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Mint (OP Stack). NFT minting tracking, ERC-721/ERC-1155 indexing, L2-to-L1 withdrawal monitoring, and contract verification for the NFT-focused L2.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Mint — Ethernal' },
+        { property: 'og:title', content: 'Mint Explorer: Block Explorer for Mint | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Mint (OP Stack). NFT minting tracking, ERC-721/ERC-1155 indexing, and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/mint' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-mint.png' },

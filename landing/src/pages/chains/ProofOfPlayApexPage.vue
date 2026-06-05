@@ -11,7 +11,7 @@
                     <span class="current">Proof of Play Apex</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L3 APPCHAIN · ARBITRUM ORBIT</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Proof of Play Apex</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Proof of Play Apex Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Proof of Play Apex, the gaming L3 appchain that powers Pirate Nation and other on-chain games. Built on Arbitrum Orbit, Apex is a dedicated chain optimized for game transactions with custom gas tokens. Connect your RPC and have a branded explorer running in minutes.
                         </p>
@@ -338,11 +338,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Proof of Play Apex — Ethernal',
+    title: 'Proof of Play Apex Explorer | Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Proof of Play Apex (gaming L3, Arbitrum Orbit). Pirate Nation game decoding, NFT tracking, custom gas token support, and Orbit bridge monitoring.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Proof of Play Apex — Ethernal' },
+        { property: 'og:title', content: 'Proof of Play Apex Explorer | Ethernal Block Explorer' },
         { property: 'og:description', content: 'Hosted block explorer for Proof of Play Apex (gaming L3, Arbitrum Orbit). Pirate Nation game decoding, NFT tracking, custom gas token support, and Orbit bridge monitoring.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/proof-of-play-apex' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-proof-of-play-apex.png' },
