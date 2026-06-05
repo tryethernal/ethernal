@@ -1,6 +1,6 @@
 ---
-title: "The Commerce Layer: How ERC-8183 Makes AI Agent Payments Verifiable"
-description: "ERC-8183 adds the missing verb to agent commerce: not 'I sent value' but 'I will pay when you deliver.' How the job lifecycle and evaluator work."
+title: "ERC-8183: How to Make AI Agent Payments Verifiable Onchain"
+description: "ERC-8183 lets an AI agent commit to pay-on-delivery instead of paying upfront. How its job lifecycle and onchain evaluator make agent commerce verifiable."
 date: 2026-03-16
 tags:
   - AI Agents

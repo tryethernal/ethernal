@@ -11,7 +11,7 @@
                     <span class="current">Optimism</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Optimism</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Optimism Explorer for the OP Network</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Optimism (chain ID 10) that connects to your RPC endpoint and provides real-time transaction decoding, contract verification, and L2-to-L1 withdrawal tracking. Optimism is the original OP Stack chain built by OP Labs, powering the Superchain vision. Deploy a full-featured explorer in under 5 minutes.
                         </p>
@@ -339,12 +339,12 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Optimism — Ethernal',
+    title: 'Optimism Explorer: Block Explorer for the OP Network | Ethernal',
     meta: [
-        { name: 'description', content: 'Hosted block explorer for Optimism (OP Stack). Transaction decoding, contract verification, L2-to-L1 withdrawal tracking, fault proof monitoring, and EIP-4844 blob batches.' },
+        { name: 'description', content: 'An Optimism network explorer with transaction decoding, contract verification, L2-to-L1 withdrawal tracking, and fault proof monitoring. Hosted or self-host your own in 5 minutes.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Optimism — Ethernal' },
-        { property: 'og:description', content: 'Hosted block explorer for Optimism (OP Stack). Transaction decoding, contract verification, L2-to-L1 withdrawal tracking, fault proof monitoring, and EIP-4844 blob batches.' },
+        { property: 'og:title', content: 'Optimism Explorer: Block Explorer for the OP Network | Ethernal' },
+        { property: 'og:description', content: 'An Optimism network explorer with transaction decoding, contract verification, L2-to-L1 withdrawal tracking, and fault proof monitoring. Hosted or self-host your own in 5 minutes.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/optimism' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-optimism.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
