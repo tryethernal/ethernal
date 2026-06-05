@@ -161,6 +161,19 @@
                     </div>
                 </template>
             </FeatureSection>
+
+            <!-- FAQ (visible content mirrors the FAQPage JSON-LD below) -->
+            <div class="my-16" style="max-width: 760px; margin-left: auto; margin-right: auto;">
+                <h2 class="font-heading mb-6" style="font-size: 1.6rem; color: var(--text-primary);">
+                    Frequently asked questions
+                </h2>
+                <div class="lbe-faq-list">
+                    <div v-for="(faq, i) in faqs" :key="i" class="lbe-faq-item">
+                        <h3 class="lbe-faq-q">{{ faq.q }}</h3>
+                        <p class="lbe-faq-a">{{ faq.a }}</p>
+                    </div>
+                </div>
+            </div>
         </v-container>
 
         <LandingCTA flow="public" />
@@ -174,6 +187,24 @@ import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 const appUrl = __APP_URL__;
+
+// Single source of truth: rendered in the visible FAQ section above AND in the
+// FAQPage JSON-LD below, so the structured data always matches on-page content
+// (a Google FAQPage eligibility requirement).
+const faqs = [
+    {
+        q: 'What is block explorer hosting?',
+        a: 'Block explorer hosting is a managed service where a provider runs the indexer, database, and frontend that power a block explorer for your chain. With Ethernal you provide an EVM RPC URL and the hosted explorer is live in minutes, with no infrastructure for you to operate.'
+    },
+    {
+        q: 'How do I launch a custom block explorer for my EVM chain?',
+        a: 'Paste your EVM RPC URL and chain ID into Ethernal, set your branding and custom domain, and the explorer indexes your chain and goes live in under five minutes. You can use the hosted version or self-host the MIT-licensed explorer via Docker.'
+    },
+    {
+        q: 'Is there a self-hosted EVM scan alternative to Etherscan?',
+        a: 'Yes. Ethernal is an open-source, MIT-licensed EVM block explorer (an EVM scan) that you can self-host on your own infrastructure, or run as a hosted service. It supports transaction decoding, contract verification, and an Etherscan-compatible API.'
+    }
+];
 
 useHead({
     title: 'Launch a Custom EVM Block Explorer | Explorer Hosting',
@@ -209,23 +240,11 @@ useHead({
             children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                "mainEntity": [
-                    {
-                        "@type": "Question",
-                        "name": "What is block explorer hosting?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Block explorer hosting is a managed service where a provider runs the indexer, database, and frontend that power a block explorer for your chain. With Ethernal you provide an EVM RPC URL and the hosted explorer is live in minutes, with no infrastructure for you to operate." }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "How do I launch a custom block explorer for my EVM chain?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Paste your EVM RPC URL and chain ID into Ethernal, set your branding and custom domain, and the explorer indexes your chain and goes live in under five minutes. You can use the hosted version or self-host the MIT-licensed explorer via Docker." }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "Is there a self-hosted EVM scan alternative to Etherscan?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal is an open-source, MIT-licensed EVM block explorer (an EVM scan) that you can self-host on your own infrastructure, or run as a hosted service. It supports transaction decoding, contract verification, and an Etherscan-compatible API." }
-                    }
-                ]
+                "mainEntity": faqs.map(f => ({
+                    "@type": "Question",
+                    "name": f.q,
+                    "acceptedAnswer": { "@type": "Answer", "text": f.a }
+                }))
             })
         },
         {
@@ -300,4 +319,10 @@ useHead({
 .trace-method { color: #CBD5E1; font-size: 11px; }
 .status-chip { padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 .status-chip.ok { background: rgba(34, 197, 94, 0.1); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.2); }
+
+/* FAQ */
+.lbe-faq-list { display: flex; flex-direction: column; gap: 12px; }
+.lbe-faq-item { background: rgba(17, 24, 39, 0.4); border: 1px solid rgba(30, 41, 59, 0.5); border-radius: 10px; padding: 18px 20px; }
+.lbe-faq-q { color: var(--text-primary); font-size: 15px; font-weight: 600; margin: 0 0 8px; }
+.lbe-faq-a { color: var(--text-secondary); font-size: 14px; line-height: 1.7; margin: 0; }
 </style>
