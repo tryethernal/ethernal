@@ -11,7 +11,7 @@
                     <span class="current">Cyber</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L2 ROLLUP · OP STACK</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Cyber</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Cyber Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Cyber, the social-focused OP Stack L2 from CyberConnect. Cyber is designed for social applications, identity management, and on-chain social graphs. Connect your RPC, configure OP Stack bridge monitoring, and deploy a branded Cyber explorer in under 5 minutes.
                         </p>
@@ -148,11 +148,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Cyber — Ethernal',
+    title: 'Cyber Explorer: Block Explorer for Cyber | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Cyber (OP Stack). Social graph tracking, CYBER token monitoring, CyberID identity, L2-to-L1 withdrawals, and contract verification.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Cyber — Ethernal' },
+        { property: 'og:title', content: 'Cyber Explorer: Block Explorer for Cyber | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Cyber (OP Stack). Social graph tracking, CYBER token monitoring, CyberID identity, and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/cyber' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-cyber.png' },

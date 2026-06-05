@@ -11,7 +11,7 @@
                     <span class="current">Holesky</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">TESTNET · ETHEREUM</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Holesky Testnet</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Holesky Testnet Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                             Ethernal is a hosted block explorer for Holesky, Ethereum's dedicated testnet for validator and staking infrastructure testing. Get transaction decoding, contract verification, and staking contract monitoring for your Holesky environment without running any infrastructure.
                         </p>
@@ -292,11 +292,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Holesky Testnet — Ethernal',
+    title: 'Holesky Testnet Explorer | Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Free hosted block explorer for Holesky testnet. Contract verification, transaction decoding, call traces, and built-in faucet for Ethereum staking and validator testing.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Holesky Testnet — Ethernal' },
+        { property: 'og:title', content: 'Holesky Testnet Explorer | Ethernal Block Explorer' },
         { property: 'og:description', content: 'Free hosted block explorer for Holesky testnet. Contract verification, transaction decoding, call traces, and built-in faucet for Ethereum staking and validator testing.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/holesky' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-holesky.png' },

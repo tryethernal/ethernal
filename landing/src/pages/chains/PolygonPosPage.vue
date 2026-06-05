@@ -11,7 +11,7 @@
                     <span class="current">Polygon PoS</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">L1 SIDECHAIN · POLYGON</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Block Explorer for Polygon PoS</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Polygon PoS Explorer</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
                     Ethernal is a hosted block explorer for Polygon PoS that connects to your RPC endpoint and provides real-time transaction decoding, contract verification, call traces, and token tracking. Deploy a full-featured, whitelabel explorer for your Polygon chain in under 5 minutes.
                 </p>
@@ -356,11 +356,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Polygon PoS — Ethernal',
+    title: 'Polygon PoS Explorer: Block Explorer for Polygon PoS | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for Polygon PoS. Transaction decoding, contract verification, call traces, token tracking, and custom domain support.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Polygon PoS — Ethernal' },
+        { property: 'og:title', content: 'Polygon PoS Explorer: Block Explorer for Polygon PoS | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for Polygon PoS. Transaction decoding, contract verification, call traces, token tracking, and custom domain support.' },
         { property: 'og:url', content: 'https://tryethernal.com/chains/polygon-pos' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-polygon-pos.png' },
