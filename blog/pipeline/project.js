@@ -38,8 +38,14 @@ function getArticleDate(articlePath) {
 function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
   const baseInput = `projectId: "${PROJECT.id}", itemId: "${itemId}"`;
 
+  // Use the keyword-enriched finalScore when present (rounded — the GitHub
+  // number field is whole-number friendly), falling back to the editorial
+  // score. This makes pickNextTopic's score-based ordering reflect search
+  // demand without changing how the field is read.
+  const trendScoreValue = Math.round(topic.finalScore ?? topic.score);
+
   const fields = [
-    { fieldId: PROJECT.fields.trendScore, value: `number: ${topic.score}` },
+    { fieldId: PROJECT.fields.trendScore, value: `number: ${trendScoreValue}` },
     ...(includeStatus
       ? [{ fieldId: PROJECT.fields.status, value: `singleSelectOptionId: "${PROJECT.statusOptions.detected}"` }]
       : []),
@@ -94,6 +100,31 @@ function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
 }
 
 /**
+ * Render the keyword-enrichment block for the card body, when present.
+ * Returns '' when the topic was not enriched (no DataForSEO creds, provider
+ * failure, or no keywords passed the filters) so unenriched cards are
+ * byte-identical to pre-enrichment behavior.
+ * @param {object} topic
+ * @returns {string}
+ */
+function buildKeywordBlock(topic) {
+  const kws = Array.isArray(topic.keywordsEnriched) ? topic.keywordsEnriched : [];
+  if (kws.length === 0) return '';
+  const primary = topic.primaryKeyword;
+  const rows = kws
+    .slice(0, 8)
+    .map(k => {
+      const isPrimary = primary && k.phrase === primary;
+      return `- **${k.phrase}** — ${k.volume}/mo, ${k.competition}${isPrimary ? ' (primary)' : ''}`;
+    })
+    .join('\n');
+  const finalLine = topic.finalScore != null && topic.finalScore !== topic.score
+    ? `\n**Final score (with keyword boost):** ${topic.finalScore}`
+    : '';
+  return `\n\n### Top keywords (search intent)${finalLine}\n${rows}`;
+}
+
+/**
  * Build the card body markdown.
  * @param {{label: string, score: number, items: Array, contentType: string, counts: object}} topic
  * @returns {string}
@@ -103,8 +134,9 @@ function buildCardBody(topic) {
     .slice(0, 10)
     .map(item => `- [${item.title}](${item.url}) (${item.source}, ${new Date(item.date).toLocaleDateString()})`)
     .join('\n');
+  const keywordBlock = buildKeywordBlock(topic);
 
-  return `## Trend: ${topic.label}\n\n**Score:** ${topic.score}\n**Content Type:** ${topic.contentType}\n\n### Source Counts\n| Source | Count |\n|--------|-------|\n| EIPs | ${topic.counts.eip || 0} |\n| ERCs | ${topic.counts.erc || 0} |\n| ethresear.ch | ${topic.counts.ethresearch || 0} |\n| arxiv | ${topic.counts.arxiv || 0} |\n| Ethereum Magicians | ${topic.counts.magicians || 0} |\n\n### Sources\n${sourceList}\n\n---\n*Last updated ${new Date().toISOString().split('T')[0]}*`;
+  return `## Trend: ${topic.label}\n\n**Score:** ${topic.score}\n**Content Type:** ${topic.contentType}\n\n### Source Counts\n| Source | Count |\n|--------|-------|\n| EIPs | ${topic.counts.eip || 0} |\n| ERCs | ${topic.counts.erc || 0} |\n| ethresear.ch | ${topic.counts.ethresearch || 0} |\n| arxiv | ${topic.counts.arxiv || 0} |\n| Ethereum Magicians | ${topic.counts.magicians || 0} |\n\n### Sources\n${sourceList}${keywordBlock}\n\n---\n*Last updated ${new Date().toISOString().split('T')[0]}*`;
 }
 
 /**
