@@ -17,6 +17,7 @@
                     <div class="d-flex flex-column ga-2">
                         <router-link to="/features" class="footer-link">Features</router-link>
                         <router-link to="/pricing" class="footer-link">Pricing</router-link>
+                        <router-link to="/launch-block-explorer" class="footer-link">Launch an Explorer</router-link>
                         <router-link to="/transaction-tracing" class="footer-link">Transaction Tracing</router-link>
                         <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
                         <a :href="`${appUrl}/auth?utm_source=landing&utm_medium=footer&utm_campaign=signin`" class="footer-link">Sign In</a>
