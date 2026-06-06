@@ -69,6 +69,7 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { Buffer } from 'node:buffer';
+import { createRequire } from 'node:module';
 
 const DEFAULT_SITE = 'sc-domain:tryethernal.com';
 const DEFAULT_KEY_FILE = `${process.env.HOME || ''}/.credentials/gsc-ethernal.json`;
@@ -141,6 +142,11 @@ function parseArgs(argv) {
 const TEMP_KEY_FILES = new Set();
 let exitHandlersInstalled = false;
 
+// CommonJS `require` for sync unlink in the `exit` handler — ESM has no
+// synchronous fs.unlink and `exit` listeners cannot await. Declared before
+// `installExitHandlersOnce` (which uses it) to avoid a const TDZ hazard.
+const require = createRequire(import.meta.url);
+
 function installExitHandlersOnce() {
   if (exitHandlersInstalled) return;
   exitHandlersInstalled = true;
@@ -150,16 +156,10 @@ function installExitHandlersOnce() {
     }
     TEMP_KEY_FILES.clear();
   };
-  // `exit` only allows sync work, so use unlinkSync via createRequire below.
   process.on('exit', unlinkAll);
   process.on('SIGINT', () => { unlinkAll(); process.exit(130); });
   process.on('SIGTERM', () => { unlinkAll(); process.exit(143); });
 }
-
-// CommonJS `require` for sync unlink in the `exit` handler — ESM has no
-// synchronous fs.unlink and `exit` listeners cannot await.
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
 
 // Resolve the credential file path. Returns:
 //   { path, cleanup }  on success — `cleanup` is an async no-op for
