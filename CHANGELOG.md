@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.222] - 2026-06-06
+### Fixed
+- feat(blog-pipeline): sitemap re-ping to Search Console (Phase 5) (#1333)
+- feat(blog-pipeline): search-feedback layer — SERP draft grounding + GSC refresh mode (Phases 3+4) (#1332)
+
+
 ## [5.17.221] - 2026-06-06
 ### Fixed
 - blog: publish - Valid Signature, Wrong Intent: The Unsolved Authorization Problem for Onchain AI Agents
