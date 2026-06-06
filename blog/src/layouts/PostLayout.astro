@@ -23,7 +23,10 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, date, description, tags, image, ogImage, readingTime } = post.data;
+const { title, date, description, tags, keywords, image, ogImage, readingTime } = post.data;
+// JSON-LD keywords: prefer the dedicated SEO `keywords` field (populated by the
+// enrichment pipeline); fall back to reader-facing `tags` for posts without it.
+const jsonLdKeywords = (Array.isArray(keywords) && keywords.length > 0 ? keywords : tags).join(", ");
 
 const formattedDate = date.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -118,7 +121,7 @@ if (has('Comparison') || /alternative|vs |best/i.test(title)) {
       "url": "https://tryethernal.com",
       "logo": { "@type": "ImageObject", "url": "https://tryethernal.com/favicon.ico" }
     },
-    "keywords": tags.join(", "),
+    "keywords": jsonLdKeywords,
     "wordCount": readingTime ? readingTime * 250 : undefined,
     "mainEntityOfPage": {
       "@type": "WebPage",

@@ -8,7 +8,9 @@ Ethernal is an open-source block explorer for EVM-based chains. Target audience:
 
 ## Your Task
 
-Read `blog/pipeline/.card-body.md` for the topic and source links.
+Read `blog/pipeline/.card-body.md` for the topic and source links. If the card body has a `### Top keywords (search intent)` section, those are real Google search phrases your audience types — note which appear in the sources you read; they're the natural vocabulary to ground the post in (not a checklist).
+
+**SERP context (optional):** if `blog/pipeline/.serp-terms.json` exists and has `"status": "ok"`, skim its `relatedSearches[]` and `peopleAlsoAsk[]` — they reveal the real questions readers ask around the primary keyword. Use them to spot 1-2 angles or sub-questions worth covering. The `entities[]` list shows which tools/products competitors mention. If the file is absent or `"status": "skipped"`, just research normally — no coverage grounding is available and that's fine.
 
 1. **WebSearch** each source link from the card. For EIP/ERC GitHub PRs, fetch the actual proposal content. Also search for 2-3 additional authoritative sources (official docs, dev blogs from OpenZeppelin/Trail of Bits/Paradigm/Consensys, research papers).
 

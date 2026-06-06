@@ -133,8 +133,36 @@ cd "$REPO_DIR"
 # Write card body to file for Claude to read (avoids shell interpolation)
 printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
 
-# Clean up any previous research notes
-rm -f blog/pipeline/.research-notes.md
+# Clean up any previous research notes + stale SERP hints
+rm -f blog/pipeline/.research-notes.md blog/pipeline/.serp-terms.json
+
+# ------------------------------------------------------------
+# SERP coverage pre-flight (best-effort, never fatal).
+# If the picked card carries a primary keyword (from the weekly DataForSEO
+# enrichment), fetch top-SERP term/entity coverage hints for the draft phase.
+# Writes blog/pipeline/.serp-terms.json. Degrades to a clean no-op when no
+# primary keyword is present or DATAFORSEO_* creds are unset — the prompts
+# treat a missing/skip file as "draft without coverage grounding".
+# ------------------------------------------------------------
+PRIMARY_KW=$(CARD_BODY="$CARD_BODY" node --input-type=module -e "
+  import { parsePrimaryKeyword } from './blog/pipeline/project.js';
+  process.stdout.write(parsePrimaryKeyword(process.env.CARD_BODY || ''));
+" 2>/dev/null || true)
+
+if [ -n "$PRIMARY_KW" ]; then
+  log "Primary keyword: $PRIMARY_KW — fetching SERP coverage hints..."
+  if node blog/pipeline/serp-terms.mjs --keyword "$PRIMARY_KW" > blog/pipeline/.serp-terms.json 2>>"$LOG_FILE"; then
+    SERP_STATUS=$(jq -r '.status // "unknown"' blog/pipeline/.serp-terms.json 2>/dev/null || echo unknown)
+    log "SERP coverage: $SERP_STATUS"
+    # On skip (no creds / quota), remove the file so prompts see "absent" cleanly.
+    [ "$SERP_STATUS" != "ok" ] && rm -f blog/pipeline/.serp-terms.json
+  else
+    log "SERP coverage fetch failed (non-fatal); drafting without it"
+    rm -f blog/pipeline/.serp-terms.json
+  fi
+else
+  log "No primary keyword on card — drafting without SERP coverage hints"
+fi
 
 # ============================================================
 # PHASE 1: Research

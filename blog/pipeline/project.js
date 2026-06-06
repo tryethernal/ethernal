@@ -125,6 +125,21 @@ function buildKeywordBlock(topic) {
 }
 
 /**
+ * Extract the primary keyword from a card body's "Top keywords" block.
+ * The block (written by buildKeywordBlock) marks the primary row with
+ * "(primary)". Returns the phrase, or '' when the card wasn't enriched.
+ * Used by draft.sh to seed serp-terms.mjs and the draft prompts.
+ * @param {string} body
+ * @returns {string}
+ */
+export function parsePrimaryKeyword(body) {
+  if (!body || typeof body !== 'string') return '';
+  // Match: "- **<phrase>** — <vol>/mo, <COMP> (primary)"
+  const m = body.match(/^-\s+\*\*(.+?)\*\*\s+[—-].*\(primary\)\s*$/m);
+  return m ? m[1].trim() : '';
+}
+
+/**
  * Build the card body markdown.
  * @param {{label: string, score: number, items: Array, contentType: string, counts: object}} topic
  * @returns {string}
