@@ -33,8 +33,9 @@ jobs:
           # DataForSEO is consumed NOW by enrich-keywords.mjs (keyword volume).
           DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
           DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
-          # GSC is NOT yet read by `node index.js` — its consumers (refresh /
-          # content-gap selection) land in Phase 4. Provisioned here so the
-          # secret is ready and `gsc.mjs` can be run standalone in the meantime.
+          # GSC drives refresh-mode in `node index.js --pick` (Phase 4, merged).
+          # The weekly scan itself doesn't read GSC, but the secret is provided
+          # so `gsc.mjs` can run standalone here and to keep the env consistent
+          # with the draft cadence that does consume it.
           GSC_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON_B64 }}
         run: node index.js
