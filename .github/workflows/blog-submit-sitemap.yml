@@ -1,0 +1,46 @@
+name: Blog Submit Sitemap
+
+# Phase 5 of the search-feedback layer (see
+# .claude/references/SERP-INTEGRATION-PLAN.md). After blog content lands on
+# develop (the branch that auto-deploys the blog), re-ping Google Search
+# Console so it re-crawls the updated sitemaps promptly instead of waiting for
+# its natural crawl cadence. Best-effort: a GSC flake never fails the run.
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'blog/src/content/blog/**'
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: read
+
+# Serialize runs so two quick pushes don't double-submit concurrently.
+concurrency:
+  group: blog-submit-sitemap
+  cancel-in-progress: false
+
+jobs:
+  submit-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pipeline dependencies
+        working-directory: blog/pipeline
+        run: npm ci
+
+      - name: Re-ping Search Console with the sitemaps
+        working-directory: blog/pipeline
+        # Best-effort: the Sitemaps.submit endpoint is Owner-only and the SA may
+        # be merely a full-user, or GSC may flake. Never fail the workflow over
+        # a sitemap ping — Google still crawls naturally. `|| true` swallows the
+        # non-zero exit; the step log still records what happened.
+        env:
+          GSC_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON_B64 }}
+        run: node submit-sitemap.mjs || true

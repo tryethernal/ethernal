@@ -7,7 +7,9 @@
     "scan:dry": "node index.js --dry-run",
     "gsc": "node gsc.mjs --site sc-domain:tryethernal.com",
     "enrich": "node enrich-keywords.mjs",
-    "serp-terms": "node serp-terms.mjs"
+    "serp-terms": "node serp-terms.mjs",
+    "refresh": "node refresh.mjs",
+    "submit-sitemap": "node submit-sitemap.mjs"
   },
   "dependencies": {
     "google-trends-api": "^4.9.2",
