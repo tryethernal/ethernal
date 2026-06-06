@@ -162,7 +162,7 @@ The smallest weight because the build step + earlier prompts enforce most of thi
 4. **Compute `totalScore`** as the weighted sum. Round to one decimal.
 5. **Verdict.** Pass if `totalScore >= 7.5` AND `autoZeros` is empty.
 6. **`iterationsNeeded`** — ordered list, highest-impact fix first. Empty on pass.
-7. **Output the JSON only.** No prose framing, no "Here is the score:", start with `{`.
+7. **Emit the JSON only** — it must be your sole output, with no prose framing or "Here is the score:" preamble (it starts with `{`). The caller decides where it lands: if the invoking prompt asks you to write it to a file, write exactly that JSON to the file and nothing else; otherwise print it to stdout.
 
 ## Threshold ratchet roadmap
 

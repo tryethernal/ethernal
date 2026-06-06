@@ -12,7 +12,7 @@ Phase 3 in this pipeline:
   - **GEO score** — `prompts/5-geo-score.md`. Scores the file content as-is (no WebFetch).
 - **3c (Apply fixes)** — main agent reads both reports, applies edits, re-scores (2-iteration cap).
 
-Your output goes to stdout as JSON only. No prose preamble, no closing remarks.
+Your output is JSON only — no prose preamble, no closing remarks. The caller decides where it lands: if the invoking prompt asks you to write it to a file, write exactly that JSON to the file and nothing else; otherwise print it to stdout.
 
 ## What to verify
 
@@ -97,7 +97,7 @@ When the post paraphrases a study's or spec's conclusion, the paraphrase sometim
 - `verdict` = `'pass'` if every entry in `claims[]` is `verified` AND `unfetchable[]` is empty. Otherwise `'fail'`.
 - `fixesNeeded[]` = ordered list of concrete edits. Each entry: `"<claim quote (truncated)>: <action>"`. Empty on pass.
 
-Output the JSON only. No prose framing. Start with `{`.
+Emit the JSON only, no prose framing (it starts with `{`). Write it to the file the invoking prompt names, or to stdout if none is given.
 
 ## When to escalate (not return a verdict)
 

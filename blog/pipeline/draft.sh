@@ -362,10 +362,13 @@ log "Phase 3 complete."
 # ============================================================
 GEO_GATE_MAX_ITERATIONS=2
 GEO_PASS=false
-rm -f blog/pipeline/.geo-score.json blog/pipeline/.verify-sources.json
 
 for GEO_ITER in $(seq 1 "$GEO_GATE_MAX_ITERATIONS"); do
   log "Phase 3b: GEO quality gate (iteration $GEO_ITER/$GEO_GATE_MAX_ITERATIONS)..."
+  # Clear stale artifacts at the TOP of each iteration so a scorer flake on a
+  # later pass is always detected as "no score produced" rather than silently
+  # reusing the previous iteration's score in the verdict/log.
+  rm -f blog/pipeline/.geo-score.json blog/pipeline/.verify-sources.json
 
   # Source-claim verification subagent (WebFetches every cited number).
   claude -p "Verify the sources in the blog post at $ARTICLE_PATH. $(cat "$PROMPTS_DIR/3b-verify-sources.md")
