@@ -5,12 +5,15 @@
 
 import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
+import { access } from 'fs/promises';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { PROJECT } from './config.js';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+// Astro blog posts live at blog/src/content/blog/<slug>.{md,mdx}.
+const BLOG_POSTS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'content', 'blog');
 
 /**
  * Reads `date:` from a published article's frontmatter. Returns ISO date or '' if
@@ -28,6 +31,128 @@ function getArticleDate(articlePath) {
   } catch {
     return '';
   }
+}
+
+/**
+ * Derive a blog post slug from a GSC `page` URL. GSC returns canonical URLs
+ * like `https://tryethernal.com/blog/<slug>` (with or without a trailing
+ * slash). Only URLs under `/blog/` with a single non-empty slug segment map
+ * to a post. Returns the slug, or null when the URL isn't a blog post page.
+ * @param {string} pageUrl
+ * @returns {string|null}
+ */
+export function slugFromPageUrl(pageUrl) {
+  if (!pageUrl || typeof pageUrl !== 'string') return null;
+  let u;
+  try {
+    u = new URL(pageUrl);
+  } catch {
+    return null;
+  }
+  const m = u.pathname.match(/^\/blog\/([^/]+)\/?$/);
+  if (!m) return null;
+  const slug = m[1];
+  // Defensive: GSC URLs are sanitized, but only accept slug-shaped segments.
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return null;
+  return slug;
+}
+
+/**
+ * Verify a slug maps to an existing post file (.md or .mdx). Returns the
+ * absolute path when found, else null.
+ * @param {string} slug
+ * @returns {Promise<string|null>}
+ */
+export async function postExists(slug) {
+  for (const ext of ['md', 'mdx']) {
+    const p = join(BLOG_POSTS_DIR, `${slug}.${ext}`);
+    try {
+      await access(p);
+      return p;
+    } catch {
+      /* keep looking */
+    }
+  }
+  return null;
+}
+
+/**
+ * Find a refresh candidate from GSC signals, in priority order:
+ *   1. quickWins        — query at position 4–15, >=50 impressions
+ *                         (almost-ranking; highest leverage).
+ *   2. contentDecay     — page lost >=30% clicks vs prior 28d (defensive).
+ *   3. ctrOpportunities — page ranks (>=100 impressions) but CTR <= 50% of
+ *                         position-expected (cheapest fix — title/meta only).
+ *
+ * Content signals (1 + 2) outrank the copy signal (3): a page whose clicks are
+ * falling needs substance; a page that merely under-clicks needs a better
+ * title. For each candidate, the `page` URL must map to a slug whose post file
+ * exists in the repo — otherwise the signal is meaningless and we skip it.
+ *
+ * Returns the refresh envelope `{ slug, filePath, signal, page, metrics }`, or
+ * null when GSC was skipped, no signals fired, or none mapped to a real post.
+ * Caller then falls through to pickNextTopic() (new-post mode).
+ * @param {object} gsc - Envelope from fetchGscSignals() in gsc.mjs.
+ * @returns {Promise<object|null>}
+ */
+export async function findRefreshCandidate(gsc) {
+  if (!gsc || gsc.status !== 'ok') return null;
+
+  const rel = (p) => p.slice(REPO_ROOT.length + 1);
+
+  // Priority 1: quickWins (signal carries both query and page).
+  for (const w of Array.isArray(gsc.quickWins) ? gsc.quickWins : []) {
+    const slug = slugFromPageUrl(w.page);
+    if (!slug) continue;
+    const filePath = await postExists(slug);
+    if (!filePath) continue;
+    return {
+      slug,
+      filePath: rel(filePath),
+      signal: 'quick_win',
+      page: w.page,
+      metrics: { query: w.query, clicks: w.clicks, impressions: w.impressions, ctr: w.ctr, position: w.position },
+    };
+  }
+
+  // Priority 2: contentDecay.
+  for (const d of Array.isArray(gsc.contentDecay) ? gsc.contentDecay : []) {
+    const slug = slugFromPageUrl(d.page);
+    if (!slug) continue;
+    const filePath = await postExists(slug);
+    if (!filePath) continue;
+    return {
+      slug,
+      filePath: rel(filePath),
+      signal: 'decay',
+      page: d.page,
+      metrics: { clicksRecent: d.clicksRecent, clicksPrior: d.clicksPrior, deltaPct: d.deltaPct },
+    };
+  }
+
+  // Priority 3: ctrOpportunities (sorted worst-gap-first by gsc.mjs).
+  for (const c of Array.isArray(gsc.ctrOpportunities) ? gsc.ctrOpportunities : []) {
+    const slug = slugFromPageUrl(c.page);
+    if (!slug) continue;
+    const filePath = await postExists(slug);
+    if (!filePath) continue;
+    return {
+      slug,
+      filePath: rel(filePath),
+      signal: 'ctr_opportunity',
+      page: c.page,
+      metrics: {
+        clicks: c.clicks,
+        impressions: c.impressions,
+        ctr: c.ctr,
+        position: c.position,
+        expectedCtr: c.expectedCtr,
+        gap: c.gap,
+      },
+    };
+  }
+
+  return null;
 }
 
 /**

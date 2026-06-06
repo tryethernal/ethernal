@@ -19,18 +19,54 @@ import {
 } from './collect.js';
 import { classifyAndScore } from './classify.js';
 import { enrichCandidates } from './enrich-keywords.mjs';
-import { createProjectCard, pickNextTopic, getProjectItems } from './project.js';
+import { createProjectCard, pickNextTopic, getProjectItems, findRefreshCandidate } from './project.js';
+import { fetchGscSignals } from './gsc.mjs';
 import { CLUSTERS } from './config.js';
 
 const dryRun = process.argv.includes('--dry-run');
 const pickMode = process.argv.includes('--pick');
+// --skip-refresh forces new-post mode (bypasses the GSC signal lookup). Used
+// when the consumer can't yet handle a refresh, or to force a fresh draft.
+const skipRefresh = process.argv.includes('--skip-refresh');
 
 async function main() {
   console.log(`Blog Trend Pipeline — ${new Date().toISOString()}`);
 
-  // --pick mode: just pick the next topic for drafting (every-2-day cadence)
+  // --pick mode: decide the next blog action for the every-2-day cadence.
+  // First try GSC-driven refresh-mode (Phase 4): if a Search Console signal
+  // (quick-win / decay / ctr-opportunity) maps to an existing post, refreshing
+  // it beats drafting new. Otherwise fall through to new-post round-robin.
   if (pickMode) {
     console.log(dryRun ? '(DRY RUN — pick mode)\n' : '(Pick mode)\n');
+
+    // GSC refresh lookup. Best-effort + graceful no-op: when credentials are
+    // absent or the API is down, fetchGscSignals() returns { status:'skipped' }
+    // and findRefreshCandidate() returns null — we simply pick a new topic, so
+    // behavior is byte-identical to pre-Phase-4 when GSC isn't wired.
+    if (!skipRefresh) {
+      let gsc = { status: 'skipped', reason: 'unknown' };
+      try {
+        gsc = await fetchGscSignals();
+      } catch (err) {
+        // fetchGscSignals shouldn't throw (graceful-no-op contract); defense in depth.
+        console.warn(`  GSC fetch threw unexpectedly (${err.message}); skipping refresh-mode`);
+        gsc = { status: 'skipped', reason: `unexpected: ${err.message}` };
+      }
+      if (gsc.status === 'ok') {
+        const refresh = await findRefreshCandidate(gsc);
+        if (refresh) {
+          console.log(`  Refresh-mode: ${refresh.slug} (signal: ${refresh.signal})`);
+          if (!dryRun) {
+            console.log(`\n::refresh::${JSON.stringify(refresh)}`);
+          }
+          return;
+        }
+        console.log('  No GSC refresh candidate mapped to an existing post — picking a new topic');
+      } else {
+        console.log(`  GSC signals skipped (${gsc.reason}) — picking a new topic`);
+      }
+    }
+
     const picked = pickNextTopic(dryRun);
     if (picked) {
       // Output the picked topic as JSON for downstream consumption
