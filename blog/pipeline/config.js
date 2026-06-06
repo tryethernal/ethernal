@@ -11,6 +11,10 @@ export const WEIGHTS = {
   arxiv_papers: 2,
   magicians_topics: 1,
   google_trends: 0.5,
+  // Weight applied (log-compressed) to the DataForSEO keyword-volume signal in
+  // enrich-keywords.mjs. The resulting boost is hard-capped at 30% of the
+  // editorial score, so editorial signal always dominates finalScore.
+  keyword_volume: 0.5,
 };
 
 /** Minimum score to create a project card */
