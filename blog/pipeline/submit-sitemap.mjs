@@ -42,7 +42,7 @@
  *   node submit-sitemap.mjs --key /path/to/key.json
  */
 
-import { readFile, access, writeFile, chmod, unlink, constants } from 'node:fs/promises';
+import { readFile, access, writeFile, unlink, constants } from 'node:fs/promises';
 import { unlinkSync } from 'node:fs';
 import { createSign } from 'node:crypto';
 import { homedir, tmpdir } from 'node:os';
@@ -150,8 +150,9 @@ async function resolveKeyFile(explicitKey) {
       fail(2, `GSC_SERVICE_ACCOUNT_JSON_B64 malformed: ${err.message}`);
     }
     const tmp = join(tmpdir(), `gsc-ethernal-sitemap-${process.pid}-${Date.now()}.json`);
+    // mode:0o600 is sufficient — umask can only strip bits already absent from
+    // 0o600 (group/world), never widen them, so an explicit chmod adds nothing.
     await writeFile(tmp, json, { mode: 0o600 });
-    await chmod(tmp, 0o600);
     TEMP_KEY_FILES.add(tmp);
     installExitHandlerOnce();
     const cleanup = async () => {
