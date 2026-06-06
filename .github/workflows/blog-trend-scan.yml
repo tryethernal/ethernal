@@ -28,4 +28,10 @@ jobs:
         working-directory: blog/pipeline
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+          # Search-feedback layer (best-effort). If any of these are absent the
+          # pipeline degrades to editorial scoring only — see
+          # .claude/references/MARKETING.md "Search-feedback layer".
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+          GSC_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON_B64 }}
         run: node index.js
