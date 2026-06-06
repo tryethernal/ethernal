@@ -353,6 +353,95 @@ fi
 log "Phase 3 complete."
 
 # ============================================================
+# PHASE 3b: GEO quality gate (Phase 6 — soft gate)
+# Source-claim verification + scored GEO rubric. Ethernal publishes directly
+# to develop with no human review, so this is a SOFT gate: it runs a fix loop
+# to raise quality, but a post that still scores below threshold after the cap
+# ships anyway (the score + remaining fixes are logged for follow-up). Wholly
+# best-effort: any malformed JSON or Claude flake degrades to "publish as-is".
+# ============================================================
+GEO_GATE_MAX_ITERATIONS=2
+GEO_PASS=false
+
+for GEO_ITER in $(seq 1 "$GEO_GATE_MAX_ITERATIONS"); do
+  log "Phase 3b: GEO quality gate (iteration $GEO_ITER/$GEO_GATE_MAX_ITERATIONS)..."
+  # Clear stale artifacts at the TOP of each iteration so a scorer flake on a
+  # later pass is always detected as "no score produced" rather than silently
+  # reusing the previous iteration's score in the verdict/log.
+  rm -f blog/pipeline/.geo-score.json blog/pipeline/.verify-sources.json
+
+  # Source-claim verification subagent (WebFetches every cited number).
+  claude -p "Verify the sources in the blog post at $ARTICLE_PATH. $(cat "$PROMPTS_DIR/3b-verify-sources.md")
+
+The post file is: $ARTICLE_PATH
+Write your JSON report to blog/pipeline/.verify-sources.json (and nothing else)." \
+    --dangerously-skip-permissions \
+    --mcp-config "$MCP_CONFIG" \
+    --max-turns 20 \
+    2>&1 | tee -a "$LOG_FILE" || log "WARNING: source-verification subagent flaked (non-fatal)"
+
+  # GEO score subagent (scores the file as-is, no WebFetch).
+  claude -p "Score the blog post at $ARTICLE_PATH against the rubric. $(cat "$PROMPTS_DIR/5-geo-score.md")
+
+The post file is: $ARTICLE_PATH
+Write your JSON score to blog/pipeline/.geo-score.json (and nothing else)." \
+    --dangerously-skip-permissions \
+    --max-turns 10 \
+    2>&1 | tee -a "$LOG_FILE" || log "WARNING: GEO-score subagent flaked (non-fatal)"
+
+  # Parse the verdict. Missing/malformed file -> treat as a non-blocking skip.
+  if [ ! -f blog/pipeline/.geo-score.json ]; then
+    log "Phase 3b: no GEO score produced — skipping gate (publishing as-is)"
+    break
+  fi
+  GEO_VERDICT=$(jq -r '.verdict // "unknown"' blog/pipeline/.geo-score.json 2>/dev/null || echo unknown)
+  GEO_SCORE=$(jq -r '.totalScore // "?"' blog/pipeline/.geo-score.json 2>/dev/null || echo "?")
+  log "Phase 3b: GEO verdict=$GEO_VERDICT score=$GEO_SCORE"
+
+  if [ "$GEO_VERDICT" = "pass" ]; then
+    GEO_PASS=true
+    break
+  fi
+
+  # Last iteration: don't fix again, just publish with the score logged.
+  if [ "$GEO_ITER" -eq "$GEO_GATE_MAX_ITERATIONS" ]; then
+    log "Phase 3b: still below threshold after $GEO_GATE_MAX_ITERATIONS iterations — publishing as-is (soft gate)"
+    log "Phase 3b: remaining fixes: $(jq -c '.iterationsNeeded // []' blog/pipeline/.geo-score.json 2>/dev/null || echo '[]')"
+    break
+  fi
+
+  # Build the fix brief from both reports (auto-zeros + dimension fixes + source fixes).
+  GEO_AUTOZEROS=$(jq -r '(.autoZeros // []) | join("; ")' blog/pipeline/.geo-score.json 2>/dev/null || echo "")
+  GEO_FIXES=$(jq -r '(.iterationsNeeded // []) | join("\n- ")' blog/pipeline/.geo-score.json 2>/dev/null || echo "")
+  SRC_FIXES=$(jq -r '(.fixesNeeded // []) | join("\n- ")' blog/pipeline/.verify-sources.json 2>/dev/null || echo "")
+
+  log "Phase 3b: applying GEO fixes (iteration $GEO_ITER)..."
+  claude -p "The blog post at $ARTICLE_PATH scored below the GEO quality threshold ($GEO_SCORE/10). Apply the following targeted fixes. Do NOT rewrite the whole post; make surgical edits only.
+
+Auto-zero conditions to clear (must fix all): $GEO_AUTOZEROS
+
+GEO dimension fixes (highest-impact first):
+- $GEO_FIXES
+
+Source-claim fixes (from verification — drop/reattribute as noted):
+- $SRC_FIXES
+
+Rules: no em-dashes; description must stay <= 160 chars; keep every numbered footnote in sync with its inline <sup>[N](#fn-N)</sup> marker; edit only $ARTICLE_PATH." \
+    --dangerously-skip-permissions \
+    --mcp-config "$MCP_CONFIG" \
+    --max-turns 15 \
+    2>&1 | tee -a "$LOG_FILE" || log "WARNING: GEO fix pass flaked (non-fatal)"
+
+  # Em-dash safety net after the fix pass (the fixer can reintroduce them).
+  if grep -q '—' "$ARTICLE_PATH"; then
+    log "WARNING: Em dashes present after GEO fix — stripping with sed"
+    sed -i 's/—/,/g' "$ARTICLE_PATH"
+  fi
+done
+
+log "Phase 3b complete (GEO gate passed: $GEO_PASS)."
+
+# ============================================================
 # Validate: Astro build must pass before committing
 # Auto-fix loop: if validation fails, Claude fixes errors and retries (max 2 attempts)
 # ============================================================
@@ -490,6 +579,7 @@ CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
 " 2>&1 | tee -a "$LOG_FILE"
 
 # Clean up temp files
-rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md
+rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md \
+      blog/pipeline/.geo-score.json blog/pipeline/.verify-sources.json
 
 log "Done. Article deployed as draft: $ARTICLE_URL"

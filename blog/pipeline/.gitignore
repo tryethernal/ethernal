@@ -1,6 +1,9 @@
 # Temp files created during pipeline runs
 .card-body.md
 .research-notes.md
+.refresh-plan.json
+.geo-score.json
+.verify-sources.json
 test-covers-out/
 
 # Host-local keyword / SERP caches (rebuild themselves, 30d / 7d TTL)

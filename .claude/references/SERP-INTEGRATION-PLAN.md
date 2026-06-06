@@ -3,16 +3,21 @@
 Plan to port ronda's search-feedback blog pipeline (GSC signals, DataForSEO keyword
 enrichment, SERP coverage hints, refresh-mode) into ethernal-marketing's pipeline.
 
-**Status:** Phases 0–5 implemented and merged to develop (Phase 3+4 via #1332).
-Phase 6 (optional quality gates) remains. Phase 4 (GSC-driven pick + refresh-mode):
-`refresh.mjs`, `findRefreshCandidate`/`slugFromPageUrl`/`postExists` in `project.js`,
-the `--pick` refresh branch in `index.js`, the `draft.sh` refresh-mode branch, and
-`updatedDate` in `content.config.ts` + `PostLayout.astro`. Phase 5 (sitemap re-ping):
-`submit-sitemap.mjs` (reuses the gsc.mjs credential chain) + the
-`blog-submit-sitemap.yml` GH Action on push-to-develop touching blog content.
-**Outstanding ops:** the GSC service account must be promoted to **Owner** of
-`sc-domain:tryethernal.com` for `Sitemaps.submit` (PUT) to succeed — read access
-(already confirmed) is enough for signals but not for submit.
+**Status:** Phases 0–6 implemented and merged to develop (Phase 3+4 via #1332,
+Phase 5 via #1333). The full search-feedback loop is complete. Phase 4 (GSC-driven
+pick + refresh-mode): `refresh.mjs`, `findRefreshCandidate`/`slugFromPageUrl`/
+`postExists` in `project.js`, the `--pick` refresh branch in `index.js`, the
+`draft.sh` refresh-mode branch, and `updatedDate` in `content.config.ts` +
+`PostLayout.astro`. Phase 5 (sitemap re-ping): `submit-sitemap.mjs` (reuses the
+gsc.mjs credential chain) + the `blog-submit-sitemap.yml` GH Action. Phase 6
+(quality gates): `prompts/5-geo-score.md` (6-dimension scored GEO rubric, 7.5
+soft-gate) + `prompts/3b-verify-sources.md` (source-claim verification subagent),
+wired as a Phase 3b fix loop in `draft.sh` (soft gate: raises quality via a
+2-iteration fix loop but publishes as-is below threshold, since Ethernal
+auto-publishes without review). Funnel-position bias was deliberately NOT ported
+(low value for a technical dev-tooling blog, per §6).
+**Ops:** the GSC service account is now an Owner of `sc-domain:tryethernal.com`,
+so `Sitemaps.submit` (PUT) is unblocked.
 **Source of truth studied:** `~/projects/ronda/blog/pipeline/` + ronda design docs
 (`docs/superpowers/specs/2026-05-25-blog-keyword-enrichment-design.md`,
 `docs/superpowers/handoffs/2026-05-27-blog-pipeline-sensai-integration.md`) +
@@ -244,10 +249,20 @@ degrades to exactly today's behavior).
 - Wire a GH Action on push-to-develop touching `blog/src/content/blog/**` (ethernal already
   auto-deploys blog changes on develop — add the ping step there).
 
-### Phase 6 (optional, defer) — quality gates
-- Scored GEO rubric (`5-geo-score.md`) + parallel verify subagents (`3b-verify-sources.md`).
-- Funnel-position tagging + 80/20 TOFU/MOFU bias (`stats.mjs`). Lower priority for a
-  technical dev-tooling blog than for ronda's PM/designer funnel.
+### Phase 6 — quality gates [DONE]
+- Scored GEO rubric (`prompts/5-geo-score.md`) + source-claim verification subagent
+  (`prompts/3b-verify-sources.md`). Both adapted to Ethernal's conventions: numbered-
+  footnote References (not ronda's markdown table), Ethernal's banned-word list
+  (`3-humanize.md`), and Ethernal's content-type vocabulary.
+- Wired into `draft.sh` as **Phase 3b**, after humanize and before the build validate.
+  SOFT gate: a 2-iteration fix loop raises quality (verify → score → fix → re-score),
+  but a post below 7.5 after the cap still ships, with the score + remaining fixes
+  logged. This matches Ethernal's direct-publish philosophy (a hard gate would
+  silently drop posts with no human to re-queue them). Fully best-effort: malformed
+  subagent JSON or a Claude flake degrades to "publish as-is".
+- Funnel-position tagging + TOFU/MOFU bias: **NOT ported** (deliberate). Low value for
+  a technical dev-tooling blog vs ronda's PM/designer funnel (§6). Revisit only if the
+  content mix ever needs funnel balancing.
 
 ---
 
