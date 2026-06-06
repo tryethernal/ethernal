@@ -4,10 +4,14 @@
   "version": "1.0.0",
   "scripts": {
     "scan": "node index.js",
-    "scan:dry": "node index.js --dry-run"
+    "scan:dry": "node index.js --dry-run",
+    "gsc": "node gsc.mjs --site sc-domain:tryethernal.com",
+    "enrich": "node enrich-keywords.mjs",
+    "serp-terms": "node serp-terms.mjs"
   },
   "dependencies": {
     "google-trends-api": "^4.9.2",
+    "googleapis": "^144.0.0",
     "rss-parser": "^3.13.0"
   }
 }

@@ -2,3 +2,7 @@
 .card-body.md
 .research-notes.md
 test-covers-out/
+
+# Host-local keyword / SERP caches (rebuild themselves, 30d / 7d TTL)
+.cache/
+.serp-terms.json

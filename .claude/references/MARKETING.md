@@ -79,17 +79,43 @@ Collects from 5 sources, classifies into 12 topic clusters, scores, creates GitH
 **Files:**
 | File | Purpose |
 |------|---------|
-| `index.js` | Orchestrator. Modes: full run, `--dry-run`, `--pick` |
+| `index.js` | Orchestrator. Modes: full run, `--dry-run`, `--pick`. Runs keyword enrichment between classify and card creation. |
 | `collect.js` | Data collectors: EIPs, ERCs, ethresear.ch RSS, Ethereum Magicians RSS, arxiv API |
 | `classify.js` | Keyword-based classification into clusters + content type suggestion |
-| `project.js` | GitHub Projects V2 CRUD (cards, fields, status transitions) |
+| `project.js` | GitHub Projects V2 CRUD (cards, fields, status transitions). Writes `finalScore` + keyword block to cards. |
 | `config.js` | Clusters (12), weights, thresholds, project field IDs |
+| `gsc.mjs` | Google Search Console signals (siteSnapshot, quickWins, contentGaps, contentDecay, ctrOpportunities) for `sc-domain:tryethernal.com`. Best-effort, exit-0. |
+| `enrich-keywords.mjs` | DataForSEO keyword-volume enrichment of classify candidates. Adds `finalScore` (boost ≤30% of score), `primaryKeyword`, `keywordsEnriched[]`. Best-effort. |
+| `keyword-providers/dataforseo.mjs` | DataForSEO provider (keyword ideas + organic SERP). Swap to change vendor. |
+| `serp-terms.mjs` | SERP term/entity coverage hints for the draft phase (draft-time grounding only — never feeds scoring). |
+| `keyword-blacklist.json` | Competitor/junk/meta phrases excluded by enrichment. |
 
-**Scoring weights:** EIP=3, ERC=3, ethresearch=2, arxiv=2, magicians=1, Google Trends=0.5. Threshold: 5 pts.
+**Scoring weights:** EIP=3, ERC=3, ethresearch=2, arxiv=2, magicians=1, Google Trends=0.5. Threshold: 5 pts. Keyword-volume boost (DataForSEO) is added on top, capped at 30% of the editorial score.
 
 **12 Topic Clusters:** AI Agents Onchain, Account Abstraction, Encrypted Mempools & Privacy, Payments & Streams, Security & Auditing, L2 & Rollups, ZK & Cryptography, DeFi Primitives, NFT & Token Standards, EVM Internals, Protocol & Networking, Governance & Standards.
 
 **5 Content Types:** ERC Tutorial, EIP Explainer, Research Deep Dive, Upgrade Guide, Trend Survey.
+
+#### Search-feedback layer (GSC + DataForSEO)
+
+Ported from the ronda blog pipeline (full design in `.claude/references/SERP-INTEGRATION-PLAN.md`; the live research that scoped it in `SERP-RESEARCH-FINDINGS.md`). Phases 0-3 (the data layer) are wired; Phase 4 (GSC-driven pick/refresh) and Phase 5 (sitemap re-ping) are follow-ups.
+
+- **Keyword enrichment** runs in `index.js` between classify and card creation. Each cluster candidate is seeded with **multi-word cluster keywords only** (single-word seeds pull off-intent volume), queried against DataForSEO, filtered (volume floor 50 / ceiling 10k, blacklist, tiered topical overlap), and scored: `finalScore = score + min(boost, 0.3 × score)`. The card's Trend Score field and body get the enriched values.
+- **Two bright lines** (enforced in code): (1) keyword volume *enriches* editorial candidates, never *sources* them — a candidate below threshold is never enriched, and the boost is hard-capped at 30%. (2) `serp-terms.mjs` is draft-time grounding only — it never feeds classify scoring or card creation.
+- **Primary-keyword domain anchor:** the primary keyword (which would drive a post's title/slug) must contain a crypto/EVM anchor token or a contiguous cluster keyword, so we never headline a post around an off-intent collision (e.g. "cisco smart account" for the account-abstraction cluster).
+- **Best-effort:** missing `DATAFORSEO_LOGIN`/`DATAFORSEO_PASSWORD` or `GSC_*` creds → graceful no-op, `finalScore === score`, exit 0. The pipeline produces the same cards it would without the search layer.
+- **Caches:** `blog/pipeline/.cache/keywords.json` (30d TTL) and `.cache/serp-terms.json` (7d TTL), both host-local and gitignored.
+
+**Calibration note (from the first live runs):** ethernal's technical clusters have mixed seed quality. Crisp n-grams ("account abstraction", "encrypted mempool", "data availability") anchor well; others collide with non-crypto meanings ("smart account" → banking, "data availability" → academic). The blacklist + domain anchor catch the worst, but expect low, bucketed volumes for niche B2B/dev queries — **GSC impression data is a more reliable demand signal than DataForSEO volume here** (this is why the live SEO sprint in #1327/#1328 was driven off GSC, not keyword volume). Revisit the volume ceiling and consider per-cluster opt-outs after more runs.
+
+**Env vars (all optional, best-effort):**
+
+| Var | Unlocks | Without it |
+|-----|---------|------------|
+| `DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD` | Keyword enrichment + SERP coverage hints | Enrichment/SERP no-op; `finalScore === score` |
+| `GSC_KEY_FILE` or `GSC_SERVICE_ACCOUNT_JSON_B64` | GSC signals (`gsc.mjs`) | `{ status: 'skipped' }`, exit 0 |
+
+GSC auth: the service account `ethernal@ethernal-493613.iam.gserviceaccount.com` owns `sc-domain:tryethernal.com` (read access confirmed; sitemap-submit in Phase 5 would need Owner role). Creds live in `.credentials.local` / the server env file — never in the repo.
 
 **GitHub Projects V2 Board:**
 - Project ID: `PVT_kwDOBLpTN84BRc80` (org: `tryethernal`, number: 1)

@@ -18,6 +18,7 @@ import {
   collectGoogleTrends,
 } from './collect.js';
 import { classifyAndScore } from './classify.js';
+import { enrichCandidates } from './enrich-keywords.mjs';
 import { createProjectCard, pickNextTopic, getProjectItems } from './project.js';
 import { CLUSTERS } from './config.js';
 
@@ -75,12 +76,34 @@ async function main() {
 
   // 3. Classify and score
   console.log('Classifying and scoring...');
-  const topics = classifyAndScore(allItems, trendScores);
+  const scoredTopics = classifyAndScore(allItems, trendScores);
+
+  // 3.5. Enrich with DataForSEO keyword volume (best-effort, never fatal).
+  // Adds finalScore (score + boost capped at 30% of score), primaryKeyword,
+  // and keywordsEnriched[]. Graceful no-op when DATAFORSEO_LOGIN/PASSWORD are
+  // unset: every topic comes back with finalScore === score, so the pipeline
+  // produces the same cards it would have without enrichment.
+  console.log('Enriching with keyword volume (DataForSEO)...');
+  let topics;
+  try {
+    topics = await enrichCandidates(scoredTopics);
+    // Re-sort by finalScore (falls back to score for unenriched topics).
+    topics.sort((a, b) => (b.finalScore ?? b.score ?? 0) - (a.finalScore ?? a.score ?? 0));
+    const enrichedCount = topics.filter(t => t.keywordsEnriched?.length > 0).length;
+    console.log(`  ${enrichedCount}/${topics.length} topics enriched with keywords`);
+  } catch (err) {
+    // enrichCandidates is best-effort and shouldn't throw, but never let
+    // enrichment break the run — fall back to the un-enriched scored topics.
+    console.warn(`  Enrichment failed (${err.message}); proceeding with editorial scores only`);
+    topics = scoredTopics;
+  }
 
   console.log(`\nTop topics (${topics.length} above threshold):`);
   console.log('─'.repeat(70));
   for (const topic of topics) {
-    console.log(`  ${topic.score.toString().padStart(3)} │ ${topic.label.padEnd(25)} │ ${topic.contentType.padEnd(18)} │ ${topic.items.length} items`);
+    const score = topic.finalScore ?? topic.score;
+    const kw = topic.primaryKeyword ? ` │ kw: ${topic.primaryKeyword}` : '';
+    console.log(`  ${String(score).padStart(4)} │ ${topic.label.padEnd(25)} │ ${topic.contentType.padEnd(18)} │ ${topic.items.length} items${kw}`);
   }
   console.log('─'.repeat(70));
   console.log('');
