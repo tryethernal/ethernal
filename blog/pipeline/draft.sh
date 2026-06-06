@@ -117,6 +117,11 @@ echo "$PICK_OUTPUT" | tee -a "$LOG_FILE"
 # ============================================================
 REFRESH=$(echo "$PICK_OUTPUT" | grep '::refresh::' | sed 's/::refresh:://' || true)
 if [ -n "$REFRESH" ]; then
+  # The pick ran from blog/pipeline (cd on line 102). Return to the repo root so
+  # every path in this block (refresh.mjs, .refresh-plan.json, the Claude prompt,
+  # git add of the repo-root-relative filePath) resolves correctly, mirroring the
+  # `cd "$REPO_DIR"` the new-post path does before using repo-relative paths.
+  cd "$REPO_DIR"
   REFRESH_SLUG=$(echo "$REFRESH" | jq -r '.slug')
   REFRESH_SIGNAL=$(echo "$REFRESH" | jq -r '.signal')
   REFRESH_FILE=$(echo "$REFRESH" | jq -r '.filePath')
