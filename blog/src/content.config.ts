@@ -7,6 +7,10 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    // Set by the refresh pipeline when an existing post is updated in place.
+    // Renders as "Updated: <date>" and JSON-LD dateModified. Optional —
+    // existing posts default to dateModified === date.
+    updatedDate: z.coerce.date().optional(),
     description: z.string().max(160, 'Description must be 160 characters or fewer for optimal OG/SEO display'),
     tags: z.array(z.string()).default([]),
     // SEO keyword grounding (separate from reader-facing `tags`). Populated by
