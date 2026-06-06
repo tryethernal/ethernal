@@ -3,7 +3,11 @@
 Plan to port ronda's search-feedback blog pipeline (GSC signals, DataForSEO keyword
 enrichment, SERP coverage hints, refresh-mode) into ethernal-marketing's pipeline.
 
-**Status:** Proposal. Not yet implemented.
+**Status:** Phases 0–4 implemented on `seo-refresh-mode`. Phase 5 (sitemap re-ping)
+and Phase 6 (quality gates) remain. Phase 4 (GSC-driven pick + refresh-mode) wired:
+`refresh.mjs`, `findRefreshCandidate`/`slugFromPageUrl`/`postExists` in `project.js`,
+the `--pick` refresh branch in `index.js`, the `draft.sh` refresh-mode branch, and
+`updatedDate` in `content.config.ts` + `PostLayout.astro`.
 **Source of truth studied:** `~/projects/ronda/blog/pipeline/` + ronda design docs
 (`docs/superpowers/specs/2026-05-25-blog-keyword-enrichment-design.md`,
 `docs/superpowers/handoffs/2026-05-27-blog-pipeline-sensai-integration.md`) +

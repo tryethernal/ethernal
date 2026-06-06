@@ -16,6 +16,30 @@ Read 2-3 existing articles in `blog/src/content/blog/` to match the tone. Antoin
 
 Read `blog/pipeline/.research-notes.md` for the research brief (sources, outline, angle). Read `blog/pipeline/.card-body.md` for the Content Type.
 
+## Search grounding (read before drafting)
+
+The card body (`blog/pipeline/.card-body.md`) may include a `### Top keywords (search intent)` section listing real Google search phrases with monthly volume, one marked `(primary)`. These come from DataForSEO keyword data — the phrases your audience actually types.
+
+**When a `(primary)` keyword is present:**
+1. It MUST appear in the article `title:` frontmatter.
+2. It SHOULD appear once in the first 150 words of the body, in a sentence that genuinely uses the phrase.
+3. Weave 1-3 of the other listed phrases into headings/body **only where they fit naturally**. Drop any that would require contorted phrasing — Phase 3 flags keyword-stuffing.
+4. Put the primary keyword first in the `keywords:` frontmatter array, followed by the other phrases you actually used.
+
+**If the primary keyword doesn't fit the strongest angle from research:** don't contort the post. Use the next-best listed phrase in the title and opening instead. Editorial quality beats any keyword heuristic.
+
+**When there is no keyword section** (enrichment unavailable): draft normally and set `keywords: []` in frontmatter. Same voice, same quality bar.
+
+### SERP coverage hints (soft — optional)
+
+If `blog/pipeline/.serp-terms.json` exists with `"status": "ok"`, it has:
+- `terms[]` — vocabulary competitors use most (a reading list, not a checklist)
+- `entities[]` — tools/products that appear in competing pages (mention if relevant, ignore if not)
+- `peopleAlsoAsk[]` — reader questions; answering one or two directly in a section is a strong AI-citation win
+- `relatedSearches[]` — adjacent angles readers care about
+
+**Anti-stuffing (non-negotiable):** coverage is SOFT. Use a term only if it fits a sentence you'd write anyway. If the file is absent or `"status": "skipped"`, draft without it — same quality bar. Never mention the skip in the post.
+
 **Content Type formats:**
 - "ERC Tutorial": Code-heavy, working Solidity, deploy instructions, practical examples
 - "EIP Explainer": What it changes, why it matters, before/after code examples
@@ -92,11 +116,16 @@ date: YYYY-MM-DD
 tags:
   - Tag1
   - Tag2
+keywords:
+  - primary search phrase (from the card's Top keywords, marked primary)
+  - other phrases you actually wove into the body, in volume order
 image: "/blog/images/<slug>.png"
 ogImage: "/blog/images/<slug>-og.png"
 status: published
 readingTime: N
 ---
 ```
+
+`keywords:` is the SEO-grounding array (separate from reader-facing `tags`). Populate it from the card's Top keywords section — primary first, then any others you genuinely used. If there was no keyword section, write `keywords: []`. It renders into JSON-LD `BlogPosting.keywords`, not as UI chips.
 
 Then output the file path on a line starting with `::article-path::`

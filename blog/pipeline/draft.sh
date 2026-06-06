@@ -102,10 +102,123 @@ git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 cd blog/pipeline
 npm ci --silent 2>&1 | tee -a "$LOG_FILE"
 
-# Pick the next topic
+# Pick the next action — either a GSC-driven refresh of an existing post
+# (::refresh::) or a new draft from the backlog (::picked::).
 log "Picking next topic..."
 PICK_OUTPUT=$(node index.js --pick 2>&1)
 echo "$PICK_OUTPUT" | tee -a "$LOG_FILE"
+
+# ============================================================
+# REFRESH MODE (Phase 4): a Search Console signal mapped to an existing post.
+# Refresh it in place per the structured plan from refresh.mjs, then commit
+# directly to develop with a `chore(blog): refresh` message (ethernal
+# publishes directly — no review PR). Self-contained: this branch exits when
+# done and never falls through to the new-post flow below.
+# ============================================================
+REFRESH=$(echo "$PICK_OUTPUT" | grep '::refresh::' | sed 's/::refresh:://' || true)
+if [ -n "$REFRESH" ]; then
+  # The pick ran from blog/pipeline (cd on line 102). Return to the repo root so
+  # every path in this block (refresh.mjs, .refresh-plan.json, the Claude prompt,
+  # git add of the repo-root-relative filePath) resolves correctly, mirroring the
+  # `cd "$REPO_DIR"` the new-post path does before using repo-relative paths.
+  cd "$REPO_DIR"
+  REFRESH_SLUG=$(echo "$REFRESH" | jq -r '.slug')
+  REFRESH_SIGNAL=$(echo "$REFRESH" | jq -r '.signal')
+  REFRESH_FILE=$(echo "$REFRESH" | jq -r '.filePath')
+  TOPIC="refresh:$REFRESH_SLUG"
+  log "Refresh mode: $REFRESH_SLUG (signal: $REFRESH_SIGNAL, file: $REFRESH_FILE)"
+
+  if [ ! -f "$REPO_DIR/$REFRESH_FILE" ]; then
+    log "ERROR: refresh target file not found: $REFRESH_FILE"
+    report_failure "Refresh (target file missing)"
+    exit 1
+  fi
+
+  # Build the structured refresh plan. refresh.mjs reads the envelope from the
+  # pick and emits a deterministic plan (strategy, target paragraphs, checks,
+  # frontmatter set/preserve, commit message). Best-effort: a non-zero exit
+  # aborts the refresh cleanly without touching the post.
+  echo "$REFRESH" > /tmp/blog-refresh-pick.json
+  REFRESH_PLAN=$(node blog/pipeline/refresh.mjs --input /tmp/blog-refresh-pick.json 2>>"$LOG_FILE") || {
+    log "ERROR: refresh.mjs failed to produce a plan"
+    report_failure "Refresh (plan generation)"
+    exit 1
+  }
+  echo "$REFRESH_PLAN" > blog/pipeline/.refresh-plan.json
+  log "Refresh plan: $(echo "$REFRESH_PLAN" | jq -r '.plan.strategy')"
+
+  # Single Claude call to execute the plan against the post in place.
+  log "Refresh: applying plan with Claude..."
+  REFRESH_OUTPUT=$(claude -p "Refresh the existing blog post at $REFRESH_FILE in place, following the structured plan in blog/pipeline/.refresh-plan.json.
+
+The plan was produced from a Google Search Console signal. Read blog/pipeline/.refresh-plan.json: it contains the refresh \`strategy\`, the \`targetParagraphs\` to edit (with rationale), the \`checks\` you MUST satisfy, the GSC \`metrics\` that triggered this, and \`frontmatter.set\` / \`frontmatter.preserve\`.
+
+Rules:
+- Execute exactly the plan's strategy. Do NOT restructure or rewrite the whole post.
+- Set every frontmatter field in \`frontmatter.set\` (notably updatedDate). Do NOT change any field listed in \`frontmatter.preserve\`.
+- Satisfy every item in \`checks\`. No em-dashes anywhere in changed text.
+- description must stay <= 160 characters.
+- Edit ONLY the file $REFRESH_FILE. Do not create new files." \
+    --dangerously-skip-permissions \
+    --mcp-config "$MCP_CONFIG" \
+    --max-turns 30 \
+    2>&1)
+  echo "$REFRESH_OUTPUT" | tee -a "$LOG_FILE"
+
+  # Confirm the refresh actually bumped updatedDate (the plan's required edit).
+  if ! grep -q '^updatedDate:' "$REPO_DIR/$REFRESH_FILE"; then
+    log "ERROR: refresh did not set updatedDate in $REFRESH_FILE"
+    report_failure "Refresh (no updatedDate set)"
+    exit 1
+  fi
+
+  # Hard safety net: strip any em dashes that survived.
+  if grep -q '—' "$REPO_DIR/$REFRESH_FILE"; then
+    log "WARNING: Em dashes survived refresh — stripping with sed"
+    sed -i 's/—/,/g' "$REPO_DIR/$REFRESH_FILE"
+  fi
+
+  # Validate the build (Zod schema: description <=160, valid dates, etc.).
+  log "Refresh: validating blog build..."
+  cd "$REPO_DIR/blog"
+  if ! npx astro sync 2>&1 | tee -a "$LOG_FILE"; then
+    log "ERROR: refresh failed Astro validation"
+    report_failure "Refresh (build validation)"
+    exit 1
+  fi
+  cd "$REPO_DIR"
+  log "Refresh: build validation passed."
+
+  # Commit directly to develop with the plan's `chore(blog): refresh` message.
+  REFRESH_MSG=$(echo "$REFRESH_PLAN" | jq -r '.plan.commit.message')
+  git add "$REFRESH_FILE"
+  git commit -m "$REFRESH_MSG" 2>&1 | tee -a "$LOG_FILE"
+
+  # Push with the same rebase-retry the publish path uses.
+  PUSH_ATTEMPTS=0
+  PUSH_MAX_ATTEMPTS=3
+  until git push origin develop 2>&1 | tee -a "$LOG_FILE"; do
+    PUSH_ATTEMPTS=$((PUSH_ATTEMPTS + 1))
+    log "Push rejected (attempt $PUSH_ATTEMPTS/$PUSH_MAX_ATTEMPTS)."
+    if [ "$PUSH_ATTEMPTS" -ge "$PUSH_MAX_ATTEMPTS" ]; then
+      log "ERROR: refresh push failed after $PUSH_MAX_ATTEMPTS attempts"
+      report_failure "Refresh git push (exhausted retries)"
+      exit 1
+    fi
+    log "Rebasing onto latest develop and retrying..."
+    git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
+    git rebase origin/develop 2>&1 | tee -a "$LOG_FILE" || {
+      log "ERROR: rebase failed — aborting"
+      git rebase --abort 2>&1 | tee -a "$LOG_FILE" || true
+      report_failure "Refresh git rebase"
+      exit 1
+    }
+  done
+
+  rm -f blog/pipeline/.refresh-plan.json /tmp/blog-refresh-pick.json
+  log "Refresh complete: https://tryethernal.com/blog/$REFRESH_SLUG"
+  exit 0
+fi
 
 PICKED=$(echo "$PICK_OUTPUT" | grep '::picked::' | sed 's/::picked:://' || true)
 if [ -z "$PICKED" ]; then
@@ -133,8 +246,36 @@ cd "$REPO_DIR"
 # Write card body to file for Claude to read (avoids shell interpolation)
 printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
 
-# Clean up any previous research notes
-rm -f blog/pipeline/.research-notes.md
+# Clean up any previous research notes + stale SERP hints
+rm -f blog/pipeline/.research-notes.md blog/pipeline/.serp-terms.json
+
+# ------------------------------------------------------------
+# SERP coverage pre-flight (best-effort, never fatal).
+# If the picked card carries a primary keyword (from the weekly DataForSEO
+# enrichment), fetch top-SERP term/entity coverage hints for the draft phase.
+# Writes blog/pipeline/.serp-terms.json. Degrades to a clean no-op when no
+# primary keyword is present or DATAFORSEO_* creds are unset — the prompts
+# treat a missing/skip file as "draft without coverage grounding".
+# ------------------------------------------------------------
+PRIMARY_KW=$(CARD_BODY="$CARD_BODY" node --input-type=module -e "
+  import { parsePrimaryKeyword } from './blog/pipeline/project.js';
+  process.stdout.write(parsePrimaryKeyword(process.env.CARD_BODY || ''));
+" 2>/dev/null || true)
+
+if [ -n "$PRIMARY_KW" ]; then
+  log "Primary keyword: $PRIMARY_KW — fetching SERP coverage hints..."
+  if node blog/pipeline/serp-terms.mjs --keyword "$PRIMARY_KW" > blog/pipeline/.serp-terms.json 2>>"$LOG_FILE"; then
+    SERP_STATUS=$(jq -r '.status // "unknown"' blog/pipeline/.serp-terms.json 2>/dev/null || echo unknown)
+    log "SERP coverage: $SERP_STATUS"
+    # On skip (no creds / quota), remove the file so prompts see "absent" cleanly.
+    [ "$SERP_STATUS" != "ok" ] && rm -f blog/pipeline/.serp-terms.json
+  else
+    log "SERP coverage fetch failed (non-fatal); drafting without it"
+    rm -f blog/pipeline/.serp-terms.json
+  fi
+else
+  log "No primary keyword on card — drafting without SERP coverage hints"
+fi
 
 # ============================================================
 # PHASE 1: Research
