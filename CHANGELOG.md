@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.224] - 2026-06-08
+### Fixed
+- blog: publish - The Call Graph Your Auditor Never Drew
+
+
 ## [5.17.223] - 2026-06-06
 ### Fixed
 - feat(blog-pipeline): scored GEO quality gate + source verification (Phase 6) (#1334)
