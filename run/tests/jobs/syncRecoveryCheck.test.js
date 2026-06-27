@@ -87,8 +87,8 @@ describe('syncRecoveryCheck', () => {
         expect(result).toEqual('Checked 1 explorers: 0 recovered, 1 still unreachable, 0 max attempts reached');
     });
 
-    it('Should handle max recovery attempts reached', async () => {
-        const mockScheduleNextRecoveryCheck = jest.fn().mockResolvedValue({ scheduled: false, attempts: 10, maxReached: true });
+    it('Should flag max recovery attempts reached while still rescheduling a daily retry', async () => {
+        const mockScheduleNextRecoveryCheck = jest.fn().mockResolvedValue({ scheduled: true, attempts: 10, maxReached: true });
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
             id: 1,
             slug: 'test-explorer',

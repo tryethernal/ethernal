@@ -3,8 +3,9 @@
  * Periodically checks auto-disabled explorers to see if their RPC has recovered.
  * Re-enables sync when RPC becomes reachable, using exponential backoff for retries.
  *
- * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
- * Max recovery attempts: 10 (after which manual intervention is required)
+ * Backoff schedule: 5m -> 15m -> 1h -> 6h -> 24h (capped)
+ * After 10 attempts the explorer is flagged for manual intervention but keeps
+ * retrying once a day so it can self-recover if the RPC comes back.
  *
  * @module jobs/syncRecoveryCheck
  */
@@ -76,7 +77,7 @@ module.exports = async () => {
                 if (result.maxReached) {
                     maxAttemptsReached++;
                     logger.warn({
-                        message: 'Explorer reached max recovery attempts - manual intervention required',
+                        message: 'Explorer past max recovery attempts - flagged for manual intervention, still retrying daily',
                         explorerId: explorer.id,
                         explorerSlug: explorer.slug,
                         attempts: result.attempts
@@ -91,7 +92,7 @@ module.exports = async () => {
             if (result.maxReached) {
                 maxAttemptsReached++;
                 logger.warn({
-                    message: 'Explorer reached max recovery attempts - manual intervention required',
+                    message: 'Explorer past max recovery attempts - flagged for manual intervention, still retrying daily',
                     explorerId: explorer.id,
                     explorerSlug: explorer.slug,
                     attempts: result.attempts
