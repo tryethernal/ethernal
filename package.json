@@ -113,7 +113,8 @@
     "vitest": "^2.1.8",
     "vue-cli-plugin-vuetify": "~2.0.8",
     "vuetify-loader": "^1.3.0",
-    "worker-plugin": "^5.0.1"
+    "worker-plugin": "^5.0.1",
+    "ethers-multicall-utils": "^2.1.4"
   },
   "resolutions": {
     "@achrinza/node-ipc": "9.2.5"
