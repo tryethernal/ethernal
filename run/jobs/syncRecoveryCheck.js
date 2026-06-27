@@ -3,8 +3,9 @@
  * Periodically checks auto-disabled explorers to see if their RPC has recovered.
  * Re-enables sync when RPC becomes reachable, using exponential backoff for retries.
  *
- * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
- * Max recovery attempts: 10 (after which manual intervention is required)
+ * Backoff schedule: 5m -> 15m -> 1h -> 6h -> 24h (capped)
+ * After 10 attempts the explorer is flagged for manual intervention but keeps
+ * retrying once a day so it can self-recover if the RPC comes back.
  *
  * @module jobs/syncRecoveryCheck
  */
@@ -19,8 +20,9 @@ const logger = require('../lib/logger');
 const BATCH_SIZE = 50;
 
 module.exports = async () => {
-    // Find explorers that are due for a recovery check (with batch limit)
-    // Excludes explorers that have reached max recovery attempts (nextRecoveryCheckAt is null)
+    // Find explorers that are due for a recovery check (with batch limit).
+    // Explorers past max recovery attempts are still included: nextRecoveryCheckAt
+    // is always set to a future value (daily cadence), never null.
     const explorers = await Explorer.findAll({
         where: {
             syncDisabledReason: { [Op.ne]: null },
@@ -73,31 +75,33 @@ module.exports = async () => {
             } else {
                 // Block fetch returned null - still unreachable
                 const result = await explorer.scheduleNextRecoveryCheck();
+                // Every still-unreachable explorer is counted here; maxAttemptsReached
+                // is an additional flag for the subset that is past max attempts.
+                stillUnreachable++;
                 if (result.maxReached) {
                     maxAttemptsReached++;
                     logger.warn({
-                        message: 'Explorer reached max recovery attempts - manual intervention required',
+                        message: 'Explorer past max recovery attempts - flagged for manual intervention, still retrying daily',
                         explorerId: explorer.id,
                         explorerSlug: explorer.slug,
                         attempts: result.attempts
                     });
-                } else {
-                    stillUnreachable++;
                 }
             }
         } catch (error) {
             // RPC check failed - schedule next check with backoff
             const result = await explorer.scheduleNextRecoveryCheck();
+            // Every still-unreachable explorer is counted here; maxAttemptsReached
+            // is an additional flag for the subset that is past max attempts.
+            stillUnreachable++;
             if (result.maxReached) {
                 maxAttemptsReached++;
                 logger.warn({
-                    message: 'Explorer reached max recovery attempts - manual intervention required',
+                    message: 'Explorer past max recovery attempts - flagged for manual intervention, still retrying daily',
                     explorerId: explorer.id,
                     explorerSlug: explorer.slug,
                     attempts: result.attempts
                 });
-            } else {
-                stillUnreachable++;
             }
 
             logger.debug({
