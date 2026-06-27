@@ -40,9 +40,11 @@ const RECOVERY_BACKOFF_SCHEDULE = [
     60 * 60 * 1000,        // 1 hour
     6 * 60 * 60 * 1000     // 6 hours
 ];
-// After MAX_RECOVERY_ATTEMPTS the explorer is flagged as needing manual
-// intervention, but we keep retrying at this cadence (at least once a day)
-// so it can self-recover if the RPC comes back without manual action.
+// At MAX_RECOVERY_ATTEMPTS the explorer is flagged as needing manual
+// intervention AND its retry cadence switches to this daily cap, so the
+// monitoring flag and the slow cadence coincide. We keep retrying at this
+// cadence forever so it can self-recover if the RPC comes back without
+// manual action.
 const RECOVERY_MAX_BACKOFF = 24 * 60 * 60 * 1000; // 24 hours
 // Stagger recovery checks to avoid thundering herd (random jitter up to 2 minutes)
 const RECOVERY_JITTER_MAX = 2 * 60 * 1000;
@@ -380,9 +382,10 @@ module.exports = (sequelize, DataTypes) => {
      * Schedules the next recovery check using exponential backoff.
      * Increments recovery attempts and never stops retrying: once
      * MAX_RECOVERY_ATTEMPTS is reached the explorer is flagged as needing
-     * manual intervention (maxReached) but keeps retrying at a daily cadence
-     * so it can self-recover if the RPC comes back.
-     * Backoff schedule: 5m -> 15m -> 1h -> 6h -> 24h (capped, retried indefinitely)
+     * manual intervention (maxReached) and switches to a daily cadence, but
+     * keeps retrying forever so it can self-recover if the RPC comes back.
+     * Backoff: 5m -> 15m -> 1h -> 6h (held) until attempt MAX_RECOVERY_ATTEMPTS,
+     * then 24h (capped, retried indefinitely).
      * @returns {Promise<{scheduled: boolean, attempts: number, maxReached: boolean}>} Result
      */
     async scheduleNextRecoveryCheck() {
@@ -393,13 +396,17 @@ module.exports = (sequelize, DataTypes) => {
         const newAttempts = (this.recoveryAttempts || 0) + 1;
         const maxReached = newAttempts >= MAX_RECOVERY_ATTEMPTS;
 
-        // Once past the backoff schedule (or past max attempts), cap retries at
-        // the daily interval so we keep trying at least once a day forever.
+        // Backoff: ramp through the schedule (holding the last entry once the
+        // schedule is exhausted), then once MAX_RECOVERY_ATTEMPTS is reached
+        // switch to the daily cap. This keeps the monitoring flag (maxReached)
+        // and the slow daily cadence aligned at the same threshold, and we keep
+        // retrying at the daily cadence forever so the explorer can self-recover.
         let backoff;
-        if (newAttempts > RECOVERY_BACKOFF_SCHEDULE.length) {
+        if (maxReached) {
             backoff = RECOVERY_MAX_BACKOFF;
         } else {
-            backoff = RECOVERY_BACKOFF_SCHEDULE[newAttempts - 1];
+            const backoffIndex = Math.min(newAttempts - 1, RECOVERY_BACKOFF_SCHEDULE.length - 1);
+            backoff = RECOVERY_BACKOFF_SCHEDULE[backoffIndex];
         }
 
         // Add random jitter to stagger recovery checks

@@ -107,7 +107,7 @@ describe('syncRecoveryCheck', () => {
         const result = await syncRecoveryCheck();
 
         expect(mockScheduleNextRecoveryCheck).toHaveBeenCalled();
-        expect(result).toEqual('Checked 1 explorers: 0 recovered, 0 still unreachable, 1 max attempts reached');
+        expect(result).toEqual('Checked 1 explorers: 0 recovered, 1 still unreachable, 1 max attempts reached');
     });
 
     it('Should skip explorers without workspace', async () => {
