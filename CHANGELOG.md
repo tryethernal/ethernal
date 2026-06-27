@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.234] - 2026-06-27
+### Fixed
+- fix(sync): keep retrying recovery daily instead of giving up at max a… (#1341)
+
+
 ## [5.17.233] - 2026-06-26
 ### Fixed
 - blog: publish - The Handshake That Finally Admits What History You Have

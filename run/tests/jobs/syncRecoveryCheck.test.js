@@ -87,8 +87,8 @@ describe('syncRecoveryCheck', () => {
         expect(result).toEqual('Checked 1 explorers: 0 recovered, 1 still unreachable, 0 max attempts reached');
     });
 
-    it('Should handle max recovery attempts reached', async () => {
-        const mockScheduleNextRecoveryCheck = jest.fn().mockResolvedValue({ scheduled: false, attempts: 10, maxReached: true });
+    it('Should flag max recovery attempts reached while still rescheduling a daily retry', async () => {
+        const mockScheduleNextRecoveryCheck = jest.fn().mockResolvedValue({ scheduled: true, attempts: 10, maxReached: true });
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
             id: 1,
             slug: 'test-explorer',
@@ -107,7 +107,30 @@ describe('syncRecoveryCheck', () => {
         const result = await syncRecoveryCheck();
 
         expect(mockScheduleNextRecoveryCheck).toHaveBeenCalled();
-        expect(result).toEqual('Checked 1 explorers: 0 recovered, 0 still unreachable, 1 max attempts reached');
+        expect(result).toEqual('Checked 1 explorers: 0 recovered, 1 still unreachable, 1 max attempts reached');
+    });
+
+    it('Should flag max recovery attempts reached when the RPC check throws', async () => {
+        const mockScheduleNextRecoveryCheck = jest.fn().mockResolvedValue({ scheduled: true, attempts: 10, maxReached: true });
+        jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            id: 1,
+            slug: 'test-explorer',
+            syncDisabledReason: 'rpc_unreachable',
+            enableSyncAfterRecovery: jest.fn(),
+            scheduleNextRecoveryCheck: mockScheduleNextRecoveryCheck,
+            workspace: {
+                id: 1,
+                rpcServer: 'http://localhost:8545'
+            }
+        }]);
+        ProviderConnector.mockImplementation(() => ({
+            fetchLatestBlock: jest.fn().mockRejectedValue(new Error('Connection refused'))
+        }));
+
+        const result = await syncRecoveryCheck();
+
+        expect(mockScheduleNextRecoveryCheck).toHaveBeenCalled();
+        expect(result).toEqual('Checked 1 explorers: 0 recovered, 1 still unreachable, 1 max attempts reached');
     });
 
     it('Should skip explorers without workspace', async () => {
