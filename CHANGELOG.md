@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.239] - 2026-07-06
+### Fixed
+- blog: publish - The 22-Byte Tax on Every Solidity Addition (And How EIP-8219 Ends It)
+
+
 ## [5.17.238] - 2026-07-04
 ### Fixed
 - blog: publish - The Transfer Event Ethereum Was Missing: How EIP-7708 Makes ETH Observable
