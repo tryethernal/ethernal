@@ -79,6 +79,7 @@ describe('enforceDataRetentionForWorkspace', () => {
             .then(() => {
                 expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[retention-dryrun]'));
                 expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('42'));
+                consoleSpy.mockRestore();
                 done();
             });
     });

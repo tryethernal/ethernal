@@ -14,7 +14,7 @@ module.exports = {
       }
       await transaction.commit();
     } catch(error) {
-        console.log(error);
+        console.error(error);
         await transaction.rollback();
         throw error;
     }
@@ -32,7 +32,7 @@ module.exports = {
       }
       await transaction.commit();
     } catch(error) {
-        console.log(error);
+        console.error(error);
         await transaction.rollback();
         throw error;
     }
