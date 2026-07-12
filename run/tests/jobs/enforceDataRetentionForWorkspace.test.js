@@ -117,4 +117,30 @@ describe('enforceDataRetentionForWorkspace', () => {
                 done();
             });
     });
+
+    it('Should not crash when a paid subscription has no linked explorer', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([]);
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
+            {
+                stripePlan: { slug: 'explorer-150', capabilities: { dataRetention: 7 } },
+                explorer: null
+            },
+            {
+                stripePlan: { slug: 'free', capabilities: { dataRetention: 0 } },
+                explorer: { workspace: { id: 12 } }
+            }
+        ]);
+        jest.useFakeTimers()
+            .setSystemTime(new Date('2023-12-15'));
+
+        enforceDataRetentionForWorkspace()
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-12', {
+                    workspaceId: 12,
+                    from: new Date(0),
+                    to: new Date('2023-12-08')
+                });
+                done();
+            });
+    });
 });

@@ -36,7 +36,7 @@ module.exports = async () => {
     });
 
     const allWorkspaces = stripeSubscriptions
-        .filter(ss => ss.stripePlan.capabilities.dataRetention > 0)
+        .filter(ss => ss.stripePlan.capabilities.dataRetention > 0 && ss.explorer && ss.explorer.workspace)
         .map(ss => ({ id: ss.explorer.workspace.id, dataRetentionLimit: ss.stripePlan.capabilities.dataRetention }))
         .concat(workspaces)
         .filter(w => !!w);
