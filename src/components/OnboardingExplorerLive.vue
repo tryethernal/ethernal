@@ -126,6 +126,7 @@ const plans = [
             'Contract verification',
             'Token & NFT tracking',
             'Testnet faucet',
+            '7-day data retention',
             'Ethernal branding'
         ]
     },

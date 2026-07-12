@@ -13,18 +13,19 @@ describe('enforceDataRetentionForWorkspace', () => {
         jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
             {
                 stripePlan: {
+                    slug: 'explorer-150',
                     capabilities: { dataRetention: 7 }
                 },
                 explorer: { workspace: { id: 2 }}
             },
             {
                 stripePlan: {
+                    slug: 'explorer-150',
                     capabilities: { dataRetention: 0 },
                     explorer: { workspace: { id: 3 }}
                 }
             }
         ]);
-        jest.spyOn(Workspace, 'count').mockResolvedValue(0);
         jest.useFakeTimers()
             .setSystemTime(new Date('2023-12-15'));
 
@@ -49,18 +50,19 @@ describe('enforceDataRetentionForWorkspace', () => {
         jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
             {
                 stripePlan: {
+                    slug: 'explorer-150',
                     capabilities: { dataRetention: 0 }
                 },
                 explorer: { workspace: { id: 2 }}
             },
             {
                 stripePlan: {
+                    slug: 'explorer-150',
                     capabilities: { dataRetention: 0 },
                     explorer: { workspace: { id: 3 }}
                 }
             }
         ]);
-        jest.spyOn(Workspace, 'count').mockResolvedValue(0);
 
         enforceDataRetentionForWorkspace({ data: { workspaceId: 123 }})
             .then(() => {
@@ -69,17 +71,75 @@ describe('enforceDataRetentionForWorkspace', () => {
             });
     });
 
-    it('Should log the dry-run candidate count', (done) => {
+    it('Should enqueue a 7-day cap for free/demo plan explorers', (done) => {
         jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([]);
-        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([]);
-        jest.spyOn(Workspace, 'count').mockResolvedValueOnce(42);
-        const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
+            {
+                stripePlan: { slug: 'free', capabilities: { dataRetention: 0 } },
+                explorer: { workspace: { id: 10 } }
+            },
+            {
+                stripePlan: { slug: 'demo', capabilities: { dataRetention: 0 } },
+                explorer: { workspace: { id: 11 } }
+            }
+        ]);
+        jest.useFakeTimers()
+            .setSystemTime(new Date('2023-12-15'));
 
         enforceDataRetentionForWorkspace()
             .then(() => {
-                expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[retention-dryrun]'));
-                expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('42'));
-                consoleSpy.mockRestore();
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-10', {
+                    workspaceId: 10,
+                    from: new Date(0),
+                    to: new Date('2023-12-08')
+                });
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-11', {
+                    workspaceId: 11,
+                    from: new Date(0),
+                    to: new Date('2023-12-08')
+                });
+                done();
+            });
+    });
+
+    it('Should NOT cap paid explorers on a dataRetention=0 plan', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([]);
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
+            {
+                stripePlan: { slug: 'explorer-150', capabilities: { dataRetention: 0 } },
+                explorer: { workspace: { id: 99 } }
+            }
+        ]);
+
+        enforceDataRetentionForWorkspace()
+            .then(() => {
+                expect(enqueue).not.toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should not crash when a paid subscription has no linked explorer', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([]);
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
+            {
+                stripePlan: { slug: 'explorer-150', capabilities: { dataRetention: 7 } },
+                explorer: null
+            },
+            {
+                stripePlan: { slug: 'free', capabilities: { dataRetention: 0 } },
+                explorer: { workspace: { id: 12 } }
+            }
+        ]);
+        jest.useFakeTimers()
+            .setSystemTime(new Date('2023-12-15'));
+
+        enforceDataRetentionForWorkspace()
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-12', {
+                    workspaceId: 12,
+                    from: new Date(0),
+                    to: new Date('2023-12-08')
+                });
                 done();
             });
     });

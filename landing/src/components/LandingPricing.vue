@@ -80,6 +80,7 @@ const publicPlans = [
             'Contract verification',
             'Token & NFT tracking',
             'Testnet faucet',
+            '7-day data retention',
             'Ethernal branding'
         ],
         ctaText: 'Start Free',
@@ -140,7 +141,7 @@ const privatePlans = [
         subtitle: 'For local development',
         features: [
             '1 workspace',
-            'Unlimited blocks',
+            '7-day data retention',
             'Transaction decoding & tracing',
             'Contract interaction',
             'Hardhat / Anvil sync',
