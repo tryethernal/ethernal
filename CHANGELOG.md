@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.241] - 2026-07-12
+### Fixed
+- blog: publish - The 2x Mint: When Wrapping a Token Creates Its Own Liquidity
+
+
 ## [5.17.240] - 2026-07-08
 ### Fixed
 - blog: publish - The Triage Problem: Why Your Smart Contract Scanner's 87 Findings Contain One Real Bug
