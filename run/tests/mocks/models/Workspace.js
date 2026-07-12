@@ -119,6 +119,7 @@ const Workspace = {
     findByPk: jest.fn().mockResolvedValue(workspace),
     findAll: jest.fn(),
     findOne: jest.fn(),
+    count: jest.fn(),
     getAvailableL1Parents: jest.fn().mockResolvedValue({ publicParents: [], customParents: [] }),
     createCustomL1Parent: jest.fn(),
     getAvailableTopOrbitParent: jest.fn().mockResolvedValue([]),
