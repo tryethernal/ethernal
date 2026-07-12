@@ -21,7 +21,7 @@
                     <p class="faq-a">
                         Yes. Ethernal offers free plans for both public and private explorers.
                         The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet.
-                        The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync.
+                        The private Free plan includes 1 workspace with 7-day data retention, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync.
                         No credit card required for either.
                     </p>
                 </div>
@@ -99,7 +99,7 @@ useHead({
                     {
                         "@type": "Question",
                         "name": "Is Ethernal free to use?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal offers free plans for both public and private explorers. The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet. The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync. No credit card required for either." }
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal offers free plans for both public and private explorers. The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet. The private Free plan includes 1 workspace with 7-day data retention, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync. No credit card required for either." }
                     },
                     {
                         "@type": "Question",
