@@ -51,11 +51,22 @@ module.exports = async () => {
     }
 
     const retentionDays = getFreeTierDefaultRetentionDays();
-    const candidateCount = await Workspace.count({
-        where: { dataRetentionLimit: 0 },
-        include: [{ association: 'explorer', required: true }]
-    });
-    console.log(`[retention-dryrun] free-tier default cap would target ${candidateCount} explorer workspaces at retention=${retentionDays}d (no deletions performed)`);
+
+    const freeTierWorkspaces = stripeSubscriptions
+        .filter(ss => ['free', 'demo'].includes(ss.stripePlan.slug))
+        .map(ss => ss.explorer && ss.explorer.workspace && ss.explorer.workspace.id)
+        .filter(id => !!id);
+
+    for (let i = 0; i < freeTierWorkspaces.length; i++) {
+        const workspaceId = freeTierWorkspaces[i];
+        await enqueue('workspaceReset', `workspaceReset-${workspaceId}`, {
+            workspaceId,
+            from: new Date(0),
+            to: new Date(new Date() - 60 * 60 * 24 * retentionDays * 1000)
+        });
+    }
+
+    console.log(`[retention] enqueued free/demo cap for ${freeTierWorkspaces.length} explorer workspaces at retention=${retentionDays}d`);
 
     return;
 };
