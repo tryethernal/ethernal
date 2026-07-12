@@ -24,6 +24,7 @@ describe('enforceDataRetentionForWorkspace', () => {
                 }
             }
         ]);
+        jest.spyOn(Workspace, 'count').mockResolvedValue(0);
         jest.useFakeTimers()
             .setSystemTime(new Date('2023-12-15'));
 
@@ -59,10 +60,26 @@ describe('enforceDataRetentionForWorkspace', () => {
                 }
             }
         ]);
-        
+        jest.spyOn(Workspace, 'count').mockResolvedValue(0);
+
         enforceDataRetentionForWorkspace({ data: { workspaceId: 123 }})
             .then(() => {
                 expect(enqueue).not.toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should log the dry-run candidate count', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([]);
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([]);
+        jest.spyOn(Workspace, 'count').mockResolvedValueOnce(42);
+        const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+        enforceDataRetentionForWorkspace()
+            .then(() => {
+                expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[retention-dryrun]'));
+                expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('42'));
+                consoleSpy.mockRestore();
                 done();
             });
     });
