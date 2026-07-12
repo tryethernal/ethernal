@@ -6,6 +6,7 @@
 
 const { Op } = require('sequelize');
 const { enqueue } = require('../lib/queue');
+const { getFreeTierDefaultRetentionDays } = require('../lib/env');
 const { Workspace, Explorer, StripeSubscription } = require('../models');
 
 module.exports = async () => {
@@ -48,6 +49,13 @@ module.exports = async () => {
             to: new Date(new Date() - 60 * 60 * 24 * workspace.dataRetentionLimit * 1000)
         });
     }
+
+    const retentionDays = getFreeTierDefaultRetentionDays();
+    const candidateCount = await Workspace.count({
+        where: { dataRetentionLimit: 0 },
+        include: [{ association: 'explorer', required: true }]
+    });
+    console.log(`[retention-dryrun] free-tier default cap would target ${candidateCount} explorer workspaces at retention=${retentionDays}d (no deletions performed)`);
 
     return;
 };
