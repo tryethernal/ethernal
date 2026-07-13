@@ -99,7 +99,8 @@ describe('workspaceReset', () => {
 
         workspaceReset({ data: { workspaceId: 1, from: new Date(0), to: new Date(1000) }})
             .then(() => {
-                // Two full-length probes + the short page.
+                // One full page (length === pageSize triggers another fetch) +
+                // one short page (stops the walk) = 2 calls.
                 expect(getBlocks).toHaveBeenCalledTimes(2);
                 // Second call keysets past the last id of the first page (1).
                 expect(getBlocks.mock.calls[1][0].where).toEqual({ id: { gt: 1 }});
