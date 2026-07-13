@@ -25,6 +25,7 @@ module.exports = {
     getPostHogApiHost: () => process.env.POST_HOG_API_HOST,
     getMaxBlockForSyncReset: () => parseInt(process.env.MAX_BLOCK_FOR_SYNC_RESET) || 10,
     getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5,
+    getWorkspaceResetPageSize: () => parseInt(process.env.WORKSPACE_RESET_PAGE_SIZE) || 10000,
     getFreeTierDefaultRetentionDays: () => parseInt(process.env.FREE_TIER_DEFAULT_RETENTION_DAYS) || 7,
     getEncryptionKey: () => process.env.ENCRYPTION_KEY,
     getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET,

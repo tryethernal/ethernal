@@ -62,6 +62,26 @@ priorities['low'].forEach(jobName => {
     });
 });
 
+// workspaceReset paginates through a workspace's blocks/contracts (millions of
+// rows for large free/demo explorers) to enqueue batchBlockDelete jobs. The
+// shared low-tier 30s timeout stalled it before it enumerated anything, so
+// large workspaces never got pruned. Re-register it without a per-job timeout;
+// the bounded, indexed keyset queries are the only work it does (the actual
+// deletes happen in batchBlockDelete).
+queues['workspaceReset'] = new Queue('workspaceReset', {
+    defaultJobOptions: {
+        attempts: 10,
+        stackTraceLimit: 3,
+        removeOnComplete: 10,
+        removeOnFail: 10,
+        backoff: {
+            type: 'exponential',
+            delay: 1000
+        }
+    },
+    connection
+});
+
 queues['processHistoricalBlocks'] = new Queue('processHistoricalBlocks', {
     defaultJobOptions: {
         attempts: 5,
