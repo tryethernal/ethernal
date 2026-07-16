@@ -46,6 +46,11 @@ priorities['medium'].forEach(jobName => {
 });
 
 priorities['low'].forEach(jobName => {
+    // workspaceReset is registered separately below without the shared 30s
+    // timeout; skip it here so we don't create an orphaned Queue instance.
+    if (jobName === 'workspaceReset')
+        return;
+
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
             attempts: 10,
@@ -60,6 +65,26 @@ priorities['low'].forEach(jobName => {
         },
         connection
     });
+});
+
+// workspaceReset paginates through a workspace's blocks/contracts (millions of
+// rows for large free/demo explorers) to enqueue batchBlockDelete jobs. The
+// shared low-tier 30s timeout stalled it before it enumerated anything, so
+// large workspaces never got pruned. Register it without a per-job timeout;
+// the bounded, indexed keyset queries are the only work it does (the actual
+// deletes happen in batchBlockDelete).
+queues['workspaceReset'] = new Queue('workspaceReset', {
+    defaultJobOptions: {
+        attempts: 10,
+        stackTraceLimit: 3,
+        removeOnComplete: 10,
+        removeOnFail: 10,
+        backoff: {
+            type: 'exponential',
+            delay: 1000
+        }
+    },
+    connection
 });
 
 queues['processHistoricalBlocks'] = new Queue('processHistoricalBlocks', {
