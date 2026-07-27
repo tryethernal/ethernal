@@ -8,7 +8,7 @@
 
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
-const { createIncident } = require('../lib/opsgenie');
+const { createIncident, closeIncident } = require('../lib/opsgenie');
 const {
     getNodeEnv,
     getGithubToken,
@@ -102,16 +102,24 @@ async function checkPostgres() {
  * inventing a failure. That matters because a false "no standby attached" alarm
  * would be indistinguishable from the real thing.
  *
- * @returns {Promise<Object>} Replication health status
+ * Replication health and archiving health are INDEPENDENT failures and are
+ * reported independently: a primary can simultaneously have no standby and a
+ * stalled archiver, and suppressing one behind the other would hide the fact
+ * that point-in-time recovery is frozen.
+ *
+ * @returns {Promise<Object>} Replication health status with an `issues` array
  */
 async function checkReplication() {
     const result = {
         service: 'replication',
         status: 'ok',
+        issues: [],
         standbyCount: null,
         maxReplayLagSeconds: null,
         walArchiveAgeSeconds: null,
-        walArchiveFailedCount: null
+        walArchiveFailedCount: null,
+        hasUnarchivedWal: null,
+        lastArchiveAttemptFailed: null
     };
 
     if (!isReplicationMonitoringEnabled()) {
@@ -123,6 +131,9 @@ async function checkReplication() {
     try {
         const { sequelize } = require('../models');
 
+        // pg_current_wal_lsn() throws on a standby, so it is guarded by a CASE
+        // rather than evaluated unconditionally — the whole query must stay
+        // valid when this process happens to be connected to a replica.
         const [[row]] = await withTimeout(sequelize.query(`
             SELECT
                 pg_is_in_recovery() AS in_recovery,
@@ -131,7 +142,14 @@ async function checkReplication() {
                    FROM pg_stat_replication) AS max_replay_lag_seconds,
                 (SELECT EXTRACT(EPOCH FROM (now() - last_archived_time))
                    FROM pg_stat_archiver) AS wal_archive_age_seconds,
-                (SELECT failed_count FROM pg_stat_archiver) AS wal_archive_failed_count
+                (SELECT failed_count FROM pg_stat_archiver) AS wal_archive_failed_count,
+                (SELECT last_failed_time IS NOT NULL
+                        AND (last_archived_time IS NULL OR last_failed_time > last_archived_time)
+                   FROM pg_stat_archiver) AS last_archive_attempt_failed,
+                CASE WHEN pg_is_in_recovery() THEN NULL ELSE
+                    (pg_walfile_name(pg_current_wal_lsn())
+                     IS DISTINCT FROM (SELECT last_archived_wal FROM pg_stat_archiver))
+                END AS has_unarchived_wal
         `), CHECK_TIMEOUT_MS);
 
         if (row.in_recovery) {
@@ -150,26 +168,44 @@ async function checkReplication() {
         result.walArchiveFailedCount = row.wal_archive_failed_count === null
             ? null
             : parseInt(row.wal_archive_failed_count, 10);
+        result.hasUnarchivedWal = row.has_unarchived_wal;
+        result.lastArchiveAttemptFailed = row.last_archive_attempt_failed;
+
+        // Each condition is evaluated independently. They are separate failures
+        // with separate remedies, and a primary can hit several at once.
 
         // A standby that has silently gone away means there is no HA and no
-        // failover target — the single most important thing to notice here.
+        // failover target.
         if (result.standbyCount === 0) {
-            result.status = 'no-standby';
-            return result;
-        }
-
-        if (result.maxReplayLagSeconds !== null
+            result.issues.push('no-standby');
+        } else if (result.maxReplayLagSeconds !== null
             && result.maxReplayLagSeconds > getReplicationLagAlertSeconds()) {
-            result.status = 'lagging';
-            return result;
+            // Only meaningful when a standby is actually attached.
+            result.issues.push('lagging');
         }
 
-        // A null archive age means nothing has EVER been archived, which on a
-        // primary with archiving configured is itself a failure.
-        if (result.walArchiveAgeSeconds === null
-            || result.walArchiveAgeSeconds > getWalArchiveStaleAlertSeconds()) {
-            result.status = 'archive-stale';
-            return result;
+        // Two independent signals that archiving is broken.
+        //
+        // 1. DEFINITIVE: the most recent archive ATTEMPT failed. Unambiguous —
+        //    the archiver tried and could not deliver.
+        // 2. HEURISTIC: nothing has been archived for a long time while WAL is
+        //    waiting. This catches an archive_command that hangs rather than
+        //    failing, which signal 1 cannot see.
+        //
+        // Signal 2 can in principle fire on a primary that receives no writes at
+        // all, since archive_timeout only forces a segment switch after write
+        // activity. That is not a realistic state for this database (it ingests
+        // blocks continuously), and the alternative — missing a hung archiver —
+        // is far worse than a spurious page on a dead-idle system.
+        const archiveIsOld = result.walArchiveAgeSeconds === null
+            || result.walArchiveAgeSeconds > getWalArchiveStaleAlertSeconds();
+        if (result.lastArchiveAttemptFailed === true
+            || (archiveIsOld && result.hasUnarchivedWal !== false)) {
+            result.issues.push('archive-stale');
+        }
+
+        if (result.issues.length) {
+            result.status = 'degraded';
         }
     } catch (error) {
         result.status = 'unhealthy';
@@ -393,51 +429,67 @@ module.exports = async () => {
         incidentCreated = true;
     }
 
-    // No standby attached to the primary — there is no HA and nothing to fail
-    // over to. Deliberately NOT auto-remediated: rebuilding a standby is a
-    // ~70 minute reseed and a decision for a human, not a workflow.
-    if (replicationResult.status === 'no-standby') {
-        await createIncident(
-            'PostgreSQL has no streaming standby',
-            'No standby is connected to the primary. The cluster has no failover target '
-                + 'until a standby is rebuilt (reseed takes ~70 min).',
-            'P1',
-            { alias: 'infra-postgres-no-standby' }
-        );
-        incidentCreated = true;
-    }
+    // Replication and archiving conditions are independent and are raised (and
+    // cleared) independently. Only skip this block entirely when the check did
+    // not actually run, so a 'skipped' result never closes a real alert.
+    if (replicationResult.status !== 'skipped' && replicationResult.status !== 'unhealthy') {
+        const issues = replicationResult.issues || [];
 
-    // Standby attached but falling behind: failover would lose more than the
-    // usual second or two, and it is an early warning of a struggling replica.
-    if (replicationResult.status === 'lagging') {
-        await createIncident(
-            'PostgreSQL replication lag high',
-            `Standby replay lag is ${Math.round(replicationResult.maxReplayLagSeconds)}s `
-                + `(threshold ${getReplicationLagAlertSeconds()}s). Promoting now would lose `
-                + 'roughly that much data.',
-            'P2',
-            { alias: 'infra-postgres-replication-lag' }
-        );
-        incidentCreated = true;
-    }
+        // No standby attached — no HA and nothing to fail over to. Deliberately
+        // NOT auto-remediated: rebuilding a standby is a ~70 minute reseed and a
+        // decision for a human, not a workflow.
+        if (issues.includes('no-standby')) {
+            await createIncident(
+                'PostgreSQL has no streaming standby',
+                'No standby is connected to the primary. The cluster has no failover target '
+                    + 'until a standby is rebuilt (reseed takes ~70 min).',
+                'P1',
+                { alias: 'infra-postgres-no-standby' }
+            );
+            incidentCreated = true;
+        } else {
+            await closeIncident('infra-postgres-no-standby', { note: 'A standby is attached again.' });
+        }
 
-    // WAL archiving stalled. This is the point-in-time recovery path: while it
-    // is broken, every base backup is only restorable to the moment archiving
-    // stopped, and that gap widens every minute.
-    if (replicationResult.status === 'archive-stale') {
-        const age = replicationResult.walArchiveAgeSeconds;
-        await createIncident(
-            'PostgreSQL WAL archiving stalled',
-            age === null
-                ? 'No WAL segment has ever been archived on this primary.'
-                : `Last WAL archive was ${Math.round(age)}s ago (threshold `
-                    + `${getWalArchiveStaleAlertSeconds()}s, archive_timeout is 300s). `
-                    + `Archiver failed_count is ${replicationResult.walArchiveFailedCount}. `
-                    + 'Point-in-time recovery is frozen at the last archived segment.',
-            'P1',
-            { alias: 'infra-postgres-wal-archive-stale' }
-        );
-        incidentCreated = true;
+        // Standby attached but falling behind: failover would lose more than the
+        // usual second or two, and it is an early warning of a struggling replica.
+        if (issues.includes('lagging')) {
+            await createIncident(
+                'PostgreSQL replication lag high',
+                `Standby replay lag is ${Math.round(replicationResult.maxReplayLagSeconds)}s `
+                    + `(threshold ${getReplicationLagAlertSeconds()}s). Promoting now would lose `
+                    + 'roughly that much data.',
+                'P2',
+                { alias: 'infra-postgres-replication-lag' }
+            );
+            incidentCreated = true;
+        } else {
+            await closeIncident('infra-postgres-replication-lag', { note: 'Replay lag back within threshold.' });
+        }
+
+        // WAL archiving stalled. This is the point-in-time recovery path: while
+        // it is broken, every base backup is only restorable to the moment
+        // archiving stopped, and that gap widens every minute.
+        if (issues.includes('archive-stale')) {
+            const age = replicationResult.walArchiveAgeSeconds;
+            await createIncident(
+                'PostgreSQL WAL archiving stalled',
+                age === null
+                    ? 'No WAL segment has ever been archived on this primary, and there is WAL waiting.'
+                    : `Last WAL archive was ${Math.round(age)}s ago (threshold `
+                        + `${getWalArchiveStaleAlertSeconds()}s, archive_timeout is 300s) and there is `
+                        + 'WAL waiting to be archived. '
+                        + `Archiver failed_count is ${replicationResult.walArchiveFailedCount}. `
+                        + 'Point-in-time recovery is frozen at the last archived segment.',
+                'P1',
+                { alias: 'infra-postgres-wal-archive-stale' }
+            );
+            incidentCreated = true;
+        } else {
+            await closeIncident('infra-postgres-wal-archive-stale', { note: 'WAL archiving is progressing again.' });
+        }
+
+        await closeIncident('infra-postgres-replication-check-failed', { note: 'Replication check is running again.' });
     }
 
     // The check itself could not run (e.g. permissions, connectivity). Report it

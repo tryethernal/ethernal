@@ -1,7 +1,7 @@
 require('../mocks/lib/logger');
 require('../mocks/lib/opsgenie');
 
-const { createIncident } = require('../../lib/opsgenie');
+const { createIncident, closeIncident } = require('../../lib/opsgenie');
 
 let mockQuery;
 
@@ -29,7 +29,9 @@ const replicationRow = (overrides) => ([[Object.assign({
     standby_count: '1',
     max_replay_lag_seconds: '0.5',
     wal_archive_age_seconds: '30',
-    wal_archive_failed_count: '0'
+    wal_archive_failed_count: '0',
+    has_unarchived_wal: true,
+    last_archive_attempt_failed: false
 }, overrides || {})]]);
 
 describe('infraHealthCheck - replication and WAL archiving', () => {
@@ -59,7 +61,8 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
 
         const result = await infraHealthCheck();
 
-        expect(result.replication.status).toEqual('no-standby');
+        expect(result.replication.status).toEqual('degraded');
+        expect(result.replication.issues).toContain('no-standby');
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL has no streaming standby',
             expect.stringContaining('no failover target'),
@@ -75,7 +78,8 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
 
         const result = await infraHealthCheck();
 
-        expect(result.replication.status).toEqual('lagging');
+        expect(result.replication.status).toEqual('degraded');
+        expect(result.replication.issues).toContain('lagging');
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL replication lag high',
             expect.stringContaining('600s'),
@@ -91,7 +95,8 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
 
         const result = await infraHealthCheck();
 
-        expect(result.replication.status).toEqual('archive-stale');
+        expect(result.replication.status).toEqual('degraded');
+        expect(result.replication.issues).toContain('archive-stale');
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL WAL archiving stalled',
             expect.stringContaining('Point-in-time recovery is frozen'),
@@ -107,7 +112,8 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
 
         const result = await infraHealthCheck();
 
-        expect(result.replication.status).toEqual('archive-stale');
+        expect(result.replication.status).toEqual('degraded');
+        expect(result.replication.issues).toContain('archive-stale');
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL WAL archiving stalled',
             expect.stringContaining('has ever been archived'),
@@ -146,6 +152,86 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
 
         expect(result.replication.status).toEqual('skipped');
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should raise BOTH incidents when a primary has no standby AND stalled archiving', async () => {
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                standby_count: '0',
+                wal_archive_age_seconds: '1800'
+            }));
+
+        const result = await infraHealthCheck();
+
+        expect(result.replication.issues).toEqual(
+            expect.arrayContaining(['no-standby', 'archive-stale'])
+        );
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL has no streaming standby',
+            expect.any(String), 'P1', { alias: 'infra-postgres-no-standby' }
+        );
+        // The archiving failure must NOT be hidden behind the replication one:
+        // point-in-time recovery being frozen is its own emergency.
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL WAL archiving stalled',
+            expect.any(String), 'P1', { alias: 'infra-postgres-wal-archive-stale' }
+        );
+    });
+
+    it('Should NOT alert on an idle primary whose WAL is old but fully archived', async () => {
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '99999',
+                has_unarchived_wal: false
+            }));
+
+        const result = await infraHealthCheck();
+
+        // archive_timeout only forces a segment switch when there has been write
+        // activity, so a quiet primary legitimately has an old last_archived_time.
+        expect(result.replication.status).toEqual('ok');
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should raise P1 when the most recent archive ATTEMPT failed, even if recent', async () => {
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '10',
+                last_archive_attempt_failed: true
+            }));
+
+        const result = await infraHealthCheck();
+
+        // A failing archiver must be caught immediately, not only once the last
+        // success has aged past the staleness threshold.
+        expect(result.replication.issues).toContain('archive-stale');
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL WAL archiving stalled',
+            expect.any(String), 'P1', { alias: 'infra-postgres-wal-archive-stale' }
+        );
+    });
+
+    it('Should close incidents once replication and archiving recover', async () => {
+        const result = await infraHealthCheck();
+
+        expect(result.replication.status).toEqual('ok');
+        expect(closeIncident).toHaveBeenCalledWith('infra-postgres-no-standby', expect.any(Object));
+        expect(closeIncident).toHaveBeenCalledWith('infra-postgres-replication-lag', expect.any(Object));
+        expect(closeIncident).toHaveBeenCalledWith('infra-postgres-wal-archive-stale', expect.any(Object));
+    });
+
+    it('Should not close incidents when the check was skipped', async () => {
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({ in_recovery: true }));
+
+        await infraHealthCheck();
+
+        // A skipped check knows nothing, so it must not clear a real alert.
+        expect(closeIncident).not.toHaveBeenCalledWith('infra-postgres-no-standby', expect.any(Object));
     });
 
     it('Should alert rather than fail silently when the check itself errors', async () => {
