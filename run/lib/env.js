@@ -87,6 +87,22 @@ module.exports = {
     getMailjetNewsletterListId: () => process.env.MAILJET_NEWSLETTER_LIST_ID,
     getDripUnsubscribeSecret: () => process.env.DRIP_UNSUBSCRIBE_SECRET,
     getGithubToken: () => process.env.GITHUB_TOKEN,
+    /**
+     * Whether to alert on streaming replication and WAL archiving health.
+     * Defaults to enabled: a silently dead replica means no standby and no
+     * failover, which is the failure this is meant to catch.
+     * @returns {boolean}
+     */
+    isReplicationMonitoringEnabled: () => process.env.REPLICATION_MONITORING_ENABLED !== 'false',
+    /** @returns {number} Replay lag in seconds above which to alert */
+    getReplicationLagAlertSeconds: () => parseInt(process.env.REPLICATION_LAG_ALERT_SECONDS, 10) || 300,
+    /**
+     * Age in seconds of the last successful WAL archive above which to alert.
+     * Must stay comfortably above archive_timeout (300s) or it will alert on a
+     * merely quiet database rather than a broken one.
+     * @returns {number}
+     */
+    getWalArchiveStaleAlertSeconds: () => parseInt(process.env.WAL_ARCHIVE_STALE_ALERT_SECONDS, 10) || 900,
     getDiscordCriticalWebhook: () => process.env.DISCORD_CRITICAL_WEBHOOK,
     getEnv: (env) => process.env[env],
     getLinkupApiKey: () => process.env.LINKUP_API_KEY,
