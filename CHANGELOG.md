@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.250] - 2026-07-27
+### Fixed
+- fix(config): make DB and Redis IP family configurable for IPv6 networks (#1350)
+
+
 ## [5.17.249] - 2026-07-26
 ### Fixed
 - blog: publish - After the Scanner Runs: The Audit Workflow Step That Lets Logical Vulnerabilities Through

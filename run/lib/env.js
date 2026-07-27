@@ -42,7 +42,13 @@ module.exports = {
     getSentryDsn: () => process.env.SENTRY_DSN,
     getVersion: () => process.env.VERSION,
     getRedisUrl: () => process.env.REDIS_URL,
-    getRedisFamily: () => process.env.REDIS_FAMILY,
+    /**
+     * IP family to use when resolving the Redis host.
+     * Returns a Number because net.connect() ignores a string value, which
+     * would silently fall back to IPv4 and fail against an IPv6-only host.
+     * @returns {number|undefined} 4, 6, or undefined when unset
+     */
+    getRedisFamily: () => (process.env.REDIS_FAMILY ? parseInt(process.env.REDIS_FAMILY, 10) : undefined),
     queueMonitoringMaxProcessingTime: () => parseInt(process.env.QUEUE_MONITORING_MAX_PROCESSING_TIME) || 60,
     queueMonitoringHighProcessingTimeThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_PROCESSING_TIME_THRESHOLD) || 20,
     queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 50,
