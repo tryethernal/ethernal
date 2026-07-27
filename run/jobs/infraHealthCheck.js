@@ -118,8 +118,8 @@ async function checkReplication() {
         maxReplayLagSeconds: null,
         walArchiveAgeSeconds: null,
         walArchiveFailedCount: null,
-        hasUnarchivedWal: null,
-        lastArchiveAttemptFailed: null
+        lastArchiveAttemptFailed: null,
+        archiveNotProgressing: null
     };
 
     if (!isReplicationMonitoringEnabled()) {
@@ -146,10 +146,9 @@ async function checkReplication() {
                 (SELECT last_failed_time IS NOT NULL
                         AND (last_archived_time IS NULL OR last_failed_time > last_archived_time)
                    FROM pg_stat_archiver) AS last_archive_attempt_failed,
-                CASE WHEN pg_is_in_recovery() THEN NULL ELSE
-                    (pg_walfile_name(pg_current_wal_lsn())
-                     IS DISTINCT FROM (SELECT last_archived_wal FROM pg_stat_archiver))
-                END AS has_unarchived_wal
+                (SELECT last_archived_wal FROM pg_stat_archiver) AS last_archived_wal,
+                CASE WHEN pg_is_in_recovery() THEN NULL
+                     ELSE pg_current_wal_lsn()::text END AS current_wal_lsn
         `), CHECK_TIMEOUT_MS);
 
         if (row.in_recovery) {
@@ -168,7 +167,6 @@ async function checkReplication() {
         result.walArchiveFailedCount = row.wal_archive_failed_count === null
             ? null
             : parseInt(row.wal_archive_failed_count, 10);
-        result.hasUnarchivedWal = row.has_unarchived_wal;
         result.lastArchiveAttemptFailed = row.last_archive_attempt_failed;
 
         // Each condition is evaluated independently. They are separate failures
@@ -187,20 +185,49 @@ async function checkReplication() {
         // Two independent signals that archiving is broken.
         //
         // 1. DEFINITIVE: the most recent archive ATTEMPT failed. Unambiguous —
-        //    the archiver tried and could not deliver.
-        // 2. HEURISTIC: nothing has been archived for a long time while WAL is
-        //    waiting. This catches an archive_command that hangs rather than
+        //    the archiver tried and could not deliver. Catches it immediately,
+        //    without waiting for the last success to age past a threshold.
+        //
+        // 2. PROGRESS: WAL is being WRITTEN but the archived position is not
+        //    advancing. This catches an archive_command that HANGS rather than
         //    failing, which signal 1 cannot see.
         //
-        // Signal 2 can in principle fire on a primary that receives no writes at
-        // all, since archive_timeout only forces a segment switch after write
-        // activity. That is not a realistic state for this database (it ingests
-        // blocks continuously), and the alternative — missing a hung archiver —
-        // is far worse than a spurious page on a dead-idle system.
+        //    Comparing two consecutive samples is what makes signal 2 sound.
+        //    A single sample cannot tell "archiver stuck" from "database idle":
+        //    after archive_timeout forces a switch, the current segment always
+        //    differs from the last archived one, so an idle primary looks
+        //    identical to a stalled one and would page falsely. Requiring that
+        //    the write position MOVED while the archived position did NOT
+        //    removes that ambiguity entirely.
         const archiveIsOld = result.walArchiveAgeSeconds === null
             || result.walArchiveAgeSeconds > getWalArchiveStaleAlertSeconds();
-        if (result.lastArchiveAttemptFailed === true
-            || (archiveIsOld && result.hasUnarchivedWal !== false)) {
+        let archiveNotProgressing = false;
+
+        if (archiveIsOld && row.current_wal_lsn) {
+            try {
+                const key = 'infra:wal:lastsample';
+                const raw = await withTimeout(redis.get(key), CHECK_TIMEOUT_MS);
+                const previous = raw ? JSON.parse(raw) : null;
+
+                if (previous) {
+                    const wroteMoreWal = previous.lsn !== row.current_wal_lsn;
+                    const archiveStuck = previous.archived === row.last_archived_wal;
+                    archiveNotProgressing = wroteMoreWal && archiveStuck;
+                }
+
+                await withTimeout(redis.set(key, JSON.stringify({
+                    lsn: row.current_wal_lsn,
+                    archived: row.last_archived_wal
+                }), 'EX', 3600), CHECK_TIMEOUT_MS);
+            } catch (stateError) {
+                // Never let a Redis problem turn into a false archiving alert.
+                logger.warn('Could not compare WAL progress samples', { error: stateError.message });
+            }
+        }
+
+        result.archiveNotProgressing = archiveNotProgressing;
+
+        if (result.lastArchiveAttemptFailed === true || archiveNotProgressing) {
             result.issues.push('archive-stale');
         }
 

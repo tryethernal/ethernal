@@ -5,6 +5,8 @@ const { createIncident, closeIncident } = require('../../lib/opsgenie');
 
 let mockQuery;
 
+const redis = require('../../lib/redis');
+
 jest.mock('../../lib/redis', () => ({
     ping: jest.fn().mockResolvedValue('PONG'),
     info: jest.fn().mockResolvedValue('used_memory:100\nmaxmemory:0\n'),
@@ -30,7 +32,8 @@ const replicationRow = (overrides) => ([[Object.assign({
     max_replay_lag_seconds: '0.5',
     wal_archive_age_seconds: '30',
     wal_archive_failed_count: '0',
-    has_unarchived_wal: true,
+    last_archived_wal: '000000010000000000000010',
+    current_wal_lsn: '0/11000000',
     last_archive_attempt_failed: false
 }, overrides || {})]]);
 
@@ -91,7 +94,10 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
     it('Should raise P1 when WAL archiving has stalled', async () => {
         mockQuery = jest.fn()
             .mockResolvedValueOnce([[{ '?column?': 1 }]])
-            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: '1800' }));
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '1800',
+                last_archive_attempt_failed: true
+            }));
 
         const result = await infraHealthCheck();
 
@@ -108,7 +114,10 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
     it('Should raise P1 when nothing has ever been archived', async () => {
         mockQuery = jest.fn()
             .mockResolvedValueOnce([[{ '?column?': 1 }]])
-            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: null }));
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: null,
+                last_archive_attempt_failed: true
+            }));
 
         const result = await infraHealthCheck();
 
@@ -159,7 +168,8 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
             .mockResolvedValueOnce([[{ '?column?': 1 }]])
             .mockResolvedValueOnce(replicationRow({
                 standby_count: '0',
-                wal_archive_age_seconds: '1800'
+                wal_archive_age_seconds: '1800',
+                last_archive_attempt_failed: true
             }));
 
         const result = await infraHealthCheck();
@@ -179,18 +189,48 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
         );
     });
 
-    it('Should NOT alert on an idle primary whose WAL is old but fully archived', async () => {
+    it('Should NOT alert on an IDLE primary: no WAL written and none archived', async () => {
+        // Same write position and same archived position as the previous sample:
+        // nothing is happening, which is not the same as being stuck.
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/11000000', archived: '000000010000000000000010'
+        }));
         mockQuery = jest.fn()
             .mockResolvedValueOnce([[{ '?column?': 1 }]])
-            .mockResolvedValueOnce(replicationRow({
-                wal_archive_age_seconds: '99999',
-                has_unarchived_wal: false
-            }));
+            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: '99999' }));
 
         const result = await infraHealthCheck();
 
-        // archive_timeout only forces a segment switch when there has been write
-        // activity, so a quiet primary legitimately has an old last_archived_time.
+        expect(result.replication.status).toEqual('ok');
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should alert when WAL is being written but the archived position is stuck', async () => {
+        // Write position advanced, archived position did not — a hung archiver.
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/10000000', archived: '000000010000000000000010'
+        }));
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: '99999' }));
+
+        const result = await infraHealthCheck();
+
+        expect(result.replication.issues).toContain('archive-stale');
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL WAL archiving stalled',
+            expect.any(String), 'P1', { alias: 'infra-postgres-wal-archive-stale' }
+        );
+    });
+
+    it('Should not alert on the first sample, when there is nothing to compare', async () => {
+        redis.get.mockResolvedValueOnce(null);
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: '99999' }));
+
+        const result = await infraHealthCheck();
+
         expect(result.replication.status).toEqual('ok');
         expect(createIncident).not.toHaveBeenCalled();
     });
