@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.253] - 2026-07-28
+### Fixed
+- chore(sentry): move error tracking to the hosted service (#1352)
+
+
 ## [5.17.252] - 2026-07-28
 ### Fixed
 - blog: publish - Zero-Capital Bootstrapping: The Stablecoin That Mints Its Own Equity Layer
