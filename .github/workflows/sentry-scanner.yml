@@ -42,7 +42,7 @@ jobs:
           prompt: |
             You are a proactive Sentry scanner for the Ethernal project. Your job is to scan ALL unresolved Sentry issues (errors AND performance) and decide which ones need GitHub issues created.
 
-            Sentry base URL: https://sentry.tryethernal.com
+            Sentry base URL: https://sentry.io
             Org: sentry
             Backend project: ethernal-backend (id=2)
             Frontend project: ethernal-frontend (id=3)
@@ -63,8 +63,8 @@ jobs:
             Past incidents created **separate issues per scanner run for the same outage** (#1301/#1302/#1303 + #1305 were all the same Sentry outage, and #1304 was the actual token-regen item that got buried). This step deduplicates against open infra issues and **must run before any Sentry query**.
 
             ```bash
-            BASE_UNAUTH=$(curl -s -o /tmp/preflight_base.json -w "%{http_code}" "https://sentry.tryethernal.com/api/0/" --max-time 15 || echo "000")
-            AUTH_PROBE=$(curl -s -o /tmp/preflight_auth.json -w "%{http_code}" "https://sentry.tryethernal.com/api/0/projects/" -H "Authorization: Bearer $SENTRY_API_TOKEN" --max-time 15 || echo "000")
+            BASE_UNAUTH=$(curl -s -o /tmp/preflight_base.json -w "%{http_code}" "https://sentry.io/api/0/" --max-time 15 || echo "000")
+            AUTH_PROBE=$(curl -s -o /tmp/preflight_auth.json -w "%{http_code}" "https://sentry.io/api/0/projects/" -H "Authorization: Bearer $SENTRY_API_TOKEN" --max-time 15 || echo "000")
             echo "preflight base=$BASE_UNAUTH auth=$AUTH_PROBE"
             ```
 
@@ -109,7 +109,7 @@ jobs:
                - title: `Sentry API scanner failing - authentication/server errors`
                - labels: `sentry`, `needs-human`
                - body: timestamps, both HTTP codes, and these manual action items:
-                 1. Log into https://sentry.tryethernal.com → Settings → Account → API → Auth Tokens
+                 1. Log into https://sentry.io → Settings → Account → API → Auth Tokens
                  2. Regenerate the token with scopes: `org:read`, `project:read`, `event:read`, `event:admin`
                  3. Update the `SENTRY_API_TOKEN` GitHub Actions secret
                  4. Re-run this workflow manually
@@ -123,7 +123,7 @@ jobs:
 
             ```bash
             AUTH="Authorization: Bearer $SENTRY_API_TOKEN"
-            BASE="https://sentry.tryethernal.com/api/0/projects/sentry"
+            BASE="https://sentry.io/api/0/projects/antoine-0l"
 
             curl -s -o /tmp/be_err.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
             curl -s -o /tmp/be_perf.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
@@ -173,7 +173,7 @@ jobs:
 
             For each new issue that passes the filter AND was not grouped into an incident above, fetch event context. Use temp files:
             ```bash
-            curl -s -o /tmp/event.json "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" -H "Authorization: Bearer $SENTRY_API_TOKEN"
+            curl -s -o /tmp/event.json "https://sentry.io/api/0/issues/{id}/events/latest/" -H "Authorization: Bearer $SENTRY_API_TOKEN"
             jq '{message: .message, tags: [.tags[]? | select(.key == "transaction" or .key == "url") | {key, value}], exception: .entries[0]?.data.values[0]?.stacktrace.frames[-3:]?}' /tmp/event.json
             ```
 
@@ -189,7 +189,7 @@ jobs:
             - Performance issues on endpoints that no longer exist
             - Performance issues with `events_24h == 0` that are stale
 
-            To resolve: `curl -s -X PUT "https://sentry.tryethernal.com/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved"}'`
+            To resolve: `curl -s -X PUT "https://sentry.io/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved"}'`
 
             ### CREATE GITHUB ISSUE (prioritized) — all event counts below are `events_24h`, NOT lifetime
             **Priority 1 — Regressions** (always create, regardless of event count):
@@ -243,7 +243,7 @@ jobs:
             **Events (24h):** [events_24h]   ← rolling, used for thresholds
             **Lifetime events:** [lifetime_count]
             **Regression:** [Yes/No]
-            **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
+            **Link:** https://sentry.io/organizations/antoine-0l/issues/[ID]/
 
             ### Error
             \`\`\`
@@ -272,7 +272,7 @@ jobs:
             **Lifetime events:** [lifetime_count]
             **Regression:** [Yes/No]
             **Transaction:** \`[transaction name]\`
-            **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
+            **Link:** https://sentry.io/organizations/antoine-0l/issues/[ID]/
 
             ### Problem
             [Clear description of the bottleneck — what's slow and why]
@@ -313,7 +313,7 @@ jobs:
                 \"sentryTitle\": \"TITLE\",
                 \"sentryLevel\": \"LEVEL\",
                 \"sentryEventCount\": EVENTS_24H,
-                \"sentryLink\": \"https://sentry.tryethernal.com/organizations/sentry/issues/SENTRY_ID/\",
+                \"sentryLink\": \"https://sentry.io/organizations/antoine-0l/issues/SENTRY_ID/\",
                 \"status\": \"discovered\",
                 \"currentStep\": \"Discovered by scanner\"
               }"
