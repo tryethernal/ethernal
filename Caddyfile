@@ -56,9 +56,13 @@ blog.tryethernal.com {
         }
     }
 
-    handle /api/2/* {
-        reverse_proxy https://sentry.tryethernal.com {
-            header_up Host sentry.tryethernal.com
+    # Browser error reports are sent to this app's own origin and forwarded to
+    # Sentry from here. Going direct would let ad blockers drop them, which for
+    # a developer-facing product silently loses a large share of error reports.
+    # Host and project id are configuration so moving Sentry needs no code change.
+    handle /api/{$SENTRY_PROJECT_ID}/* {
+        reverse_proxy https://{$SENTRY_INGEST_HOST} {
+            header_up Host {$SENTRY_INGEST_HOST}
         }
     }
 
