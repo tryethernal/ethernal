@@ -60,9 +60,16 @@ blog.tryethernal.com {
     # Sentry from here. Going direct would let ad blockers drop them, which for
     # a developer-facing product silently loses a large share of error reports.
     # Host and project id are configuration so moving Sentry needs no code change.
-    handle /api/{$SENTRY_PROJECT_ID}/* {
-        reverse_proxy https://{$SENTRY_INGEST_HOST} {
-            header_up Host {$SENTRY_INGEST_HOST}
+    #
+    # Both have defaults because this file is also mounted by
+    # docker-compose.prod.yml, which passes no environment at all. Without them
+    # an unset host expands to `reverse_proxy https://`, which is invalid and
+    # stops Caddy loading — taking the whole application proxy down rather than
+    # just error reporting. Self-hosted deployments have no Sentry project, so
+    # the defaults deliberately match no real traffic and route nowhere.
+    handle /api/{$SENTRY_PROJECT_ID:sentry-tunnel-disabled}/* {
+        reverse_proxy https://{$SENTRY_INGEST_HOST:127.0.0.1} {
+            header_up Host {$SENTRY_INGEST_HOST:127.0.0.1}
         }
     }
 
