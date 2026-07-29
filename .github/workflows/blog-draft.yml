@@ -10,26 +10,25 @@ name: Blog Draft Pipeline
 # needs preserving. (The tweet pipeline was not portable for exactly that
 # reason — its queue was 34 MB of files on the box.)
 
-# ⚠️ MANUAL-ONLY UNTIL THE HETZNER TIMER IS OFF.
+# blog-draft.timer on the Hetzner box was disabled 2026-07-29 and this is now the
+# only scheduler. Do not re-enable that timer without disabling this, or both will
+# pick a topic before the other marks it taken and publish twice.
 #
-# The schedule below is deliberately commented out. blog-draft.timer on the
-# Hetzner box is still enabled and fires at 08:00 UTC on the same days. Two
-# schedulers would each pick a topic before the other marked it taken, then
-# generate and push two posts and race on develop.
+# This workflow existed before and was deleted in March as a duplicate of the box.
+# The reasons given then no longer hold: Actions minutes are free on a public repo,
+# and the objection about needing "the Claude CLI with full auth" is met by
+# installing the CLI and running draft.sh unchanged — rather than reimplementing
+# the pipeline inside claude-code-action as the old one did, which is the likeliest
+# reason its scheduled runs kept failing.
 #
-# TO ACTIVATE, in this order:
-#   1. ssh ethernal-blog && sudo systemctl disable --now blog-draft.timer
-#   2. confirm: systemctl list-timers --all | grep blog   (should be empty)
-#   3. uncomment the schedule below
-#
-# Until then, run it by hand from the Actions tab. The box remains the fallback,
-# so nothing is unscheduled in the meantime.
+# Proven end to end on 2026-07-29 (run 30469887209): published
+# "PeerDAS Has Been Live for 8 Months", covers included and correctly sized.
 on:
-  # schedule:
-  #   # 08:00 UTC on odd days of the month, matching the systemd timer it
-  #   # replaces (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month
-  #   # boundaries; keeping the drift identical means the cadence does not change.
-  #   - cron: '0 8 1-31/2 * *'
+  schedule:
+    # 08:00 UTC on odd days of the month, matching the systemd timer it replaces
+    # (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month boundaries;
+    # keeping the drift identical means the publishing cadence does not change.
+    - cron: '0 8 1-31/2 * *'
   workflow_dispatch:
 
 permissions:
