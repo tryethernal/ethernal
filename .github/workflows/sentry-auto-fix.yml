@@ -86,7 +86,7 @@ jobs:
       - name: Install frontend deps
         run: yarn install
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -595,7 +595,7 @@ jobs:
         if: steps.check_sentry.outputs.is_sentry == 'true'
         run: yarn install
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
         if: steps.check_sentry.outputs.is_sentry == 'true'
 
       - name: Setup SSH
