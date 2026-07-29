@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.255] - 2026-07-29
+### Fixed
+- fix(ci): run migrations over a Fly tunnel instead of the retired database (#1355)
+
+
 ## [5.17.254] - 2026-07-29
 ### Fixed
 - Fix/sentry trace sampling (#1354)
