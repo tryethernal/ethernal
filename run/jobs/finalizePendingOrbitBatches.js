@@ -11,6 +11,7 @@
  * @module jobs/finalizePendingOrbitBatches
  */
 
+const crypto = require('crypto');
 const logger = require('../lib/logger');
 const redis = require('../lib/redis');
 const { withTimeout } = require('../lib/utils');
@@ -28,20 +29,51 @@ const DB_TIMEOUT = 10000;
 const FAILURE_REPORT_TTL = 3600;
 
 /**
- * True at most once an hour for a given set of failing workspaces.
+ * Reduces a failure to what makes it distinct, so the same fault recurring on
+ * every tick hashes identically while a genuinely different one does not.
  *
- * Keyed on the set itself rather than the job, so a chain that starts failing
- * is reported immediately instead of being swallowed by a window another chain
- * opened. An unchanged set stays quiet.
+ * Volatile detail is collapsed — digits and hex become '#' — because messages
+ * carry block numbers, hashes and durations that would otherwise make every
+ * tick look novel and defeat the throttle entirely.
+ *
+ * @param {{ workspaceId: number, message: string }} failure
+ * @returns {string} Stable signature for this workspace-and-fault pairing.
+ */
+const failureSignature = ({ workspaceId, message }) =>
+    `${workspaceId}:${String(message)
+        .toLowerCase()
+        .replace(/0x[0-9a-f]+/g, '#')
+        .replace(/\d+/g, '#')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 120)}`;
+
+/**
+ * True at most once an hour for a given set of failures.
+ *
+ * Keyed on which chains failed *and how*, rather than on the job. A chain that
+ * starts failing is reported immediately instead of being swallowed by a window
+ * another chain opened, and a chain whose RPC recovers only to hit a database
+ * error is reported too — that is a different, independently actionable fault
+ * that happens to share a workspace id. The same fault repeating stays quiet.
  *
  * On Redis failure this returns true — a missing throttle should not cost us
  * the signal.
  *
- * @param {number[]} workspaceIds - Ids of the failing parent workspaces.
+ * @param {Array<{ workspaceId: number, message: string }>} failures
  * @returns {Promise<boolean>} Whether this failure should reach Sentry.
  */
-const shouldReportFailures = async workspaceIds => {
-    const key = `orbitBatchFinalization:rpcFailure:${workspaceIds.join(',')}`;
+const shouldReportFailures = async failures => {
+    const workspaceIds = failures.map(failure => failure.workspaceId).sort((a, b) => a - b);
+    const digest = crypto
+        .createHash('sha1')
+        .update(failures.map(failureSignature).sort().join('|'))
+        .digest('hex')
+        .slice(0, 12);
+
+    // Ids stay readable in the key so a glance at Redis still says which chains
+    // are affected; the digest is what makes distinct faults distinct.
+    const key = `orbitBatchFinalization:rpcFailure:${workspaceIds.join(',')}:${digest}`;
     try {
         return await redis.set(key, '1', 'NX', 'EX', FAILURE_REPORT_TTL) === 'OK';
     } catch (error) {
@@ -130,7 +162,7 @@ module.exports = async () => {
             .map(failure => `${failure.name} (#${failure.workspaceId}): ${failure.message}`)
             .join('; ');
         const error = new Error(`Could not finalize Orbit batches for ${failures.length} of ${workspaces.length} parent chain(s) — ${summary}`);
-        error.sentryIgnore = !await shouldReportFailures(failures.map(failure => failure.workspaceId).sort((a, b) => a - b));
+        error.sentryIgnore = !await shouldReportFailures(failures);
         throw error;
     }
 

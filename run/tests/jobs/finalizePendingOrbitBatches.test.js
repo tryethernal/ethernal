@@ -356,8 +356,39 @@ describe('finalizePendingOrbitBatches', () => {
             await expect(finalizePendingOrbitBatches()).rejects.toThrow();
 
             expect(redis.set).toHaveBeenCalledWith(
-                'orbitBatchFinalization:rpcFailure:1,2', '1', 'NX', 'EX', 3600
+                expect.stringMatching(/^orbitBatchFinalization:rpcFailure:1,2:[0-9a-f]{12}$/),
+                '1', 'NX', 'EX', 3600
             );
+        });
+
+        it('should treat a different fault on the same chain as a new report', async () => {
+            // Otherwise an RPC outage would mask a database error that happened
+            // to land on the same chain, for up to an hour, while batches sit
+            // unconfirmed.
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+            const rpcKey = redis.set.mock.calls[0][0];
+
+            redis.set.mockClear();
+            mockViemClient.getBlock.mockResolvedValue(mockBlock);
+            OrbitBatch.findAll.mockRejectedValue(new Error('deadlock detected'));
+
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            expect(redis.set.mock.calls[0][0]).not.toEqual(rpcKey);
+        });
+
+        it('should keep the same key while one fault repeats with volatile detail', async () => {
+            // Block numbers and durations move on every tick; if they reached
+            // the key, nothing would ever be throttled.
+            mockViemClient.getBlock.mockRejectedValue(new Error('Timed out after 15000 ms. at block 0xa1b2c3'));
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+            const firstKey = redis.set.mock.calls[0][0];
+
+            redis.set.mockClear();
+            mockViemClient.getBlock.mockRejectedValue(new Error('Timed out after 15000 ms. at block 0xf9e8d7'));
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            expect(redis.set.mock.calls[0][0]).toEqual(firstKey);
         });
 
         it('should report rather than go silent when Redis is unavailable', async () => {
