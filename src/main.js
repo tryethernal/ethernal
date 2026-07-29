@@ -44,10 +44,15 @@ const createVueApp = (rootComponent, options) => {
             dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
             integrations: [
                 Sentry.browserTracingIntegration({ router }),
-                Sentry.browserProfilingIntegration(),
             ],
-            tracesSampleRate: 0.1,
-            tracePropagationTargets: [/.*/],
+            // Shares a 5M spans/month org quota with the backend, which is the
+            // heavy consumer. 2% of page loads is enough to see real user
+            // latency without competing for the same budget.
+            tracesSampleRate: 0.02,
+            // Only attach trace headers to our own API. The previous `/.*/`
+            // sent sentry-trace and baggage to every third party the app talks
+            // to, and forced the backend to sample whatever it touched.
+            tracePropagationTargets: [/\/api\//],
             enabled: !!import.meta.env.VITE_SENTRY_ENABLED
         });
     }
