@@ -1,0 +1,116 @@
+name: Blog Draft Pipeline
+
+# Rehomed from the Hetzner box (systemd blog-draft.timer) so that box can be
+# decommissioned. The pipeline itself is unchanged — blog/pipeline/draft.sh is
+# the same script the timer ran; this workflow only reproduces the environment
+# systemd gave it.
+#
+# It is a good fit for Actions because its state lives in git: posts, images and
+# llms.txt are committed to develop, so there is nothing on a local disk that
+# needs preserving. (The tweet pipeline was not portable for exactly that
+# reason — its queue was 34 MB of files on the box.)
+
+# blog-draft.timer on the Hetzner box was disabled 2026-07-29 and this is now the
+# only scheduler. Do not re-enable that timer without disabling this, or both will
+# pick a topic before the other marks it taken and publish twice.
+#
+# This workflow existed before and was deleted in March as a duplicate of the box.
+# The reasons given then no longer hold: Actions minutes are free on a public repo,
+# and the objection about needing "the Claude CLI with full auth" is met by
+# installing the CLI and running draft.sh unchanged — rather than reimplementing
+# the pipeline inside claude-code-action as the old one did, which is the likeliest
+# reason its scheduled runs kept failing.
+#
+# Proven end to end on 2026-07-29 (run 30469887209): published
+# "PeerDAS Has Been Live for 8 Months", covers included and correctly sized.
+on:
+  schedule:
+    # 08:00 UTC on odd days of the month, matching the systemd timer it replaces
+    # (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month boundaries;
+    # keeping the drift identical means the publishing cadence does not change.
+    - cron: '0 8 1-31/2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # commits and pushes the post to develop
+  issues: write     # draft.sh opens an issue when a phase fails
+
+# A run takes ~25 minutes and pushes to develop. Two at once would race on the
+# same branch and could pick the same topic twice.
+concurrency:
+  group: blog-draft
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    # The box took ~24 min. Claude phases are the variable part, so allow room
+    # rather than killing a run that is nearly finished.
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          # draft.sh commits and pushes. The default GITHUB_TOKEN cannot push to
+          # a protected branch, and pushes made with it do not trigger downstream
+          # workflows — the blog deploy would never fire.
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Two separate dependency trees. draft.sh installs blog/pipeline itself,
+      # but it never installs blog/ — on the box those were already present from
+      # the deploy. `npx astro sync` runs in blog/ and fails without them.
+      - name: Install blog dependencies
+        run: cd blog && npm ci
+
+      # generate-cover.sh calls `magick`. The runner image ships ImageMagick 6,
+      # which only provides `convert`, so the v7 binary has to be added or every
+      # cover silently fails (draft.sh treats that as a warning, not an error —
+      # posts would publish without images and nobody would notice).
+      - name: Install ImageMagick 7
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick
+          if ! command -v magick >/dev/null; then
+            echo "magick not present; shimming to ImageMagick 6"
+            printf '#!/bin/sh\nexec convert "$@"\n' | sudo tee /usr/local/bin/magick >/dev/null
+            sudo chmod +x /usr/local/bin/magick
+          fi
+          magick -version | head -1
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "ethernal-blog-bot"
+          git config user.email "blog@tryethernal.com"
+
+      - name: Run the draft pipeline
+        run: blog/pipeline/draft.sh
+        env:
+          # No env file here — draft.sh falls back to the ambient environment
+          # and validates that the variables it needs actually arrived.
+          BLOG_PIPELINE_LOG_DIR: ${{ runner.temp }}/blog-pipeline
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_API_HOST: ${{ secrets.POSTHOG_API_HOST }}
+
+      # draft.sh puts the last 50 lines into a GitHub issue on failure, which is
+      # rarely enough to see what a Claude phase actually did. Keep the whole log.
+      - name: Upload pipeline log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-pipeline-log
+          path: ${{ runner.temp }}/blog-pipeline/
+          retention-days: 14
+          if-no-files-found: warn

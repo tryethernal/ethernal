@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# Blog draft automation — runs on Hetzner via systemd timer
-# Three-phase pipeline: research → draft → humanize
-# Each phase is a separate Claude call with focused instructions
+# Blog draft automation — three-phase pipeline: research → draft → humanize.
+# Each phase is a separate Claude call with focused instructions.
+#
+# Runs in two places, and the difference is only in how the environment arrives:
+#   - GitHub Actions (.github/workflows/blog-draft.yml) — secrets are already
+#     exported, so there is no env file and no privileged filesystem to repair.
+#   - the Hetzner box, via systemd timer — secrets come from an env file.
+# Everything below the environment block is identical in both.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-ENV_FILE="/opt/blog-pipeline.env"
+ENV_FILE="${BLOG_PIPELINE_ENV_FILE:-/opt/blog-pipeline.env}"
 MCP_CONFIG="$SCRIPT_DIR/mcp.json"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
-LOG_DIR="/var/log/blog-pipeline"
+LOG_DIR="${BLOG_PIPELINE_LOG_DIR:-/var/log/blog-pipeline}"
 
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
@@ -71,32 +76,57 @@ EOF
 # Catch unexpected failures (from set -e)
 trap 'report_failure "Unexpected error (line $LINENO)"' ERR
 
-# Load environment
+# Load environment.
+#
+# The env file is one way to supply the secrets, not the only one — under GitHub
+# Actions they are already exported and no file exists. So the file is optional
+# and what is actually checked is that the variables arrived, by whichever route.
+# Failing on a missing file rather than a missing variable would have made this
+# unrunnable anywhere except the box it was written for.
 if [ -f "$ENV_FILE" ]; then
+  log "Loading environment from $ENV_FILE"
   set -a
+  # shellcheck disable=SC1090
   source "$ENV_FILE"
   set +a
 else
-  log "ERROR: $ENV_FILE not found"
+  log "No env file at $ENV_FILE — expecting the environment to be pre-populated"
+fi
+
+MISSING=""
+for var in GH_TOKEN GEMINI_API_KEY CLAUDE_CODE_OAUTH_TOKEN; do
+  [ -n "${!var:-}" ] || MISSING="${MISSING}${MISSING:+ }$var"
+done
+if [ -n "$MISSING" ]; then
+  log "ERROR: required variables not set: $MISSING"
   report_failure "Environment"
   exit 1
 fi
 
 cd "$REPO_DIR"
 
-# Pull latest (fix ownership first — rsync deploys as root can leave root-owned files)
-log "Pulling latest changes..."
-if find "$REPO_DIR/.git" "$REPO_DIR/blog" -not -user "$(whoami)" -type f 2>/dev/null | head -1 | grep -q .; then
-  log "WARNING: Found files not owned by $(whoami) — attempting ownership fix"
-  sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" || {
-    log "ERROR: chown failed — git operations will likely fail. Add sudoers rule: blog ALL=(root) NOPASSWD: /usr/bin/chown -R blog\\:blog /opt/ethernal-blog-stack"
-    exit 1
-  }
+# Get to a clean develop.
+#
+# On the box this repairs a checkout that rsync deploys can leave root-owned, and
+# discards local edits — it is a deployment target and never has intentional
+# changes. A CI runner hands us a fresh checkout already, so both are skipped
+# there: there is nothing to repair, and `git reset --hard` against a shallow or
+# detached checkout is a good way to lose the very commit we are building on.
+log "Preparing the working tree..."
+if [ "${CI:-}" = "true" ]; then
+  log "CI detected — using the checkout as provided"
+else
+  if find "$REPO_DIR/.git" "$REPO_DIR/blog" -not -user "$(whoami)" -type f 2>/dev/null | head -1 | grep -q .; then
+    log "WARNING: Found files not owned by $(whoami) — attempting ownership fix"
+    sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" || {
+      log "ERROR: chown failed — git operations will likely fail. Add sudoers rule: blog ALL=(root) NOPASSWD: /usr/bin/chown -R blog\\:blog /opt/ethernal-blog-stack"
+      exit 1
+    }
+  fi
+  git checkout develop 2>&1 | tee -a "$LOG_FILE"
+  git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
+  git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 fi
-# Reset any local changes — server is a deployment target, never has intentional edits
-git checkout develop 2>&1 | tee -a "$LOG_FILE"
-git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
-git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 
 # Install pipeline deps if needed
 cd blog/pipeline

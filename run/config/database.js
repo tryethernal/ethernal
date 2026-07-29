@@ -38,6 +38,35 @@ module.exports = {
             evict: 5000
         }
     },
+    /**
+     * Schema migrations, run from CI through a Fly WireGuard tunnel.
+     *
+     * Separate from `production` on purpose. That config sets
+     * synchronous_commit=off, which is a sensible latency trade for application
+     * writes and a bad one for DDL — a crash in the seconds after a migration
+     * commits could lose the schema change while leaving it recorded as applied.
+     *
+     * Points at the `ethernal_migrations` entry on PgBouncer, which is the same
+     * database as `ethernal` but pooled per session rather than per transaction.
+     * Migrations hold session state, and indexes built CONCURRENTLY cannot run
+     * inside a transaction at all.
+     */
+    migration: {
+        "username": process.env.DB_USER,
+        "password": process.env.DB_PASSWORD,
+        "database": process.env.DB_NAME,
+        "host": process.env.DB_HOST,
+        "port": process.env.DB_PORT,
+        "dialect": "postgres",
+        "dialectOptions": {
+            "family": getDbFamily()
+        },
+        "logging": console.log,
+        "pool": {
+            max: 1,
+            min: 0
+        }
+    },
     production: {
         "username": process.env.DB_USER,
         "password": process.env.DB_PASSWORD,

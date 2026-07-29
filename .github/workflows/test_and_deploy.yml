@@ -125,11 +125,45 @@ jobs:
       - name: Install deps
         run: cd run && npm install
 
+      # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
+      # every job here hands the production Fly credential to whatever that
+      # branch happens to point at today. This SHA is what v1/1.6 resolve to.
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
+
+      # The database has no public address. Since the move to Fly it is reachable
+      # only on Fly's private IPv6 network, so a runner cannot dial it by any
+      # hostname — it has to come in over WireGuard. The tunnel and the migration
+      # share one step so the proxy's lifetime is unambiguous.
+      #
+      # Connects to the pgbouncer flycast address rather than a database machine
+      # directly: pgbouncer already tracks whichever machine is primary, so this
+      # keeps working across a failover or a rebuilt machine, neither of which
+      # keeps its address.
       - name: Run migrations
-        run: cd run && npx sequelize db:migrate
+        run: |
+          nohup flyctl proxy 15432:5432 ethernal-pgbouncer.flycast \
+            -a ethernal-pgbouncer > /tmp/flyproxy.log 2>&1 &
+
+          for i in $(seq 1 30); do
+            (echo > /dev/tcp/127.0.0.1/15432) >/dev/null 2>&1 && break
+            if [ "$i" = "30" ]; then
+              echo "::error::Tunnel to ethernal-pgbouncer never came up"
+              cat /tmp/flyproxy.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          cd run && npx sequelize db:migrate --env migration
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
+          # Not secrets: the tunnel endpoint is local to the runner. The
+          # `ethernal_migrations` database is the same database as `ethernal`,
+          # pooled per session instead of per transaction — migrations hold
+          # session state, and CONCURRENT index builds cannot run in a
+          # transaction at all.
+          DB_HOST: 127.0.0.1
+          DB_PORT: 15432
+          DB_NAME: ethernal_migrations
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
@@ -141,7 +175,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
+      # every job here hands the production Fly credential to whatever that
+      # branch happens to point at today. This SHA is what v1/1.6 resolve to.
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
 
       - name: Deploy Caddy
         run: |
@@ -170,7 +207,10 @@ jobs:
         env:
           GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
+      # every job here hands the production Fly credential to whatever that
+      # branch happens to point at today. This SHA is what v1/1.6 resolve to.
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
 
       - name: Setup Docker Buildx
         run: |
@@ -195,7 +235,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
+      # every job here hands the production Fly credential to whatever that
+      # branch happens to point at today. This SHA is what v1/1.6 resolve to.
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
 
       - name: Setup Docker Buildx
         run: |
@@ -220,7 +263,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
+      # every job here hands the production Fly credential to whatever that
+      # branch happens to point at today. This SHA is what v1/1.6 resolve to.
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
 
       - name: Update version
         run: |
