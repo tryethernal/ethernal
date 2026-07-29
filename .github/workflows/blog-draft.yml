@@ -10,12 +10,26 @@ name: Blog Draft Pipeline
 # needs preserving. (The tweet pipeline was not portable for exactly that
 # reason — its queue was 34 MB of files on the box.)
 
+# ⚠️ MANUAL-ONLY UNTIL THE HETZNER TIMER IS OFF.
+#
+# The schedule below is deliberately commented out. blog-draft.timer on the
+# Hetzner box is still enabled and fires at 08:00 UTC on the same days. Two
+# schedulers would each pick a topic before the other marked it taken, then
+# generate and push two posts and race on develop.
+#
+# TO ACTIVATE, in this order:
+#   1. ssh ethernal-blog && sudo systemctl disable --now blog-draft.timer
+#   2. confirm: systemctl list-timers --all | grep blog   (should be empty)
+#   3. uncomment the schedule below
+#
+# Until then, run it by hand from the Actions tab. The box remains the fallback,
+# so nothing is unscheduled in the meantime.
 on:
-  schedule:
-    # 08:00 UTC on odd days of the month, matching the systemd timer it replaces
-    # (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month boundaries;
-    # keeping the drift identical means the publishing cadence does not change.
-    - cron: '0 8 1-31/2 * *'
+  # schedule:
+  #   # 08:00 UTC on odd days of the month, matching the systemd timer it
+  #   # replaces (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month
+  #   # boundaries; keeping the drift identical means the cadence does not change.
+  #   - cron: '0 8 1-31/2 * *'
   workflow_dispatch:
 
 permissions:
