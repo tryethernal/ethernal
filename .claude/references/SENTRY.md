@@ -1,10 +1,15 @@
 # Sentry Error & Performance Monitoring
 
-Self-hosted Sentry (v26.2.1) at `sentry.tryethernal.com`. Server details and credentials in `.credentials.local`.
+Hosted Sentry (`sentry.io`, org `antoine-0l`, Developer plan) with projects `ethernal-backend` and `ethernal-frontend`. Migrated off the self-hosted instance 2026-07-28. Credentials in `.credentials.local`.
+
+## Quota
+
+The Developer plan allows **5M spans and 5k errors per month**, with on-demand spend set to 0 — once a quota is hit, data is dropped rather than billed. Sampling is therefore a correctness concern, not a cost one: over-sampling means going blind for the rest of the billing period.
 
 ## Integration Points
 
-- **Backend**: `instrument.js` initializes `@sentry/node` using `SENTRY_DSN` env var (Fly.io secret). Uses a custom `tracesSampler` that samples 100% of API requests (`GET/POST/PUT/DELETE /api*`) and 10% of everything else — ensures slow user-facing queries always appear in performance monitoring. Workers wrap jobs in `Sentry.startSpan()` with `op: 'queue.process'` for Queue Monitoring.
+- **Backend**: `instrument.js` initializes `@sentry/node` using `SENTRY_DSN` env var (Fly.io secret). A custom `tracesSampler` applies, in order: infrastructure noise (`/api/caddy/validDomain`, `/bull`) is dropped entirely; an upstream sampling decision is honoured to keep distributed traces whole; background queue jobs (identified by the `messaging.destination.name` attribute) sample at 0.1%; user-facing `/api*` routes sample at 5%; everything else at 1%. All three rates are overridable via `SENTRY_API_SAMPLE_RATE`, `SENTRY_QUEUE_SAMPLE_RATE` and `SENTRY_DEFAULT_SAMPLE_RATE` so the budget can be corrected without a release. Workers wrap jobs in `Sentry.startSpan()` with `op: 'queue.process'` for Queue Monitoring.
+- **Profiling is deliberately off.** The plan's profile duration quota is 0, so every profile sent was rate-limited and discarded. `@sentry/profiling-node` remains in `package.json` but is no longer initialized.
 - **Frontend**: `@sentry/vue` initialized in `main.js` using `VITE_SENTRY_*` env vars. These are passed as build args to `Dockerfile.caddyfile` from GitHub secrets in CI.
 - **Queue monitoring**: `enqueue()` in `run/lib/queue.js` wraps with `op: 'queue.publish'` spans. All 4 workers use `op: 'queue.process'` spans with `messaging.destination.name` and `messaging.message.id` attributes.
 - **Proxy**: Caddy on Fly.io proxies `/api/2/*` to `sentry.tryethernal.com` so frontend events route through the explorer's own domain.
