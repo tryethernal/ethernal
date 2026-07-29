@@ -23,8 +23,18 @@ log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
 FAILURE_REPORTED=false
 
-# Reset card to Detected so it can be retried
+# Reset card to Detected so it can be retried.
+#
+# Never after the article is live. Everything up to the push is reversible — the
+# card going back to Detected just means the topic gets picked again. Once the
+# push lands the post is public, and resetting the card would have a later run
+# research, write and publish the same topic a second time. A failure after that
+# point needs a human, not a retry.
 reset_card() {
+  if [ "${PUBLISHED:-false}" = true ]; then
+    log "Article is already published — leaving the card alone (a reset would republish it)"
+    return
+  fi
   if [ -n "${CARD_ID:-}" ]; then
     log "Resetting card $CARD_ID to Detected..."
     cd "$REPO_DIR/blog/pipeline"
@@ -598,15 +608,23 @@ done
 
 log "Pushed to develop."
 
+# Past this line the post is public and nothing is retryable.
+PUBLISHED=true
+
 # Update the project card
 log "Updating project card..."
 cd blog/pipeline
+# Both calls are awaited. Without it node can exit before the requests complete,
+# so the card silently stays on the previous status — or the unhandled rejection
+# takes the process down non-zero, which used to reset an already-published card.
+# `|| true`: the article is already live, so a bookkeeping failure here must not
+# fail the run. It is logged and left for a human.
 CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
   import { updateCardStatus, setArticlePath } from './project.js';
-  updateCardStatus(process.env.CARD_ID, 'published');
-  setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
+  await updateCardStatus(process.env.CARD_ID, 'published');
+  await setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
   console.log('Card updated: Published + article path set');
-" 2>&1 | tee -a "$LOG_FILE"
+" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: card update failed after publish — article IS live, card needs setting to Published by hand"
 
 # Clean up temp files
 rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md \
