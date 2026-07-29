@@ -230,6 +230,11 @@ const slugify = (string) => {
 /**
  * Wraps a promise with a timeout. Rejects if the promise doesn't resolve within the delay.
  *
+ * The timer is cleared once the race settles. Without that, every call left a
+ * live timer behind for the full delay even after the promise resolved — which
+ * on a job that fans out across workspaces every 30 seconds means a permanent
+ * population of pending timers, and a test run that will not exit.
+ *
  * @param {Promise} promise - Promise to wrap with timeout
  * @param {number} [delay=10000] - Timeout in milliseconds
  * @returns {Promise} Resolves with promise result or rejects on timeout
@@ -238,16 +243,17 @@ const slugify = (string) => {
  * await withTimeout(fetchData(), 5000); // times out after 5 seconds
  */
 const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
-    const timeout = new Promise((resolve, reject) =>
-        setTimeout(
+    let timer;
+    const timeout = new Promise((resolve, reject) => {
+        timer = setTimeout(
             () => reject(new Error(`Timed out after ${delay} ms.`)),
             delay
-        )
-    );
+        );
+    });
     return Promise.race([
         promise,
         timeout
-    ]);
+    ]).finally(() => clearTimeout(timer));
 }
 
 /**
