@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.254] - 2026-07-29
+### Fixed
+- Fix/sentry trace sampling (#1354)
+- fix(sentry): sample traces against the span quota instead of blowing through it (#1353)
+
+
 ## [5.17.253] - 2026-07-28
 ### Fixed
 - chore(sentry): move error tracking to the hosted service (#1352)

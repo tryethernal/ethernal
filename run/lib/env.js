@@ -40,6 +40,21 @@ module.exports = {
     getDiscordFeedbackChannelWebhook: () => process.env.DISCORD_FEEDBACK_CHANNEL_WEBHOOK,
     getMaxV2DexPairsForTrial: () => process.env.MAX_V2_DEX_PAIRS_FOR_TRIAL || 20,
     getSentryDsn: () => process.env.SENTRY_DSN,
+    /**
+     * Trace sample rates, tunable without a release so the span budget can be
+     * corrected from `fly secrets set` when traffic shifts.
+     *
+     * Defaults are sized against a 5M spans/month quota at roughly 3.8M queue
+     * jobs and 40k user-facing API requests a day, which lands near 1.9M
+     * spans/month. Raise the API rate first — it is the one worth paying for.
+     *
+     * @returns {number} Fraction of traces to keep, 0 to 1.
+     */
+    getSentryApiSampleRate: () => parseFloat(process.env.SENTRY_API_SAMPLE_RATE || '0.05'),
+    /** @returns {number} Sample rate for background queue jobs, 0 to 1. */
+    getSentryQueueSampleRate: () => parseFloat(process.env.SENTRY_QUEUE_SAMPLE_RATE || '0.001'),
+    /** @returns {number} Sample rate for everything else, 0 to 1. */
+    getSentryDefaultSampleRate: () => parseFloat(process.env.SENTRY_DEFAULT_SAMPLE_RATE || '0.01'),
     getVersion: () => process.env.VERSION,
     getRedisUrl: () => process.env.REDIS_URL,
     /**

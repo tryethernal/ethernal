@@ -2,6 +2,11 @@ require('../mocks/lib/queue');
 require('../mocks/lib/logger');
 require('../mocks/models');
 
+jest.mock('../../lib/redis', () => ({
+    set: jest.fn().mockResolvedValue('OK')
+}));
+
+const redis = require('../../lib/redis');
 const { OrbitBatch, Workspace } = require('../mocks/models');
 const finalizePendingOrbitBatches = require('../../jobs/finalizePendingOrbitBatches');
 
@@ -68,6 +73,7 @@ describe('finalizePendingOrbitBatches', () => {
                 id: 1,
                 name: 'Parent Workspace 1',
                 isTopL1Parent: true,
+                rpcServer: 'https://parent-1.example.com',
                 orbitChildConfigs: mockOrbitChildConfigs,
                 getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
             },
@@ -75,6 +81,7 @@ describe('finalizePendingOrbitBatches', () => {
                 id: 2,
                 name: 'Parent Workspace 2',
                 isTopL1Parent: true,
+                rpcServer: 'https://parent-2.example.com',
                 orbitChildConfigs: [],
                 getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
             }
@@ -150,6 +157,7 @@ describe('finalizePendingOrbitBatches', () => {
                 id: 2,
                 name: 'Parent Workspace 2',
                 isTopL1Parent: true,
+                rpcServer: 'https://parent-2.example.com',
                 orbitChildConfigs: [],
                 getViemPublicClient: jest.fn().mockReturnValue({
                     getBlock: jest.fn().mockResolvedValue({ number: 2000 })
@@ -259,28 +267,134 @@ describe('finalizePendingOrbitBatches', () => {
     });
 
     describe('error handling', () => {
-        it('should handle errors in Workspace.findAll', async () => {
+        it('should not swallow a failure to load the workspaces', async () => {
+            // Nothing was attempted, so there is nothing to isolate — this one
+            // still has to surface.
             Workspace.findAll.mockRejectedValue(new Error('Workspace find error'));
 
             await expect(finalizePendingOrbitBatches()).rejects.toThrow('Workspace find error');
         });
 
-        it('should handle errors in getBlock', async () => {
-            mockViemClient.getBlock.mockRejectedValue(new Error('Block error'));
+        it('should report which parent chain failed, and why', async () => {
+            mockViemClient.getBlock.mockRejectedValue(new Error('HTTP request failed.'));
 
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Block error');
+            await expect(finalizePendingOrbitBatches())
+                .rejects.toThrow(/Parent Workspace 1 \(#1\): HTTP request failed\./);
         });
 
-        it('should handle errors in OrbitBatch.findAll', async () => {
+        it('should surface errors from OrbitBatch.findAll', async () => {
             OrbitBatch.findAll.mockRejectedValue(new Error('Batch find error'));
 
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Batch find error');
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow(/Batch find error/);
         });
 
-        it('should handle errors in batch.confirm', async () => {
+        it('should surface errors from batch.confirm', async () => {
             mockPendingBatches[0].confirm.mockRejectedValue(new Error('Confirm error'));
 
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Confirm error');
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow(/Confirm error/);
+        });
+
+        it('should skip a workspace with no RPC server instead of failing', async () => {
+            mockWorkspaces[0].rpcServer = null;
+
+            const result = await finalizePendingOrbitBatches();
+
+            expect(result).toEqual([]);
+            expect(mockWorkspaces[0].getViemPublicClient).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('isolation between parent chains', () => {
+        // The bug this job shipped with: one unreachable RPC aborted the whole
+        // sweep, so every other chain silently stopped being finalized.
+        beforeEach(() => {
+            mockWorkspaces[1].orbitChildConfigs = [{ id: 20, workspaceId: 201 }];
+            mockWorkspaces[1].getViemPublicClient = jest.fn().mockReturnValue({
+                getBlock: jest.fn().mockResolvedValue({ number: 2000 })
+            });
+            mockWorkspaces[0].getViemPublicClient = jest.fn().mockReturnValue({
+                getBlock: jest.fn().mockRejectedValue(new Error('HTTP request failed.'))
+            });
+        });
+
+        it('should still finalize the healthy chains when one RPC is down', async () => {
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            // The healthy chain's batches were confirmed despite the failure.
+            expect(OrbitBatch.findAll).toHaveBeenCalledWith(expect.objectContaining({
+                where: expect.objectContaining({ workspaceId: 201 })
+            }));
+            expect(mockPendingBatches[0].confirm).toHaveBeenCalled();
+        });
+
+        it('should say how many chains failed out of how many', async () => {
+            await expect(finalizePendingOrbitBatches())
+                .rejects.toThrow(/1 of 2 parent chain\(s\)/);
+        });
+    });
+
+    describe('Sentry throttling', () => {
+        // This job runs every 30s. Reporting an unreachable RPC on every tick
+        // burned more than the whole monthly error quota in ten hours.
+        beforeEach(() => {
+            mockViemClient.getBlock.mockRejectedValue(new Error('HTTP request failed.'));
+        });
+
+        it('should report the first occurrence for a given set of chains', async () => {
+            redis.set.mockResolvedValue('OK');
+
+            await expect(finalizePendingOrbitBatches()).rejects.toMatchObject({ sentryIgnore: false });
+        });
+
+        it('should stay quiet while the same chains keep failing', async () => {
+            redis.set.mockResolvedValue(null);
+
+            await expect(finalizePendingOrbitBatches()).rejects.toMatchObject({ sentryIgnore: true });
+        });
+
+        it('should key the throttle on the failing chains, not the job', async () => {
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            expect(redis.set).toHaveBeenCalledWith(
+                expect.stringMatching(/^orbitBatchFinalization:rpcFailure:1,2:[0-9a-f]{12}$/),
+                '1', 'NX', 'EX', 3600
+            );
+        });
+
+        it('should treat a different fault on the same chain as a new report', async () => {
+            // Otherwise an RPC outage would mask a database error that happened
+            // to land on the same chain, for up to an hour, while batches sit
+            // unconfirmed.
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+            const rpcKey = redis.set.mock.calls[0][0];
+
+            redis.set.mockClear();
+            mockViemClient.getBlock.mockResolvedValue(mockBlock);
+            OrbitBatch.findAll.mockRejectedValue(new Error('deadlock detected'));
+
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            expect(redis.set.mock.calls[0][0]).not.toEqual(rpcKey);
+        });
+
+        it('should keep the same key while one fault repeats with volatile detail', async () => {
+            // Block numbers and durations move on every tick; if they reached
+            // the key, nothing would ever be throttled.
+            mockViemClient.getBlock.mockRejectedValue(new Error('Timed out after 15000 ms. at block 0xa1b2c3'));
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+            const firstKey = redis.set.mock.calls[0][0];
+
+            redis.set.mockClear();
+            mockViemClient.getBlock.mockRejectedValue(new Error('Timed out after 15000 ms. at block 0xf9e8d7'));
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow();
+
+            expect(redis.set.mock.calls[0][0]).toEqual(firstKey);
+        });
+
+        it('should report rather than go silent when Redis is unavailable', async () => {
+            redis.set.mockRejectedValue(new Error('Redis down'));
+
+            await expect(finalizePendingOrbitBatches()).rejects.toMatchObject({ sentryIgnore: false });
         });
     });
 });
