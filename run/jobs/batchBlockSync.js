@@ -234,10 +234,29 @@ module.exports = async job => {
         });
     }
 
-    if (jobs.length > 0)
-        await bulkEnqueue('blockSync', jobs);
+    const result = jobs.length > 0 ? await bulkEnqueue('blockSync', jobs) : null;
 
-    logger.info(`batchBlockSync: enqueued ${jobs.length}/${end - from + 1} blocks (${existingBlocks.length} skipped) for workspace ${workspaceId}, range ${from}-${end}`);
+    // bulkEnqueue reports { attempted, accepted, dropped }. Fall back to assuming
+    // everything landed if it returns anything else, so a stale or mocked
+    // implementation degrades to the previous logging rather than throwing.
+    const reportsCounts = !!result && Number.isFinite(result.accepted) && Number.isFinite(result.dropped);
+    const accepted = reportsCounts ? result.accepted : jobs.length;
+    const dropped = reportsCounts ? result.dropped : 0;
+
+    logger.info(`batchBlockSync: enqueued ${accepted}/${jobs.length} blocks (${existingBlocks.length} already synced, ${dropped} dropped by queue cap) for workspace ${workspaceId}, range ${from}-${end}`);
+
+    // Warn when queue cap discards jobs (silent discard hides production incidents)
+    if (dropped > 0) {
+        logger.warn('batchBlockSync: jobs dropped by queue cap', {
+            workspaceId,
+            attempted: jobs.length,
+            accepted,
+            dropped,
+            from,
+            to: end,
+            location: 'jobs.batchBlockSync'
+        });
+    }
 
     // Self-re-enqueue for remaining blocks with delay for backpressure
     const nextStart = end + 1;

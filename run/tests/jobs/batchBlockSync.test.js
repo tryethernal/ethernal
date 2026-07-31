@@ -4,6 +4,7 @@ require('../mocks/lib/logger');
 const { Workspace, Block } = require('../mocks/models');
 
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
+const logger = require('../../lib/logger');
 const batchBlockSync = require('../../jobs/batchBlockSync');
 
 beforeEach(() => jest.clearAllMocks());
@@ -37,6 +38,7 @@ describe('batchBlockSync', () => {
         jest.spyOn(Block, 'findAll').mockResolvedValueOnce([
             { number: 2 }, { number: 4 }
         ]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 3, accepted: 3, dropped: 0 });
 
         await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 5 }
@@ -133,6 +135,7 @@ describe('batchBlockSync', () => {
             explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
         });
         jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 5000, accepted: 5000, dropped: 0 });
 
         await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 10000 }
@@ -167,6 +170,7 @@ describe('batchBlockSync', () => {
             explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
         });
         jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 100, accepted: 100, dropped: 0 });
 
         await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 100 }
@@ -183,11 +187,132 @@ describe('batchBlockSync', () => {
             explorer: null
         });
         jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 3, accepted: 3, dropped: 0 });
 
         await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 3 }
         });
 
         expect(bulkEnqueue).toHaveBeenCalledWith('blockSync', expect.any(Array));
+    });
+
+    it('When nothing is dropped, info log reports accepted equal to jobs and no warn call', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
+        });
+        jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 5, accepted: 5, dropped: 0 });
+
+        await batchBlockSync({
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 5 }
+        });
+
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('enqueued 5/5 blocks')
+        );
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('0 dropped by queue cap')
+        );
+        expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    it('When cap drops some jobs, info log reports and warn is called with structured data', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
+        });
+        jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 100, accepted: 20, dropped: 80 });
+
+        await batchBlockSync({
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 100 }
+        });
+
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('enqueued 20/100 blocks')
+        );
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('80 dropped by queue cap')
+        );
+        expect(logger.warn).toHaveBeenCalledWith(
+            'batchBlockSync: jobs dropped by queue cap',
+            {
+                workspaceId: 1,
+                attempted: 100,
+                accepted: 20,
+                dropped: 80,
+                from: 1,
+                to: 100,
+                location: 'jobs.batchBlockSync'
+            }
+        );
+    });
+
+    it('When every job is dropped, warn fires with correct numbers', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
+        });
+        jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce({ attempted: 50, accepted: 0, dropped: 50 });
+
+        await batchBlockSync({
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 50 }
+        });
+
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('enqueued 0/50 blocks')
+        );
+        expect(logger.warn).toHaveBeenCalledWith(
+            'batchBlockSync: jobs dropped by queue cap',
+            {
+                workspaceId: 1,
+                attempted: 50,
+                accepted: 0,
+                dropped: 50,
+                from: 1,
+                to: 50,
+                location: 'jobs.batchBlockSync'
+            }
+        );
+    });
+
+    it('When there are no jobs to enqueue, bulkEnqueue is not called and warn is not called', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
+        });
+        jest.spyOn(Block, 'findAll').mockResolvedValueOnce([
+            { number: 1 }, { number: 2 }, { number: 3 }
+        ]);
+
+        await batchBlockSync({
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 3 }
+        });
+
+        expect(bulkEnqueue).not.toHaveBeenCalled();
+        expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    it('Defensive fallback: undefined result does not throw and reports jobs.length accepted and 0 dropped', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            explorer: { shouldSync: true, stripeSubscription: { id: 1 } }
+        });
+        jest.spyOn(Block, 'findAll').mockResolvedValueOnce([]);
+        bulkEnqueue.mockResolvedValueOnce(undefined);
+
+        await batchBlockSync({
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 1, to: 10 }
+        });
+
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('enqueued 10/10 blocks')
+        );
+        expect(logger.info).toHaveBeenCalledWith(
+            expect.stringContaining('0 dropped by queue cap')
+        );
+        expect(logger.warn).not.toHaveBeenCalled();
     });
 });

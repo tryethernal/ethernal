@@ -66,8 +66,20 @@ module.exports = {
     getRedisFamily: () => (process.env.REDIS_FAMILY ? parseInt(process.env.REDIS_FAMILY, 10) : undefined),
     queueMonitoringMaxProcessingTime: () => parseInt(process.env.QUEUE_MONITORING_MAX_PROCESSING_TIME) || 60,
     queueMonitoringHighProcessingTimeThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_PROCESSING_TIME_THRESHOLD) || 20,
-    queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 50,
-    queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 50,
+    // Backlog thresholds must sit above the per-workspace queue cap
+    // (queueCapBlockSync, 200) — otherwise a single workspace backfilling within
+    // its allowance trips the pager. Bulk backfills legitimately burst into the
+    // thousands and drain within a few minutes; only a *sustained* breach
+    // (see queueMonitoringBreachesBeforeAlert) is actionable.
+    queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 500,
+    queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 5000,
+    /**
+     * Number of consecutive breached samples required before paging.
+     * The monitoring job runs every 120s, so the default of 3 means a condition
+     * must hold for ~6 minutes. This is what distinguishes a draining burst
+     * from a genuinely stuck queue.
+     */
+    queueMonitoringBreachesBeforeAlert: () => parseInt(process.env.QUEUE_MONITORING_BREACHES_BEFORE_ALERT) || 3,
     queueCapBlockSync: () => parseInt(process.env.QUEUE_CAP_BLOCKSYNC) || 200,
     queueCapReceiptSync: () => parseInt(process.env.QUEUE_CAP_RECEIPTSYNC) || 5000,
     queueCapTierCacheTtlSeconds: () => parseInt(process.env.QUEUE_CAP_TIER_CACHE_TTL_S) || 60,
