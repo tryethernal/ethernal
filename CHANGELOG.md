@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.259] - 2026-07-31
+### Fixed
+- chore(sentry): remove the triage agent's production database access (#1359)
+
+
 ## [5.17.258] - 2026-07-31
 ### Fixed
 - blog: publish - The Gas Number That Just Became Two: Inside EIP-8037's Multidimensional Gas Metering
