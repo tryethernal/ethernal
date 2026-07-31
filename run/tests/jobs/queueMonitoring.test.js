@@ -240,10 +240,27 @@ describe('queueMonitoring', () => {
         );
     });
 
-    it('Should not page on prioritized jobs, which drain on their own', async () => {
+    it('Should page on prioritized jobs when queue depth exceeds threshold', async () => {
         mockGetCompleted.mockResolvedValue([]);
         mockGetWaitingCount.mockResolvedValue(0);
-        mockGetPrioritizedCount.mockResolvedValue(20000);
+        mockGetPrioritizedCount.mockResolvedValue(300); // Exceeds prioritized threshold of 200
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(3);
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 0'),
+            'P1',
+            expect.any(Object)
+        );
+    });
+
+    it('Should not page on small prioritized backlogs', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(50); // Below prioritized threshold of 200
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
