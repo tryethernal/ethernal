@@ -281,6 +281,23 @@ describe('queueMonitoring', () => {
         expect(createIncident).not.toHaveBeenCalled();
     });
 
+    it('Should page on moderate backlog with zero completions (stalled worker)', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        // 600 waiting, zero p95 (no recent completions), stalled worker
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(3);
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 600'),
+            'P1',
+            expect.any(Object)
+        );
+    });
+
     it('Should create a performance incident when combined thresholds are exceeded', async () => {
         const now = Date.now();
         // p95 = 65s (above the 60s max) and backlog above the high threshold

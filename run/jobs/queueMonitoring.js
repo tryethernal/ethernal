@@ -195,7 +195,7 @@ module.exports = async () => {
                 p95ProcessingTime > queueMonitoringMaxProcessingTime() ||
                 waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
                 prioritizedJobCount >= queueMonitoringMaxPrioritizedJobCount() ||
-                (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold());
+                (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() || waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold());
 
             const { shouldAlert, consecutiveBreaches } = await trackBreach(performanceAlias, breached);
 
