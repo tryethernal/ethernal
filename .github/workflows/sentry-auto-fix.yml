@@ -261,11 +261,12 @@ jobs:
               The Sentry issue ID may be in the issue body URL. The org slug is "sentry".
               Backend project slug: "ethernal-backend", Frontend project slug: "ethernal-frontend"
             - Check production logs if needed: `flyctl logs -a ethernal --no-tail | tail -100`
-            - Query the read-only database if the error involves data issues:
-              ```
-              psql "$PROD_DATABASE_URL_READONLY" -c "SELECT ..."
-              ```
-              NEVER write to this database. SELECT queries only.
+            - You have NO database access. Production is not reachable from CI and
+              there is no read-only credential any more: it would have meant an
+              internet-facing database password stored here, and read access to all
+              customer data, to serve an occasional convenience. If an issue can only
+              be resolved by inspecting production data, ESCALATE it — say plainly
+              that it needs a human with database access, and stop.
 
             ### 2. Triage (choose ONE action)
 
@@ -305,7 +306,11 @@ jobs:
                - **User-facing endpoints** (API routes, HTTP handlers): need **50+ events/24h**. Below that → CLOSE.
                - **Background jobs** (BullMQ workers, cron jobs): need **100+ events/24h**. Below that → CLOSE.
                If the event count is below the threshold, CLOSE the issue immediately with a comment explaining the threshold. Do NOT proceed to investigation or fix.
-            2. **Check for missing indexes**: Run `\di` on the affected table(s) via the read-only DB. If the slow query would be fixed by an index, the fix is just a migration — don't restructure code.
+            2. **Check for missing indexes**: read the migrations in `run/migrations/` to
+               see which indexes exist on the affected table(s). You cannot query the
+               database, so this is the source of truth. If the slow query would be
+               fixed by an index, the fix is just a migration — don't restructure code.
+               If the migrations do not let you decide, ESCALATE rather than guess.
             3. **Prefer simple fixes**: An index > a query tweak > code restructuring. Never split a working single query into multiple queries to "optimize" it unless you've confirmed the original query plan is actually bad.
             4. **Complexity budget**: If your fix requires > 20 lines of logic changes (not counting tests), ESCALATE instead of auto-fixing. Complex performance optimizations need human review.
             5. **Group related issues**: Before fixing, check if there are other open sentry issues touching the same code path. If so, note it in the issue comment — one coherent fix is better than 5 micro-PRs.
@@ -369,14 +374,16 @@ jobs:
             - NEVER silently catch and swallow database errors with fallback values — this masks real issues. Let errors propagate so BullMQ retries the job.
             - NEVER split working database queries into multiple queries to "prevent timeouts" — timeouts are solved by indexes, not query splitting.
             - NEVER wrap entire job functions in try-catch just to log and re-throw — this adds no value.
-            - For performance fixes: ALWAYS check existing indexes first (`\di tablename` on read-only DB). If the right index exists, the query is likely fine — close the issue or look for the real problem elsewhere.
+            - For performance fixes: ALWAYS check existing indexes first, by reading
+              `run/migrations/` — there is no database to query. If the right index
+              already exists, the query is likely fine — close the issue or look for
+              the real problem elsewhere.
             - For performance fixes: prefer adding an index (migration) over restructuring code. An index is 1 file, zero risk, and fixes the root cause. Code restructuring (caching, batching, multi-path strategies) adds complexity and bugs.
             - NEVER create a fix PR with > 20 lines of logic changes for a performance issue. Escalate instead — complex optimizations need human review.
             - NEVER claim a fix was made without verifying it appears in `git diff`. Run `git diff` before writing the review processing summary and confirm each claimed change is present.
             - If your fix introduces a new catch block, timeout handler, or fallback path, you MUST add a test that exercises that path. Untested error-handling code is where bugs hide — the overnight incident on 2026-03-30 had 3 bugs in auto-merged PRs, all in untested timeout/fallback paths. If you can't write a test for the new path, ESCALATE instead of shipping untested error handling.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
-          PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Stop conversation streamer
@@ -705,7 +712,6 @@ jobs:
             Then write a short summary of what you did. If not ready, explain what remains.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
-          PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Stop conversation streamer
