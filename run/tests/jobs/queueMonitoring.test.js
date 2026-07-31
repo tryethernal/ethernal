@@ -6,12 +6,13 @@ const { createIncident, closeIncident } = require('../../lib/opsgenie');
 const logger = require('../../lib/logger');
 const redis = require('../../lib/redis');
 
-let mockGetCompleted, mockGetWaitingCount, mockGetDelayedCount, mockGetFailedCount, mockGetFailed;
+let mockGetCompleted, mockGetWaitingCount, mockGetPrioritizedCount, mockGetDelayedCount, mockGetFailedCount, mockGetFailed;
 
 jest.mock('bullmq', () => ({
     Queue: jest.fn().mockImplementation(() => ({
         getCompleted: (...args) => mockGetCompleted(...args),
         getWaitingCount: (...args) => mockGetWaitingCount(...args),
+        getPrioritizedCount: (...args) => mockGetPrioritizedCount(...args),
         getDelayedCount: (...args) => mockGetDelayedCount(...args),
         getFailedCount: (...args) => mockGetFailedCount(...args),
         getFailed: (...args) => mockGetFailed(...args),
@@ -19,12 +20,18 @@ jest.mock('bullmq', () => ({
     }))
 }));
 
+// Stateful counter store so consecutive-breach tracking behaves like real Redis.
+const breachCounters = new Map();
+
 jest.mock('../../lib/redis', () => ({
     zcard: jest.fn().mockResolvedValue(0),
     unlink: jest.fn().mockResolvedValue(1),
     zrevrange: jest.fn().mockResolvedValue([]),
     get: jest.fn().mockResolvedValue(null), // Mock for legacy cleanup cache
     set: jest.fn().mockResolvedValue('OK'), // Mock for legacy cleanup cache
+    incr: jest.fn(),
+    expire: jest.fn().mockResolvedValue(1),
+    del: jest.fn(),
     pipeline: jest.fn().mockReturnValue({
         zcard: jest.fn().mockReturnThis(),
         unlink: jest.fn().mockReturnThis(),
@@ -38,6 +45,21 @@ jest.mock('../../lib/redis', () => ({
     })
 }));
 
+/** Number of consecutive breached samples required before the pager fires. */
+const BREACHES_BEFORE_ALERT = 3;
+
+/**
+ * Runs the monitoring job enough times to satisfy the consecutive-breach gate.
+ * @param {number} [times=BREACHES_BEFORE_ALERT]
+ * @returns {Promise<boolean>} The result of the final run
+ */
+const runUntilAlert = async (times = BREACHES_BEFORE_ALERT) => {
+    let result;
+    for (let i = 0; i < times; i++)
+        result = await queueMonitoring();
+    return result;
+};
+
 const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
@@ -47,6 +69,17 @@ beforeEach(() => {
     logger.error.mockClear();
     redis.get.mockClear().mockResolvedValue(null);
     redis.set.mockClear().mockResolvedValue('OK');
+    breachCounters.clear();
+    redis.incr.mockClear().mockImplementation(async key => {
+        const next = (breachCounters.get(key) || 0) + 1;
+        breachCounters.set(key, next);
+        return next;
+    });
+    redis.expire.mockClear().mockResolvedValue(1);
+    redis.del.mockClear().mockImplementation(async key => {
+        breachCounters.delete(key);
+        return 1;
+    });
     redis.pipeline.mockClear().mockReturnValue({
         zcard: jest.fn().mockReturnThis(),
         unlink: jest.fn().mockReturnThis(),
@@ -60,6 +93,7 @@ beforeEach(() => {
     });
     mockGetCompleted = jest.fn().mockResolvedValue([]);
     mockGetWaitingCount = jest.fn().mockResolvedValue(0);
+    mockGetPrioritizedCount = jest.fn().mockResolvedValue(0);
     mockGetDelayedCount = jest.fn().mockResolvedValue(0);
     mockGetFailedCount = jest.fn().mockResolvedValue(0);
     mockGetFailed = jest.fn().mockResolvedValue([]);
@@ -127,7 +161,7 @@ describe('queueMonitoring', () => {
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
-        const result = await queueMonitoring();
+        const result = await runUntilAlert();
 
         expect(createIncident).toHaveBeenCalledWith(
             expect.stringContaining('queue issue (performance)'),
@@ -138,13 +172,13 @@ describe('queueMonitoring', () => {
         expect(result).toBe(true);
     });
 
-    it('Should create a performance incident when waiting job count exceeds max', async () => {
+    it('Should create a performance incident when the backlog stays above max', async () => {
         mockGetCompleted.mockResolvedValue([]);
-        mockGetWaitingCount.mockResolvedValue(150);
+        mockGetWaitingCount.mockResolvedValue(9000);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
-        const result = await queueMonitoring();
+        const result = await runUntilAlert();
 
         expect(createIncident).toHaveBeenCalledWith(
             expect.stringContaining('queue issue (performance)'),
@@ -155,17 +189,126 @@ describe('queueMonitoring', () => {
         expect(result).toBe(true);
     });
 
-    it('Should create a performance incident when combined thresholds are exceeded', async () => {
-        const now = Date.now();
-        // p95 = 65s (above 60s max), waiting = 150 (above 100 max)
-        mockGetCompleted.mockResolvedValue([
-            { processedOn: now - 65000, finishedOn: now },
-        ]);
-        mockGetWaitingCount.mockResolvedValue(150);
+    it('Should not page on a transient backlog burst that drains', async () => {
+        mockGetCompleted.mockResolvedValue([]);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
-        const result = await queueMonitoring();
+        // Two breached samples, then the burst drains before the third check.
+        mockGetWaitingCount.mockResolvedValue(12000);
+        await queueMonitoring();
+        await queueMonitoring();
+
+        expect(createIncident).not.toHaveBeenCalled();
+
+        mockGetWaitingCount.mockResolvedValue(0);
+        await queueMonitoring();
+
+        expect(createIncident).not.toHaveBeenCalled();
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-performance-blockSync',
+            expect.objectContaining({ note: expect.stringContaining('Performance recovered') })
+        );
+    });
+
+    it('Should restart the breach count after the backlog recovers', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        mockGetWaitingCount.mockResolvedValue(12000);
+        await queueMonitoring();
+        await queueMonitoring();
+
+        mockGetWaitingCount.mockResolvedValue(0);
+        await queueMonitoring();
+
+        // A fresh burst must serve the full consecutive-breach sentence again.
+        mockGetWaitingCount.mockResolvedValue(12000);
+        await queueMonitoring();
+        await queueMonitoring();
+
+        expect(createIncident).not.toHaveBeenCalled();
+
+        await queueMonitoring();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            expect.stringContaining('queue issue (performance)'),
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should page on prioritized jobs when queue depth exceeds threshold', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(300); // Exceeds prioritized threshold of 200
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(3);
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 0'),
+            'P1',
+            expect.any(Object)
+        );
+    });
+
+    it('Should not page on small prioritized backlogs', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(50); // Below prioritized threshold of 200
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should not page when the backlog is within the per-workspace queue cap', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        // 200 is the blockSync per-workspace cap — legitimate, not an incident.
+        mockGetWaitingCount.mockResolvedValue(200);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page on moderate backlog with zero completions (stalled worker)', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        // 600 waiting, zero p95 (no recent completions), stalled worker
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(3);
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 600'),
+            'P1',
+            expect.any(Object)
+        );
+    });
+
+    it('Should create a performance incident when combined thresholds are exceeded', async () => {
+        const now = Date.now();
+        // p95 = 65s (above the 60s max) and backlog above the high threshold
+        mockGetCompleted.mockResolvedValue([
+            { processedOn: now - 65000, finishedOn: now },
+        ]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        const result = await runUntilAlert();
 
         expect(createIncident).toHaveBeenCalledWith(
             expect.stringContaining('queue issue (performance)'),
@@ -222,7 +365,7 @@ describe('queueMonitoring', () => {
 
     it('Should not close performance alert while threshold is still breached', async () => {
         mockGetCompleted.mockResolvedValue([]);
-        mockGetWaitingCount.mockResolvedValue(150);
+        mockGetWaitingCount.mockResolvedValue(9000);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
@@ -292,6 +435,7 @@ describe('queueMonitoring', () => {
         expect(logger.info).toHaveBeenCalledWith('Queue monitoring', expect.objectContaining({
             p95ProcessingTime: expect.any(Number),
             waitingJobCount: 3,
+            prioritizedJobCount: 0,
             delayedJobCount: 1,
             failedJobCount: 2,
         }));

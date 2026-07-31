@@ -9,7 +9,7 @@ const { Queue } = require('bullmq');
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident, closeIncident } = require('../lib/opsgenie');
-const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
+const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount, queueMonitoringMaxPrioritizedJobCount, queueMonitoringBreachesBeforeAlert } = require('../lib/env');
 const priorities = require('../workers/priorities');
 
 const monitoredPerformances = ['blockSync', 'receiptSync'];
@@ -19,6 +19,40 @@ const monitoredActivity = ['blockSync'];
 // Cache key and interval for legacy cleanup throttling
 const LEGACY_CLEANUP_CACHE_KEY = 'queue:legacy_cleanup_last_run';
 const LEGACY_CLEANUP_INTERVAL_MS = 15 * 60 * 1000; // Run cleanup every 15 minutes instead of every 2 minutes
+
+// Consecutive-breach counters expire well after a few monitoring cycles so a
+// queue that recovers and stays quiet starts from zero again.
+const BREACH_COUNTER_TTL_S = 30 * 60;
+
+/**
+ * Records the outcome of one threshold evaluation and reports whether the
+ * condition has now been breached on enough *consecutive* samples to page.
+ *
+ * A single bad sample is not actionable: bulk backfills burst the backlog into
+ * the thousands and drain within minutes. Requiring N consecutive breaches
+ * turns the check into "the queue is not draining" instead of
+ * "the queue is momentarily deep".
+ *
+ * @param {string} alias - Incident dedup alias, used as the counter key
+ * @param {boolean} breached - Whether this sample breached the threshold
+ * @returns {Promise<{ shouldAlert: boolean, consecutiveBreaches: number }>}
+ */
+const trackBreach = async (alias, breached) => {
+    const key = `queue:breach:${alias}`;
+
+    if (!breached) {
+        await redis.del(key);
+        return { shouldAlert: false, consecutiveBreaches: 0 };
+    }
+
+    const consecutiveBreaches = await redis.incr(key);
+    await redis.expire(key, BREACH_COUNTER_TTL_S);
+
+    return {
+        shouldAlert: consecutiveBreaches >= queueMonitoringBreachesBeforeAlert(),
+        consecutiveBreaches
+    };
+};
 
 /**
  * Computes the p95 processing time (in seconds) from an array of completed jobs.
@@ -139,10 +173,14 @@ module.exports = async () => {
         for (const queueName of monitoredPerformances) {
             const queue = getQueue(queueName);
 
-            // Batch the 4 basic stats calls together, but process queues sequentially
-            const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
+            // Batch the basic stats calls together, but process queues sequentially.
+            // Both `wait` and `prioritized` lists can indicate a stuck queue if they
+            // stop draining, so both contribute to the alert condition. A stalled
+            // worker produces zero completions and can leave either form of pending work invisible.
+            const [completedJobs, waitingJobCount, prioritizedJobCount, delayedJobCount, failedJobCount] = await Promise.all([
                 queue.getCompleted(0, 19), // Limit to 20 jobs for P95 calculation (reduces Redis N+1 from ~200 to ~40 calls)
                 queue.getWaitingCount(),
+                queue.getPrioritizedCount(),
                 queue.getDelayedCount(),
                 queue.getFailedCount()
             ]);
@@ -152,22 +190,27 @@ module.exports = async () => {
 
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
-            logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, delayedJobCount, failedJobCount });
-
-            if (
+            const performanceAlias = `queue-performance-${queueName}`;
+            const breached =
                 p95ProcessingTime > queueMonitoringMaxProcessingTime() ||
                 waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
-                (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
-            ) {
+                prioritizedJobCount >= queueMonitoringMaxPrioritizedJobCount() ||
+                (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() || waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold());
+
+            const { shouldAlert, consecutiveBreaches } = await trackBreach(performanceAlias, breached);
+
+            logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, prioritizedJobCount, delayedJobCount, failedJobCount, consecutiveBreaches });
+
+            if (shouldAlert) {
                 await createIncident(
                     `${queueName} queue issue (performance)`,
-                    `Waiting: ${waitingJobCount} - Delayed: ${delayedJobCount} - Failed: ${failedJobCount} - P95 processing time: ${p95ProcessingTime.toFixed(2)}s`,
+                    `Waiting: ${waitingJobCount} - Delayed: ${delayedJobCount} - Failed: ${failedJobCount} - P95 processing time: ${p95ProcessingTime.toFixed(2)}s - Sustained for ${consecutiveBreaches} consecutive checks`,
                     'P1',
-                    { alias: `queue-performance-${queueName}` }
+                    { alias: performanceAlias }
                 );
                 incidentCreated = true;
-            } else {
-                await closeIncident(`queue-performance-${queueName}`, {
+            } else if (!breached) {
+                await closeIncident(performanceAlias, {
                     note: `Performance recovered. Waiting: ${waitingJobCount} - P95: ${p95ProcessingTime.toFixed(2)}s`
                 });
             }

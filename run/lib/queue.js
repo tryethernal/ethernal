@@ -5,10 +5,10 @@
  */
 
 const Sentry = require('@sentry/node');
-const queues = require("../queues");
-const { sanitize } = require("./utils");
-const queueCaps = require("./queueCaps");
-const logger = require("./logger");
+const queues = require('../queues');
+const { sanitize } = require('./utils');
+const queueCaps = require('./queueCaps');
+const logger = require('./logger');
 
 /** @constant {number} Maximum number of jobs to add in a single bulk operation */
 const MAX_BATCH_SIZE = 2000;
@@ -74,15 +74,21 @@ const enqueue = async (queueName, jobName, data, priority = 1, repeat, delay, un
  * @param {Object} jobData[].data - Job payload
  * @param {number} [priority=10] - Priority for all jobs
  * @param {number} [maxBatchSize=2000] - Maximum jobs per batch
- * @returns {Promise<Array>} Results of all batch operations
+ * @returns {Promise<Object>} Object with {attempted, accepted, dropped} counts.
+ *   - attempted: total jobs requested by caller
+ *   - accepted: jobs actually enqueued to BullMQ
+ *   - dropped: jobs filtered out (dropped > 0 indicates workspace hit its queue cap)
  * @example
- * await bulkEnqueue('processContract', [
+ * const result = await bulkEnqueue('processContract', [
  *   { name: 'contract-0x123', data: { address: '0x123' } },
  *   { name: 'contract-0x456', data: { address: '0x456' } }
  * ]);
+ * console.log(result); // { attempted: 2, accepted: 2, dropped: 0 }
  */
 const bulkEnqueue = async (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
-    if (!queueName || !jobData || !jobData.length) return;
+    const attempted = Array.isArray(jobData) ? jobData.length : 0;
+
+    if (!queueName || !jobData || !jobData.length) return { attempted, accepted: 0, dropped: attempted };
 
     let acceptedJobs = jobData;
     const cap = queueCaps.getCap(queueName);
@@ -127,7 +133,7 @@ const bulkEnqueue = async (queueName, jobData, priority = 10, maxBatchSize = MAX
         }
     }
 
-    if (acceptedJobs.length === 0) return;
+    if (acceptedJobs.length === 0) return { attempted, accepted: 0, dropped: attempted };
 
     const promises = [];
     const batchedJobs = [];
@@ -143,7 +149,8 @@ const bulkEnqueue = async (queueName, jobData, priority = 10, maxBatchSize = MAX
         promises.push(queues[queueName].addBulk(jobs));
     }
 
-    return Promise.all(promises);
+    await Promise.all(promises);
+    return { attempted, accepted: acceptedJobs.length, dropped: attempted - acceptedJobs.length };
 };
 
 module.exports = {

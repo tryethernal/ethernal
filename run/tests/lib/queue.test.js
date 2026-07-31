@@ -49,6 +49,74 @@ describe('bulkEnqueue', () => {
         await bulkEnqueue('test', jobData);
         expect(queues['test'].addBulk).toHaveBeenCalledTimes(5);
     });
+
+    it('returns { attempted: N, accepted: N, dropped: 0 } when nothing is capped', async () => {
+        queueCaps.getCap.mockReturnValue(Infinity);
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+        ];
+        const result = await bulkEnqueue('test', jobs);
+        expect(result).toEqual({ attempted: 2, accepted: 2, dropped: 0 });
+    });
+
+    it('returns { attempted: 0, accepted: 0, dropped: 0 } when jobData is empty', async () => {
+        const result = await bulkEnqueue('test', []);
+        expect(result).toEqual({ attempted: 0, accepted: 0, dropped: 0 });
+    });
+
+    it('returns { attempted: 0, accepted: 0, dropped: 0 } when jobData is null', async () => {
+        const result = await bulkEnqueue('test', null);
+        expect(result).toEqual({ attempted: 0, accepted: 0, dropped: 0 });
+    });
+
+    it('returns { attempted: 0, accepted: 0, dropped: 0 } when jobData is undefined', async () => {
+        const result = await bulkEnqueue('test', undefined);
+        expect(result).toEqual({ attempted: 0, accepted: 0, dropped: 0 });
+    });
+
+    it('returns { attempted: N, accepted: 0, dropped: N } when queueName is falsy', async () => {
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+        ];
+        const result = await bulkEnqueue(null, jobs);
+        expect(result).toEqual({ attempted: 2, accepted: 0, dropped: 2 });
+    });
+
+    it('returns result with dropped > 0 when low-tier workspace hits cap', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.countWaitingForWorkspace.mockResolvedValue(195);
+        const jobs = [];
+        for (let i = 0; i < 20; i++) jobs.push({ name: `j${i}`, data: { workspaceId: 1 } });
+        const result = await bulkEnqueue('blockSync', jobs);
+        expect(result).toEqual({ attempted: 20, accepted: 5, dropped: 15 });
+    });
+
+    it('returns { attempted: N, accepted: 0, dropped: N } when cap leaves zero room', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.countWaitingForWorkspace.mockResolvedValue(200);
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+            { name: 'c', data: { workspaceId: 1 } },
+        ];
+        const result = await bulkEnqueue('blockSync', jobs);
+        expect(result).toEqual({ attempted: 3, accepted: 0, dropped: 3 });
+    });
+
+    it('proves enqueues still happen by asserting addBulk was called', async () => {
+        queueCaps.getCap.mockReturnValue(Infinity);
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+        ];
+        const result = await bulkEnqueue('blockSync', jobs);
+        expect(result).toEqual({ attempted: 2, accepted: 2, dropped: 0 });
+        expect(queues['blockSync'].addBulk).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('enqueue cap enforcement', () => {

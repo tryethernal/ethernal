@@ -6,8 +6,10 @@
 
 const models = require('../models');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
+const queueCaps = require('../lib/queueCaps');
 const { withTimeout } = require('../lib/utils');
 const moment = require('moment');
+const logger = require('../lib/logger');
 
 const Workspace = models.Workspace;
 
@@ -91,7 +93,7 @@ module.exports = async job => {
         where: { number: workspace.integrityCheckStartBlockNumber }
     });
     if (!lowerBlock) {
-        return enqueue(`blockSync`, `blockSync-${workspace.id}-${workspace.integrityCheckStartBlockNumber}`, {
+        return enqueue('blockSync', `blockSync-${workspace.id}-${workspace.integrityCheckStartBlockNumber}`, {
             workspaceId: workspace.id,
             blockNumber: workspace.integrityCheckStartBlockNumber,
             source: 'integrityCheck'
@@ -108,7 +110,7 @@ module.exports = async job => {
             withTimeout(provider.fetchLatestBlock())
         ]);
     } catch (_error) {
-        return "Couldn't reach network";
+        return 'Couldn\'t reach network';
     }
 
     if (!latestReadyBlock || !latestReadyBlock.timestamp || !latestReadyBlock.number)
@@ -143,10 +145,39 @@ module.exports = async job => {
     const gaps = await workspace.findBlockGapsV2(scanLowerBound, latestBlock.number);
 
     if (gaps.length) {
+        // Compute the budget: how many blocks can we queue for this workspace
+        const cap = queueCaps.getCap('blockSync');
+        let budget = Infinity;
+        if (cap !== Infinity) {
+            const isLow = await queueCaps.isLowTierWorkspace(workspace.id);
+            if (isLow) {
+                const inFlight = await queueCaps.countWaitingForWorkspace('blockSync', workspace.id);
+                budget = Math.max(0, cap - inFlight);
+            }
+        }
+
         const batches = [];
-        for (let j = 0; j < gaps.length; j++) {
-            const gap = gaps[j];
-            if (gap.blockStart && gap.blockEnd) {
+        let truncated = false;
+
+        // A budget of 0 means the workspace already has a full blockSync queue.
+        // Queue nothing this cycle rather than building thousands of job payloads
+        // that would be discarded on arrival.
+        if (budget > 0) {
+            let accumulatedBlocks = 0;
+
+            for (let j = 0; j < gaps.length; j++) {
+                const gap = gaps[j];
+                if (!gap.blockStart || !gap.blockEnd)
+                    continue;
+
+                // The first eligible gap is always queued, even if it alone exceeds
+                // the budget — otherwise a gap wider than the cap could never be
+                // repaired at all.
+                if (accumulatedBlocks > 0 && accumulatedBlocks >= budget) {
+                    truncated = true;
+                    break;
+                }
+
                 batches.push({
                     name:  `batchBlockSync-${workspace.id}-${gap.blockStart}-${gap.blockEnd}`,
                     data: {
@@ -158,18 +189,38 @@ module.exports = async job => {
                         source: 'integrityCheck'
                     }
                 });
+                accumulatedBlocks += gap.blockEnd - gap.blockStart + 1;
             }
         }
 
-        await bulkEnqueue('batchBlockSync', batches);
-    } else {
-        const [cursorBlock] = await workspace.getBlocks({
-            where: { number: latestReadyBlock.number },
-            attributes: ['id']
-        });
-        if (cursorBlock)
-            await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
+        if (batches.length > 0)
+            await bulkEnqueue('batchBlockSync', batches);
+
+        // Surface budget-limited cycles: this is the signal that a workspace is
+        // accumulating gaps faster than its queue allowance can repair them.
+        if (truncated || budget === 0) {
+            logger.info('integrityCheck: gap repair limited by queue budget', {
+                workspaceId: workspace.id,
+                totalGaps: gaps.length,
+                queuedGaps: batches.length,
+                budget,
+                location: 'jobs.integrityCheck'
+            });
+        }
     }
+
+    // Advance the integrity check cursor to track the furthest block scanned.
+    // The cursor reflects the scan progress, not gap-free verification.
+    // Gaps found in this pass have been handed to repair jobs for async processing.
+    // The hourly full scan (isFullScan = true during the first 5 minutes of each hour)
+    // serves as the safety net, re-detecting any blocks that never got filled.
+    // This is intentional — the cursor must advance to avoid wasteful re-scanning.
+    const [cursorBlock] = await workspace.getBlocks({
+        where: { number: latestReadyBlock.number },
+        attributes: ['id']
+    });
+    if (cursorBlock)
+        await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
 
     return true;
 };
