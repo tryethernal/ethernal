@@ -240,27 +240,13 @@ describe('queueMonitoring', () => {
         );
     });
 
-    it('Should page on prioritized jobs when queue depth exceeds threshold', async () => {
-        mockGetCompleted.mockResolvedValue([]);
+    it('Should never page on prioritized depth alone while the queue is still completing work', async () => {
+        const now = Date.now();
+        // A deep prioritized set is ordinary pending work. As long as jobs are
+        // finishing, it must never page however large it gets.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 1000, finishedOn: now }]);
         mockGetWaitingCount.mockResolvedValue(0);
-        mockGetPrioritizedCount.mockResolvedValue(300); // Exceeds prioritized threshold of 200
-        mockGetDelayedCount.mockResolvedValue(0);
-        mockGetFailedCount.mockResolvedValue(0);
-
-        await runUntilAlert(3);
-
-        expect(createIncident).toHaveBeenCalledWith(
-            'blockSync queue issue (performance)',
-            expect.stringContaining('Waiting: 0'),
-            'P1',
-            expect.any(Object)
-        );
-    });
-
-    it('Should not page on small prioritized backlogs', async () => {
-        mockGetCompleted.mockResolvedValue([]);
-        mockGetWaitingCount.mockResolvedValue(0);
-        mockGetPrioritizedCount.mockResolvedValue(50); // Below prioritized threshold of 200
+        mockGetPrioritizedCount.mockResolvedValue(50000);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
@@ -269,10 +255,134 @@ describe('queueMonitoring', () => {
         expect(createIncident).not.toHaveBeenCalled();
     });
 
-    it('Should not page when the backlog is within the per-workspace queue cap', async () => {
+    it('Should page when completions are retained but stale, and work is pending', async () => {
+        const now = Date.now();
+        // Completed jobs are retained in Redis by count and age, so a dead worker
+        // still returns history. Only a RECENT completion proves liveness — this
+        // history is 10 minutes old, well past the stall window.
+        mockGetCompleted.mockResolvedValue([
+            { processedOn: now - 10 * 60 * 1000 - 1000, finishedOn: now - 10 * 60 * 1000 }
+        ]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should not page when a recent completion proves the queue is alive', async () => {
+        const now = Date.now();
+        // Same pending depth, but something finished within the stall window.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 2000, finishedOn: now - 5000 }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page when the worker is dead and all pending work sits in prioritized', async () => {
+        // Workers drain `wait` first and only touch `prioritized` once wait is empty,
+        // so a stopped worker leaves waiting at 0 with the backlog in prioritized.
+        // Zero completions is what makes this a liveness signal rather than a depth one.
         mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should keep the hard waiting limit reachable (combined condition must not subsume it)', async () => {
+        // A deep-but-fast queue: p95 below the "high" threshold, waiting above the
+        // "high" threshold but below the hard limit. This must NOT page — if the
+        // combined clause were an OR it would fire here and make the hard limit
+        // unreachable.
+        const now = Date.now();
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 1000, finishedOn: now }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page when the queue is both slow and deep', async () => {
+        const now = Date.now();
+        // p95 = 30s (>= 20s high threshold) and waiting 600 (>= 500 high threshold),
+        // neither of which alone reaches its hard limit.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 30000, finishedOn: now }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 600'),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should not page when the backlog is within the per-workspace queue cap', async () => {
+        const now = Date.now();
         // 200 is the blockSync per-workspace cap — legitimate, not an incident.
+        // The queue is actively completing work, so this is depth only, not a stall.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 1000, finishedOn: now }]);
         mockGetWaitingCount.mockResolvedValue(200);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page on a stalled worker even with a small prioritized-only backlog', async () => {
+        // A depth gate would leave this silent forever: too few jobs to breach any
+        // depth threshold, but nothing has completed and the work never moves.
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(3);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should not page on an idle queue with no pending work and no completions', async () => {
+        // Nothing pending means nothing is stuck, however long since the last job.
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(0);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
