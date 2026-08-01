@@ -240,8 +240,11 @@ describe('queueMonitoring', () => {
         );
     });
 
-    it('Should never page on prioritized jobs, however deep, since they drain on their own', async () => {
-        mockGetCompleted.mockResolvedValue([]);
+    it('Should never page on prioritized depth alone while the queue is still completing work', async () => {
+        const now = Date.now();
+        // A deep prioritized set is ordinary pending work. As long as jobs are
+        // finishing, it must never page however large it gets.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 1000, finishedOn: now }]);
         mockGetWaitingCount.mockResolvedValue(0);
         mockGetPrioritizedCount.mockResolvedValue(50000);
         mockGetDelayedCount.mockResolvedValue(0);
@@ -250,6 +253,26 @@ describe('queueMonitoring', () => {
         await runUntilAlert(5);
 
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page when the worker is dead and all pending work sits in prioritized', async () => {
+        // Workers drain `wait` first and only touch `prioritized` once wait is empty,
+        // so a stopped worker leaves waiting at 0 with the backlog in prioritized.
+        // Zero completions is what makes this a liveness signal rather than a depth one.
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(0);
+        mockGetPrioritizedCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
     });
 
     it('Should keep the hard waiting limit reachable (combined condition must not subsume it)', async () => {

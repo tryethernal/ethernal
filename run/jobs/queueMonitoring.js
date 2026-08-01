@@ -192,10 +192,19 @@ module.exports = async () => {
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
             const performanceAlias = `queue-performance-${queueName}`;
-            // Pending work but nothing finishing at all. p95 is derived from completed
-            // jobs, so with zero completions it is 0 and every latency-based condition
-            // below is unreachable — a fully stalled queue would otherwise stay silent.
-            const stalled = completedJobs.length === 0 && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold();
+            // Liveness check: pending work but nothing finishing at all. p95 is derived
+            // from completed jobs, so with zero completions it is 0 and every
+            // latency-based condition below is unreachable — a dead worker would
+            // otherwise stay silent.
+            //
+            // Prioritized jobs count towards *this* check only. Workers drain the plain
+            // wait list first and only pull from the prioritized set once wait is empty,
+            // so a stopped worker can leave all pending work sitting in prioritized with
+            // waitingJobCount at zero. Requiring zero completions is what keeps this
+            // liveness signal distinct from queue depth: a healthy queue always has
+            // completions, so prioritized depth on its own can never page.
+            const pendingJobCount = waitingJobCount + prioritizedJobCount;
+            const stalled = completedJobs.length === 0 && pendingJobCount >= queueMonitoringHighWaitingJobCountThreshold();
 
             // The "slow and deep" clause is deliberately AND, not OR: it catches a
             // queue degraded on both axes before either one alone reaches its hard
