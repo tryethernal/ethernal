@@ -240,33 +240,51 @@ describe('queueMonitoring', () => {
         );
     });
 
-    it('Should page on prioritized jobs when queue depth exceeds threshold', async () => {
+    it('Should never page on prioritized jobs, however deep, since they drain on their own', async () => {
         mockGetCompleted.mockResolvedValue([]);
         mockGetWaitingCount.mockResolvedValue(0);
-        mockGetPrioritizedCount.mockResolvedValue(300); // Exceeds prioritized threshold of 200
-        mockGetDelayedCount.mockResolvedValue(0);
-        mockGetFailedCount.mockResolvedValue(0);
-
-        await runUntilAlert(3);
-
-        expect(createIncident).toHaveBeenCalledWith(
-            'blockSync queue issue (performance)',
-            expect.stringContaining('Waiting: 0'),
-            'P1',
-            expect.any(Object)
-        );
-    });
-
-    it('Should not page on small prioritized backlogs', async () => {
-        mockGetCompleted.mockResolvedValue([]);
-        mockGetWaitingCount.mockResolvedValue(0);
-        mockGetPrioritizedCount.mockResolvedValue(50); // Below prioritized threshold of 200
+        mockGetPrioritizedCount.mockResolvedValue(50000);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 
         await runUntilAlert(5);
 
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should keep the hard waiting limit reachable (combined condition must not subsume it)', async () => {
+        // A deep-but-fast queue: p95 below the "high" threshold, waiting above the
+        // "high" threshold but below the hard limit. This must NOT page — if the
+        // combined clause were an OR it would fire here and make the hard limit
+        // unreachable.
+        const now = Date.now();
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 1000, finishedOn: now }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should page when the queue is both slow and deep', async () => {
+        const now = Date.now();
+        // p95 = 30s (>= 20s high threshold) and waiting 600 (>= 500 high threshold),
+        // neither of which alone reaches its hard limit.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 30000, finishedOn: now }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.stringContaining('Waiting: 600'),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
     });
 
     it('Should not page when the backlog is within the per-workspace queue cap', async () => {
