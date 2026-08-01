@@ -211,9 +211,15 @@ module.exports = async () => {
                 (newest, j) => (j && j.finishedOn > newest ? j.finishedOn : newest),
                 0
             );
+            // Any pending work at all is enough here — deliberately not a depth
+            // threshold. A depth gate would leave a stopped worker with a small
+            // backlog silent forever, which is precisely the failure this detects.
+            // Zero completions across the stall window, sustained over the
+            // consecutive-breach gate, is already an unambiguous stall signal at
+            // any depth.
             const nothingCompletedRecently = Date.now() - newestCompletionAt > queueMonitoringStallWindowSeconds() * 1000;
             const pendingJobCount = waitingJobCount + prioritizedJobCount;
-            const stalled = nothingCompletedRecently && pendingJobCount >= queueMonitoringHighWaitingJobCountThreshold();
+            const stalled = nothingCompletedRecently && pendingJobCount > 0;
 
             // The "slow and deep" clause is deliberately AND, not OR: it catches a
             // queue degraded on both axes before either one alone reaches its hard
