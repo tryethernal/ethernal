@@ -9,7 +9,7 @@ const { Queue } = require('bullmq');
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident, closeIncident } = require('../lib/opsgenie');
-const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount, queueMonitoringBreachesBeforeAlert } = require('../lib/env');
+const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount, queueMonitoringStallWindowSeconds, queueMonitoringBreachesBeforeAlert } = require('../lib/env');
 const priorities = require('../workers/priorities');
 
 const monitoredPerformances = ['blockSync', 'receiptSync'];
@@ -192,19 +192,28 @@ module.exports = async () => {
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
             const performanceAlias = `queue-performance-${queueName}`;
-            // Liveness check: pending work but nothing finishing at all. p95 is derived
-            // from completed jobs, so with zero completions it is 0 and every
-            // latency-based condition below is unreachable — a dead worker would
-            // otherwise stay silent.
+            // Liveness check: pending work but nothing finishing. p95 is derived from
+            // completed jobs, so a stopped worker leaves it at 0 and every latency-based
+            // condition below is unreachable — the queue would sit wedged and silent.
+            //
+            // Completed jobs are RETAINED in Redis (by count and age), so the presence
+            // of completion history proves nothing; only a *recent* completion does.
+            // Hence the newest finishedOn is compared against the stall window rather
+            // than simply checking whether the list is empty.
             //
             // Prioritized jobs count towards *this* check only. Workers drain the plain
             // wait list first and only pull from the prioritized set once wait is empty,
-            // so a stopped worker can leave all pending work sitting in prioritized with
-            // waitingJobCount at zero. Requiring zero completions is what keeps this
-            // liveness signal distinct from queue depth: a healthy queue always has
-            // completions, so prioritized depth on its own can never page.
+            // so a stopped worker can leave all pending work in prioritized with
+            // waitingJobCount at zero. Requiring the absence of recent completions is
+            // what keeps this a liveness signal rather than a depth one: a healthy queue
+            // always completes work, so prioritized depth on its own can never page.
+            const newestCompletionAt = completedJobs.reduce(
+                (newest, j) => (j && j.finishedOn > newest ? j.finishedOn : newest),
+                0
+            );
+            const nothingCompletedRecently = Date.now() - newestCompletionAt > queueMonitoringStallWindowSeconds() * 1000;
             const pendingJobCount = waitingJobCount + prioritizedJobCount;
-            const stalled = completedJobs.length === 0 && pendingJobCount >= queueMonitoringHighWaitingJobCountThreshold();
+            const stalled = nothingCompletedRecently && pendingJobCount >= queueMonitoringHighWaitingJobCountThreshold();
 
             // The "slow and deep" clause is deliberately AND, not OR: it catches a
             // queue degraded on both axes before either one alone reaches its hard

@@ -255,6 +255,41 @@ describe('queueMonitoring', () => {
         expect(createIncident).not.toHaveBeenCalled();
     });
 
+    it('Should page when completions are retained but stale, and work is pending', async () => {
+        const now = Date.now();
+        // Completed jobs are retained in Redis by count and age, so a dead worker
+        // still returns history. Only a RECENT completion proves liveness — this
+        // history is 10 minutes old, well past the stall window.
+        mockGetCompleted.mockResolvedValue([
+            { processedOn: now - 10 * 60 * 1000 - 1000, finishedOn: now - 10 * 60 * 1000 }
+        ]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'blockSync queue issue (performance)',
+            expect.any(String),
+            'P1',
+            expect.objectContaining({ alias: 'queue-performance-blockSync' })
+        );
+    });
+
+    it('Should not page when a recent completion proves the queue is alive', async () => {
+        const now = Date.now();
+        // Same pending depth, but something finished within the stall window.
+        mockGetCompleted.mockResolvedValue([{ processedOn: now - 2000, finishedOn: now - 5000 }]);
+        mockGetWaitingCount.mockResolvedValue(600);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await runUntilAlert(5);
+
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
     it('Should page when the worker is dead and all pending work sits in prioritized', async () => {
         // Workers drain `wait` first and only touch `prioritized` once wait is empty,
         // so a stopped worker leaves waiting at 0 with the backlog in prioritized.

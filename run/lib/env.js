@@ -78,6 +78,14 @@ module.exports = {
     // sustained-breach gate for duration rather than on a tight threshold.
     queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 5000,
     /**
+     * How long a queue may go without completing a single job before it is
+     * considered stalled. Completed jobs are retained in Redis (by count and age),
+     * so the mere presence of completion history is not evidence of liveness —
+     * only a recent completion is. Defaults to one full monitoring interval.
+     * @returns {number} Seconds
+     */
+    queueMonitoringStallWindowSeconds: () => parseInt(process.env.QUEUE_MONITORING_STALL_WINDOW_S) || 120,
+    /**
      * Number of consecutive breached samples required before paging.
      * The monitoring job runs every 120s, so the default of 3 means a condition
      * must hold for ~6 minutes. This is what distinguishes a draining burst
