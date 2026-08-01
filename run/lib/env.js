@@ -72,15 +72,19 @@ module.exports = {
     // thousands and drain within a few minutes; only a *sustained* breach
     // (see queueMonitoringBreachesBeforeAlert) is actionable.
     queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 500,
-    // Maximum waiting jobs before alerting if no recent completions (e.g., worker stopped).
-    // Set to 1500 to catch stalled queues with 1–2 workspaces' worth of pending repairs
-    // while staying above the per-workspace cap (200). The sustained-breach gate
-    // (queueMonitoringBreachesBeforeAlert) prevents false alarms on transient 1–2min bursts.
-    queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 1500,
-    // Threshold for prioritized job queue before alerting independently of waiting jobs.
-    // Prioritized work is high-priority but may not complete quickly if the worker is stuck.
-    // Set to 200 (1 full per-workspace budget) to catch stalled prioritized queues early.
-    queueMonitoringMaxPrioritizedJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_PRIORITIZED_JOB_COUNT) || 200,
+    // Hard limit on waiting jobs. A bulk backfill chunks 5000 blocks at a time and
+    // was measured in production peaking near 12,000 waiting and draining to zero
+    // within ~4 minutes, so this must sit above normal burst size and rely on the
+    // sustained-breach gate for duration rather than on a tight threshold.
+    queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 5000,
+    /**
+     * How long a queue may go without completing a single job before it is
+     * considered stalled. Completed jobs are retained in Redis (by count and age),
+     * so the mere presence of completion history is not evidence of liveness —
+     * only a recent completion is. Defaults to one full monitoring interval.
+     * @returns {number} Seconds
+     */
+    queueMonitoringStallWindowSeconds: () => parseInt(process.env.QUEUE_MONITORING_STALL_WINDOW_S) || 120,
     /**
      * Number of consecutive breached samples required before paging.
      * The monitoring job runs every 120s, so the default of 3 means a condition
