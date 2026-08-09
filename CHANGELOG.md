@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.262] - 2026-08-09
+### Fixed
+- blog: publish - AUCIL Was Built to Remove Ethereum's Inclusion-List Trust Problem. A Sybil Attack Just Moved It.
+
+
 ## [5.17.261] - 2026-08-01
 ### Fixed
 - fix(monitoring): restore the queue paging condition and drop prioritized from it (#1361)
