@@ -22,7 +22,7 @@ const {
 } = require('sequelize');
 const { defineChain, createPublicClient, http, webSocket } = require('viem');
 const moment = require('moment');
-const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
+const { sanitize, slugify, processRawRpcObject, preserveUnstorableInts } = require('../lib/utils');
 const { getTransactionMethodDetails } = require('../lib/abi');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
@@ -2887,7 +2887,13 @@ module.exports = (sequelize, DataTypes) => {
                         ['input', 'index']
                     );
 
-                    return sanitize({
+                    // preserveUnstorableInts keeps values the int4 columns cannot
+                    // hold (a chain reporting a timestamp as the nonce, say) in
+                    // `raw`. The model setters null those columns so the insert
+                    // cannot fail, and `raw` is where the real value survives.
+                    // The untouched `transaction` is passed as the source because
+                    // sanitization has already turned hex into rounded numbers.
+                    return preserveUnstorableInts(sanitize({
                         workspaceId: this.id,
                         blockHash: processed.blockHash,
                         blockNumber: processed.blockNumber,
@@ -2931,7 +2937,7 @@ module.exports = (sequelize, DataTypes) => {
                         withdrawals: processed.withdrawals,
                         requestId: processed.requestId,
                         raw: processed.raw
-                    });
+                    }), transaction);
                 });
 
                 const [createdBlock] = await sequelize.models.Block.bulkCreate(

@@ -15,6 +15,7 @@ const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
 const { isBatchTransaction } = require('../lib/opBatches');
 const { reportRpcFailure } = require('../lib/syncHelpers');
+const { isPermanentDataError, unrecoverableError } = require('../lib/errors');
 
 // Threshold for inline receipt fetching vs job queueing
 const INLINE_RECEIPT_THRESHOLD = 25;
@@ -481,7 +482,26 @@ module.exports = async job => {
             processedBlock.transactionsCount = filteredTransactions.length;
         }
 
-        const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
+        let syncedBlock;
+        try {
+            syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
+        } catch(error) {
+            // A block carrying data the schema cannot represent will fail
+            // identically on every one of its 50 attempts. Fail it now so it
+            // lands in the failed set where it is visible, instead of backing
+            // off into a delayed set nobody watches.
+            if (isPermanentDataError(error)) {
+                logger.error(`Block ${data.blockNumber} cannot be stored: ${error.message}`, {
+                    location: 'jobs.blockSync',
+                    error,
+                    data
+                });
+                throw unrecoverableError(`Block ${data.blockNumber} contains data that cannot be stored: ${error.message}`);
+            }
+
+            throw error;
+        }
+
         if (!syncedBlock)
             return "Couldn't store block";
 
