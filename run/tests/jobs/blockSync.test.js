@@ -680,4 +680,55 @@ describe('blockSync', () => {
             done();
         });
     });
+
+    describe('when the block cannot be stored', () => {
+        const storageError = code => {
+            const error = new Error('integer out of range');
+            error.name = 'SequelizeDatabaseError';
+            error.parent = { code };
+            return error;
+        };
+
+        const syncBlock42 = () => blockSync({
+            opts: { priority: 1 },
+            data: { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 42 }
+        });
+
+        // Earlier tests leave one-shot resolutions queued on the shared mock;
+        // clear them so the rejection below is what the job actually sees.
+        beforeEach(() => mockSafeCreatePartialBlock.mockReset());
+
+        it('Should fail permanently when the data cannot be stored, instead of retrying', async () => {
+            mockSafeCreatePartialBlock.mockRejectedValue(storageError('22003'));
+
+            const error = await syncBlock42().catch(e => e);
+
+            expect(error.name).toEqual('UnrecoverableError');
+        });
+
+        it('Should name the offending block so the failure is actionable', async () => {
+            mockSafeCreatePartialBlock.mockRejectedValue(storageError('22003'));
+
+            await expect(syncBlock42())
+                .rejects.toThrow('Block 42 contains data that cannot be stored: integer out of range');
+        });
+
+        it('Should still retry a transient database failure', async () => {
+            mockSafeCreatePartialBlock.mockRejectedValue(storageError('40001'));
+
+            const error = await syncBlock42().catch(e => e);
+
+            expect(error.message).toEqual('integer out of range');
+            expect(error.name).not.toEqual('UnrecoverableError');
+        });
+
+        it('Should still retry an error with no database code', async () => {
+            mockSafeCreatePartialBlock.mockRejectedValue(new Error('Timed out after 10000ms'));
+
+            const error = await syncBlock42().catch(e => e);
+
+            expect(error.message).toEqual('Timed out after 10000ms');
+            expect(error.name).not.toEqual('UnrecoverableError');
+        });
+    });
 });

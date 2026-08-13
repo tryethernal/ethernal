@@ -25,7 +25,7 @@ const {
 } = require('sequelize');
 const ethers = require('ethers');
 const Op = Sequelize.Op
-const { sanitize, stringifyBns, processRawRpcObject, eToNumber } = require('../lib/utils');
+const { sanitize, stringifyBns, processRawRpcObject, eToNumber, toInt32OrNull } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
@@ -1218,7 +1218,17 @@ module.exports = (sequelize, DataTypes) => {
     blockHash: DataTypes.STRING,
     blockNumber: DataTypes.INTEGER,
     blockId: DataTypes.INTEGER,
-    chainId: DataTypes.INTEGER,
+    // chainId, nonce, transactionIndex, type and requestId are all int4 columns
+    // fed directly from the RPC payload, and nothing in the JSON-RPC spec bounds
+    // them to int4. A single out-of-range value used to abort the insert of the
+    // entire block, so the block was never stored and its sync job retried
+    // forever. Store null instead and keep the original in `raw`.
+    chainId: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('chainId', toInt32OrNull(value));
+        }
+    },
     creates: DataTypes.STRING,
     data: DataTypes.STRING,
     parsedError: DataTypes.STRING,
@@ -1241,7 +1251,12 @@ module.exports = (sequelize, DataTypes) => {
             return getTransactionMethodDetails(this, this.contract && this.contract.abi);
         }
     },
-    nonce: DataTypes.INTEGER,
+    nonce: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('nonce', toInt32OrNull(value));
+        }
+    },
     r: DataTypes.STRING,
     s: DataTypes.STRING,
     timestamp: {
@@ -1262,8 +1277,18 @@ module.exports = (sequelize, DataTypes) => {
             return this.getDataValue('to') ? this.getDataValue('to').toLowerCase() : null;
         }
     },
-    transactionIndex: DataTypes.INTEGER,
-    type: DataTypes.INTEGER,
+    transactionIndex: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('transactionIndex', toInt32OrNull(value));
+        }
+    },
+    type: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('type', toInt32OrNull(value));
+        }
+    },
     v: DataTypes.INTEGER,
     value: {
         type: DataTypes.STRING,
@@ -1350,7 +1375,12 @@ module.exports = (sequelize, DataTypes) => {
             return this.getDataValue('maxFeePerBlobGas') || this.getDataValue('raw.maxFeePerBlobGas');
         }
     },
-    requestId: DataTypes.INTEGER
+    requestId: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('requestId', toInt32OrNull(value));
+        }
+    }
   }, {
     hooks: {
         afterBulkCreate(transactions, options) {

@@ -285,6 +285,55 @@ const _isJson = function(obj) {
     }
 };
 
+// Bounds of the PostgreSQL `integer` (int4) type. Values outside this range are
+// rejected by the database with "integer out of range", which aborts the whole
+// insert statement they are part of.
+const PG_INT4_MIN = -2147483648;
+const PG_INT4_MAX = 2147483647;
+
+/**
+ * Coerces a chain-supplied value to a PostgreSQL `integer`, or null when it
+ * cannot be represented as one.
+ *
+ * Several transaction fields are typed as int4 in our schema because that is
+ * what they are on every mainstream chain, but nothing in the JSON-RPC spec
+ * bounds them. Chains do exist that put, say, a millisecond timestamp in the
+ * nonce, or a 32-byte hash in requestId. Passing such a value straight to
+ * Postgres fails the entire multi-row insert, so the whole block is lost rather
+ * than the single field we cannot represent.
+ *
+ * Storing null instead keeps the block syncable; the untruncated original value
+ * is still available in the transaction's `raw` payload.
+ *
+ * @param {string|number|bigint|Object|null|undefined} value - Value from the RPC payload
+ * @returns {number|null} The value as an integer, or null if it is absent or out of int4 range
+ * @example
+ * _toInt32OrNull('0x2a');            // returns 42
+ * _toInt32OrNull('0x19ffbdebc88');   // returns null (exceeds int4)
+ */
+const _toInt32OrNull = value => {
+    if (value === null || value === undefined || value === '')
+        return null;
+
+    let parsed;
+
+    if (typeof value === 'number')
+        parsed = value;
+    else if (typeof value === 'bigint')
+        parsed = Number(value);
+    else if (typeof value === 'string')
+        parsed = /^0x/i.test(value) ? Number.parseInt(value, 16) : Number(value);
+    else if (ethers.BigNumber.isBigNumber(value))
+        parsed = Number(ethers.BigNumber.from(value).toString());
+    else
+        return null;
+
+    if (!Number.isInteger(parsed))
+        return null;
+
+    return parsed >= PG_INT4_MIN && parsed <= PG_INT4_MAX ? parsed : null;
+};
+
 /**
  * Sanitizes an object from RPC responses.
  * - Removes null/undefined values
@@ -411,6 +460,7 @@ const sanitizePagination = (page, itemsPerPage, order, options = {}) => {
 
 module.exports = {
     sanitize: _sanitize,
+    toInt32OrNull: _toInt32OrNull,
     stringifyBns: _stringifyBns,
     isJson: _isJson,
     getEnv: getEnv,

@@ -1,11 +1,77 @@
+/* global BigInt */
 const ethers = require('ethers');
 const {
     sanitize,
     stringifyBns,
     isJson,
     validateBNString,
-    avg
+    avg,
+    toInt32OrNull
 } = require('../../lib/utils');
+
+describe('toInt32OrNull', () => {
+    it('Should parse hex strings', () => {
+        expect(toInt32OrNull('0x2a')).toEqual(42);
+        expect(toInt32OrNull('0X2A')).toEqual(42);
+    });
+
+    it('Should parse decimal strings and numbers', () => {
+        expect(toInt32OrNull('42')).toEqual(42);
+        expect(toInt32OrNull(42)).toEqual(42);
+    });
+
+    it('Should preserve zero rather than treating it as absent', () => {
+        expect(toInt32OrNull(0)).toEqual(0);
+        expect(toInt32OrNull('0x0')).toEqual(0);
+    });
+
+    it('Should accept the int4 boundaries', () => {
+        expect(toInt32OrNull(2147483647)).toEqual(2147483647);
+        expect(toInt32OrNull(-2147483648)).toEqual(-2147483648);
+    });
+
+    it('Should return null just past the int4 boundaries', () => {
+        expect(toInt32OrNull(2147483648)).toBeNull();
+        expect(toInt32OrNull(-2147483649)).toBeNull();
+    });
+
+    it('Should return null for a timestamp-style nonce', () => {
+        // Observed in production: a chain using epoch milliseconds as the nonce
+        expect(toInt32OrNull('0x19ffbdebc88')).toBeNull();
+        expect(toInt32OrNull(1786637106312)).toBeNull();
+    });
+
+    it('Should return null for a 32 byte requestId', () => {
+        expect(toInt32OrNull(`0x${'ab'.repeat(32)}`)).toBeNull();
+    });
+
+    it('Should return null for absent values', () => {
+        expect(toInt32OrNull(null)).toBeNull();
+        expect(toInt32OrNull(undefined)).toBeNull();
+        expect(toInt32OrNull('')).toBeNull();
+    });
+
+    it('Should return null for values that are not integers', () => {
+        expect(toInt32OrNull('not a number')).toBeNull();
+        expect(toInt32OrNull('0xzz')).toBeNull();
+        expect(toInt32OrNull(1.5)).toBeNull();
+        expect(toInt32OrNull(NaN)).toBeNull();
+        expect(toInt32OrNull(Infinity)).toBeNull();
+        expect(toInt32OrNull({})).toBeNull();
+        expect(toInt32OrNull([])).toBeNull();
+    });
+
+    it('Should handle bigints', () => {
+        // BigInt() rather than a 42n literal: the lint config parses as ES2017
+        expect(toInt32OrNull(BigInt(42))).toEqual(42);
+        expect(toInt32OrNull(BigInt('2147483648'))).toBeNull();
+    });
+
+    it('Should handle BigNumbers', () => {
+        expect(toInt32OrNull(ethers.BigNumber.from(42))).toEqual(42);
+        expect(toInt32OrNull(ethers.BigNumber.from('1786637106312'))).toBeNull();
+    });
+});
 
 describe('avg', () => {
     it('Should return the average of an array', () => {
