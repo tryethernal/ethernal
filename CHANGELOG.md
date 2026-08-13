@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.264] - 2026-08-13
+### Fixed
+- fix(sync): stop a single out-of-range field from losing the whole block (#1367)
+
+
 ## [5.17.263] - 2026-08-13
 ### Fixed
 - blog: publish - Trustless, Except for Three Bugs: OpenZeppelin's Audit of ERC-7888's Cross-Chain Broadcaster
