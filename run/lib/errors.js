@@ -57,4 +57,59 @@ const managedWorkerError = (error, jobName, jobData, worker) => {
     return Sentry.captureException(error, { tags: { job: jobName, worker }});
 };
 
-module.exports = { managedError, unmanagedError, managedWorkerError };
+// PostgreSQL error codes that describe data the database can never accept, no
+// matter how many times we send it. Retrying these is pure waste: the job backs
+// off exponentially, never reaches its final attempt within any useful horizon,
+// and silently accumulates in the queue's delayed set where no alert looks.
+//
+// Deliberately excluded:
+//   23505 unique_violation    - normal under concurrent inserts, retry is correct
+//   23503 foreign_key_violation - can be transient while a parent row is committing
+//   40001 / 40P01            - serialization failures and deadlocks, retry is correct
+const PERMANENT_DATA_ERROR_CODES = [
+    '22001', // string_data_right_truncation
+    '22003', // numeric_value_out_of_range
+    '22007', // invalid_datetime_format
+    '22P02', // invalid_text_representation
+    '23502', // not_null_violation
+    '23514'  // check_violation
+];
+
+/**
+ * Determines whether a database error is caused by data the schema can never
+ * store, as opposed to a transient condition worth retrying.
+ *
+ * Sequelize nests the driver error under `parent`/`original`; we check both, and
+ * the error itself for callers that pass a raw pg error.
+ *
+ * @param {Error} error - The error to classify
+ * @returns {boolean} True if retrying the same payload cannot possibly succeed
+ */
+const isPermanentDataError = error => {
+    if (!error)
+        return false;
+
+    const code = (error.parent && error.parent.code) || (error.original && error.original.code) || error.code;
+
+    return PERMANENT_DATA_ERROR_CODES.includes(code);
+};
+
+/**
+ * Builds an error that tells BullMQ to fail a job immediately, without burning
+ * its remaining attempts.
+ *
+ * BullMQ recognises either its own `UnrecoverableError` class or any error
+ * named `UnrecoverableError` (see `Job.moveToFailed`). We use the name because
+ * `instanceof` is only reliable when every caller resolves the exact same copy
+ * of the bullmq module, which nothing guarantees.
+ *
+ * @param {string} message - Why the job can never succeed
+ * @returns {Error} An error BullMQ will move straight to the failed set
+ */
+const unrecoverableError = message => {
+    const error = new Error(message);
+    error.name = 'UnrecoverableError';
+    return error;
+};
+
+module.exports = { managedError, unmanagedError, managedWorkerError, isPermanentDataError, unrecoverableError };

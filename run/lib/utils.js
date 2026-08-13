@@ -285,6 +285,105 @@ const _isJson = function(obj) {
     }
 };
 
+// Bounds of the PostgreSQL `integer` (int4) type. Values outside this range are
+// rejected by the database with "integer out of range", which aborts the whole
+// insert statement they are part of.
+const PG_INT4_MIN = -2147483648;
+const PG_INT4_MAX = 2147483647;
+
+/**
+ * Coerces a chain-supplied value to a PostgreSQL `integer`, or null when it
+ * cannot be represented as one.
+ *
+ * Several transaction fields are typed as int4 in our schema because that is
+ * what they are on every mainstream chain, but nothing in the JSON-RPC spec
+ * bounds them: a chain is free to report, say, a millisecond timestamp as the
+ * nonce. Passing such a value straight to Postgres fails the entire multi-row
+ * insert, so the whole block is lost rather than the single field we cannot
+ * represent.
+ *
+ * Storing null instead keeps the block syncable. Use `preserveUnstorableInts`
+ * alongside this to keep the original value in the row's `raw` payload.
+ *
+ * @param {string|number|bigint|Object|null|undefined} value - Value from the RPC payload
+ * @returns {number|null} The value as an integer, or null if it is absent or out of int4 range
+ * @example
+ * _toInt32OrNull('0x2a');            // returns 42
+ * _toInt32OrNull('0x19ffbdebc88');   // returns null (exceeds int4)
+ */
+const _toInt32OrNull = value => {
+    if (value === null || value === undefined || value === '')
+        return null;
+
+    let parsed;
+
+    if (typeof value === 'number')
+        parsed = value;
+    else if (typeof value === 'bigint')
+        parsed = Number(value);
+    else if (typeof value === 'string')
+        parsed = /^0x/i.test(value) ? Number.parseInt(value, 16) : Number(value);
+    else if (ethers.BigNumber.isBigNumber(value))
+        parsed = Number(ethers.BigNumber.from(value).toString());
+    else
+        return null;
+
+    if (!Number.isInteger(parsed))
+        return null;
+
+    return parsed >= PG_INT4_MIN && parsed <= PG_INT4_MAX ? parsed : null;
+};
+
+// Transaction columns typed int4 whose value is taken verbatim from the chain.
+const UNSTORABLE_INT_FIELDS = ['nonce', 'requestId', 'chainId', 'type', 'transactionIndex'];
+
+/**
+ * Copies chain-supplied integers that will not fit in their int4 column into the
+ * row's `raw` payload, so nothing is silently lost when the column is nulled.
+ *
+ * This is needed because `processRawRpcObject` builds `raw` from the keys it
+ * does *not* recognise as model attributes. These fields are model attributes,
+ * so they are absent from `raw` by construction, and nulling the column would
+ * otherwise discard the chain's value entirely.
+ *
+ * Pass the untouched RPC payload as `source`: sanitization turns hex strings
+ * into numbers, which silently rounds anything above 2^53, so the row's own copy
+ * of a very large value is no longer exact. The original hex string is.
+ *
+ * @param {Object} row - Row about to be inserted, including its `raw` payload
+ * @param {Object} [source={}] - Untouched RPC payload, preferred as the value to keep
+ * @param {string[]} [fields=UNSTORABLE_INT_FIELDS] - Fields to check
+ * @returns {Object} The row, with out-of-range values added to `raw`
+ * @example
+ * _preserveUnstorableInts({ nonce: 1786637106312, raw: {} }, { nonce: '0x19ffbdebc88' });
+ * // returns { nonce: 1786637106312, raw: { nonce: '0x19ffbdebc88' } }
+ */
+const _preserveUnstorableInts = (row, source = {}, fields = UNSTORABLE_INT_FIELDS) => {
+    if (row == null)
+        return row;
+
+    const preserved = {};
+
+    fields.forEach(field => {
+        const value = row[field];
+
+        if (value === null || value === undefined || value === '')
+            return;
+
+        if (_toInt32OrNull(value) !== null)
+            return;
+
+        const original = source && source[field] !== undefined && source[field] !== null ? source[field] : value;
+
+        preserved[field] = typeof original === 'object' ? String(original) : original;
+    });
+
+    if (Object.keys(preserved).length === 0)
+        return row;
+
+    return Object.assign({}, row, { raw: Object.assign({}, row.raw, preserved) });
+};
+
 /**
  * Sanitizes an object from RPC responses.
  * - Removes null/undefined values
@@ -411,6 +510,8 @@ const sanitizePagination = (page, itemsPerPage, order, options = {}) => {
 
 module.exports = {
     sanitize: _sanitize,
+    toInt32OrNull: _toInt32OrNull,
+    preserveUnstorableInts: _preserveUnstorableInts,
     stringifyBns: _stringifyBns,
     isJson: _isJson,
     getEnv: getEnv,
