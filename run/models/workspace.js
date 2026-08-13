@@ -2891,6 +2891,8 @@ module.exports = (sequelize, DataTypes) => {
                     // hold (a chain reporting a timestamp as the nonce, say) in
                     // `raw`. The model setters null those columns so the insert
                     // cannot fail, and `raw` is where the real value survives.
+                    // The untouched `transaction` is passed as the source because
+                    // sanitization has already turned hex into rounded numbers.
                     return preserveUnstorableInts(sanitize({
                         workspaceId: this.id,
                         blockHash: processed.blockHash,
@@ -2935,7 +2937,7 @@ module.exports = (sequelize, DataTypes) => {
                         withdrawals: processed.withdrawals,
                         requestId: processed.requestId,
                         raw: processed.raw
-                    }));
+                    }), transaction);
                 });
 
                 const [createdBlock] = await sequelize.models.Block.bulkCreate(

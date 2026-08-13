@@ -130,6 +130,21 @@ describe('preserveUnstorableInts', () => {
         expect(row.raw.nonce).toEqual('1786637106312');
     });
 
+    it('Should prefer the untouched RPC value over the row\'s rounded copy', () => {
+        // sanitize() has already turned the hex string into a number by this
+        // point, which rounds anything above 2^53
+        const hash = `0x${'ab'.repeat(32)}`;
+        const row = preserveUnstorableInts({ requestId: parseInt(hash, 16), raw: {} }, { requestId: hash });
+
+        expect(row.raw.requestId).toEqual(hash);
+    });
+
+    it('Should fall back to the row value when the source has no such field', () => {
+        const row = preserveUnstorableInts({ nonce: 1786637106312, raw: {} }, { hash: '0x1' });
+
+        expect(row.raw.nonce).toEqual(1786637106312);
+    });
+
     it('Should return a nullish row unchanged', () => {
         expect(preserveUnstorableInts(null)).toBeNull();
         expect(preserveUnstorableInts(undefined)).toBeUndefined();

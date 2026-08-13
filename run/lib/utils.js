@@ -346,14 +346,19 @@ const UNSTORABLE_INT_FIELDS = ['nonce', 'requestId', 'chainId', 'type', 'transac
  * so they are absent from `raw` by construction, and nulling the column would
  * otherwise discard the chain's value entirely.
  *
+ * Pass the untouched RPC payload as `source`: sanitization turns hex strings
+ * into numbers, which silently rounds anything above 2^53, so the row's own copy
+ * of a very large value is no longer exact. The original hex string is.
+ *
  * @param {Object} row - Row about to be inserted, including its `raw` payload
+ * @param {Object} [source={}] - Untouched RPC payload, preferred as the value to keep
  * @param {string[]} [fields=UNSTORABLE_INT_FIELDS] - Fields to check
  * @returns {Object} The row, with out-of-range values added to `raw`
  * @example
- * _preserveUnstorableInts({ nonce: 1786637106312, raw: {} });
- * // returns { nonce: 1786637106312, raw: { nonce: 1786637106312 } }
+ * _preserveUnstorableInts({ nonce: 1786637106312, raw: {} }, { nonce: '0x19ffbdebc88' });
+ * // returns { nonce: 1786637106312, raw: { nonce: '0x19ffbdebc88' } }
  */
-const _preserveUnstorableInts = (row, fields = UNSTORABLE_INT_FIELDS) => {
+const _preserveUnstorableInts = (row, source = {}, fields = UNSTORABLE_INT_FIELDS) => {
     if (row == null)
         return row;
 
@@ -368,7 +373,9 @@ const _preserveUnstorableInts = (row, fields = UNSTORABLE_INT_FIELDS) => {
         if (_toInt32OrNull(value) !== null)
             return;
 
-        preserved[field] = typeof value === 'object' ? String(value) : value;
+        const original = source && source[field] !== undefined && source[field] !== null ? source[field] : value;
+
+        preserved[field] = typeof original === 'object' ? String(original) : original;
     });
 
     if (Object.keys(preserved).length === 0)
