@@ -10,6 +10,11 @@ require('../mocks/lib/logger');
 
 const { isPermanentDataError } = require('../../lib/errors');
 
+/**
+ * Builds a Sequelize error carrying the given PostgreSQL SQLSTATE code.
+ * @param {string} code - The SQLSTATE code the driver would report
+ * @returns {Error} A Sequelize-shaped database error
+ */
 const sequelizeError = code => {
     const error = new Error('database error');
     error.name = 'SequelizeDatabaseError';

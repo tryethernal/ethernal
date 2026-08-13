@@ -1222,7 +1222,8 @@ module.exports = (sequelize, DataTypes) => {
     // fed directly from the RPC payload, and nothing in the JSON-RPC spec bounds
     // them to int4. A single out-of-range value used to abort the insert of the
     // entire block, so the block was never stored and its sync job retried
-    // forever. Store null instead and keep the original in `raw`.
+    // forever. Null the column instead, whatever the insert path; the block sync
+    // path additionally keeps the original value in `raw` (preserveUnstorableInts).
     chainId: {
         type: DataTypes.INTEGER,
         set(value) {

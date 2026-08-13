@@ -297,13 +297,13 @@ const PG_INT4_MAX = 2147483647;
  *
  * Several transaction fields are typed as int4 in our schema because that is
  * what they are on every mainstream chain, but nothing in the JSON-RPC spec
- * bounds them. Chains do exist that put, say, a millisecond timestamp in the
- * nonce, or a 32-byte hash in requestId. Passing such a value straight to
- * Postgres fails the entire multi-row insert, so the whole block is lost rather
- * than the single field we cannot represent.
+ * bounds them: a chain is free to report, say, a millisecond timestamp as the
+ * nonce. Passing such a value straight to Postgres fails the entire multi-row
+ * insert, so the whole block is lost rather than the single field we cannot
+ * represent.
  *
- * Storing null instead keeps the block syncable; the untruncated original value
- * is still available in the transaction's `raw` payload.
+ * Storing null instead keeps the block syncable. Use `preserveUnstorableInts`
+ * alongside this to keep the original value in the row's `raw` payload.
  *
  * @param {string|number|bigint|Object|null|undefined} value - Value from the RPC payload
  * @returns {number|null} The value as an integer, or null if it is absent or out of int4 range
@@ -332,6 +332,49 @@ const _toInt32OrNull = value => {
         return null;
 
     return parsed >= PG_INT4_MIN && parsed <= PG_INT4_MAX ? parsed : null;
+};
+
+// Transaction columns typed int4 whose value is taken verbatim from the chain.
+const UNSTORABLE_INT_FIELDS = ['nonce', 'requestId', 'chainId', 'type', 'transactionIndex'];
+
+/**
+ * Copies chain-supplied integers that will not fit in their int4 column into the
+ * row's `raw` payload, so nothing is silently lost when the column is nulled.
+ *
+ * This is needed because `processRawRpcObject` builds `raw` from the keys it
+ * does *not* recognise as model attributes. These fields are model attributes,
+ * so they are absent from `raw` by construction, and nulling the column would
+ * otherwise discard the chain's value entirely.
+ *
+ * @param {Object} row - Row about to be inserted, including its `raw` payload
+ * @param {string[]} [fields=UNSTORABLE_INT_FIELDS] - Fields to check
+ * @returns {Object} The row, with out-of-range values added to `raw`
+ * @example
+ * _preserveUnstorableInts({ nonce: 1786637106312, raw: {} });
+ * // returns { nonce: 1786637106312, raw: { nonce: 1786637106312 } }
+ */
+const _preserveUnstorableInts = (row, fields = UNSTORABLE_INT_FIELDS) => {
+    if (row == null)
+        return row;
+
+    const preserved = {};
+
+    fields.forEach(field => {
+        const value = row[field];
+
+        if (value === null || value === undefined || value === '')
+            return;
+
+        if (_toInt32OrNull(value) !== null)
+            return;
+
+        preserved[field] = typeof value === 'object' ? String(value) : value;
+    });
+
+    if (Object.keys(preserved).length === 0)
+        return row;
+
+    return Object.assign({}, row, { raw: Object.assign({}, row.raw, preserved) });
 };
 
 /**
@@ -461,6 +504,7 @@ const sanitizePagination = (page, itemsPerPage, order, options = {}) => {
 module.exports = {
     sanitize: _sanitize,
     toInt32OrNull: _toInt32OrNull,
+    preserveUnstorableInts: _preserveUnstorableInts,
     stringifyBns: _stringifyBns,
     isJson: _isJson,
     getEnv: getEnv,

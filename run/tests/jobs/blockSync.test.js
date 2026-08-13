@@ -682,6 +682,11 @@ describe('blockSync', () => {
     });
 
     describe('when the block cannot be stored', () => {
+        /**
+         * Builds the database error `safeCreatePartialBlock` would surface.
+         * @param {string} code - The SQLSTATE code the driver would report
+         * @returns {Error} A Sequelize-shaped database error
+         */
         const storageError = code => {
             const error = new Error('integer out of range');
             error.name = 'SequelizeDatabaseError';
@@ -689,6 +694,11 @@ describe('blockSync', () => {
             return error;
         };
 
+        /**
+         * Runs the job against a fixed block so each test differs only by the
+         * failure the storage layer raises.
+         * @returns {Promise} The job's result
+         */
         const syncBlock42 = () => blockSync({
             opts: { priority: 1 },
             data: { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 42 }

@@ -6,7 +6,8 @@ const {
     isJson,
     validateBNString,
     avg,
-    toInt32OrNull
+    toInt32OrNull,
+    preserveUnstorableInts
 } = require('../../lib/utils');
 
 describe('toInt32OrNull', () => {
@@ -41,7 +42,7 @@ describe('toInt32OrNull', () => {
         expect(toInt32OrNull(1786637106312)).toBeNull();
     });
 
-    it('Should return null for a 32 byte requestId', () => {
+    it('Should return null for a 32 byte value', () => {
         expect(toInt32OrNull(`0x${'ab'.repeat(32)}`)).toBeNull();
     });
 
@@ -70,6 +71,68 @@ describe('toInt32OrNull', () => {
     it('Should handle BigNumbers', () => {
         expect(toInt32OrNull(ethers.BigNumber.from(42))).toEqual(42);
         expect(toInt32OrNull(ethers.BigNumber.from('1786637106312'))).toBeNull();
+    });
+});
+
+describe('preserveUnstorableInts', () => {
+    it('Should copy an out-of-range value into raw', () => {
+        const row = preserveUnstorableInts({ hash: '0x1', nonce: '0x19ffbdebc88', raw: { foo: 'bar' } });
+
+        expect(row.raw).toEqual({ foo: 'bar', nonce: '0x19ffbdebc88' });
+    });
+
+    it('Should leave the row untouched when everything fits', () => {
+        const original = { hash: '0x1', nonce: '0x2a', raw: { foo: 'bar' } };
+
+        expect(preserveUnstorableInts(original)).toBe(original);
+    });
+
+    it('Should cover every chain-supplied int4 field', () => {
+        const row = preserveUnstorableInts({
+            nonce: 1786637106312,
+            requestId: 1786637106312,
+            chainId: 1786637106312,
+            type: 1786637106312,
+            transactionIndex: 1786637106312,
+            raw: {}
+        });
+
+        expect(row.raw).toEqual({
+            nonce: 1786637106312,
+            requestId: 1786637106312,
+            chainId: 1786637106312,
+            type: 1786637106312,
+            transactionIndex: 1786637106312
+        });
+    });
+
+    it('Should not add absent fields to raw', () => {
+        const row = preserveUnstorableInts({ nonce: null, requestId: undefined, type: '', raw: {} });
+
+        expect(row.raw).toEqual({});
+    });
+
+    it('Should not mutate the row it is given', () => {
+        const original = { nonce: 1786637106312, raw: {} };
+
+        preserveUnstorableInts(original);
+
+        expect(original.raw).toEqual({});
+    });
+
+    it('Should cope with a row that has no raw payload yet', () => {
+        expect(preserveUnstorableInts({ nonce: 1786637106312 }).raw).toEqual({ nonce: 1786637106312 });
+    });
+
+    it('Should stringify a BigNumber so it survives JSON storage', () => {
+        const row = preserveUnstorableInts({ nonce: ethers.BigNumber.from('1786637106312'), raw: {} });
+
+        expect(row.raw.nonce).toEqual('1786637106312');
+    });
+
+    it('Should return a nullish row unchanged', () => {
+        expect(preserveUnstorableInts(null)).toBeNull();
+        expect(preserveUnstorableInts(undefined)).toBeUndefined();
     });
 });
 
