@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.268] - 2026-09-09
+### Fixed
+- blog: publish - One Agent Contract, Six Draft Standards: Ethereum's Composability Tax
+
+
 ## [5.17.267] - 2026-09-07
 ### Fixed
 - blog: publish - Ethereum Fixed Its Block-Broadcast Speed Problem. It Just Found a Second Deadline to Worry About.
