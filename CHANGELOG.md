@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.270] - 2026-09-27
+### Fixed
+- blog: publish - Four Slots, Sixteen Chunks: Inside EIP-7864 and the New Cost of Contract Storage Layout
+
+
 ## [5.17.269] - 2026-09-13
 ### Fixed
 - blog: publish - Ethereum's Block Gossip Has a Bandwidth Problem. The Fix Trades Away Security on Purpose.
