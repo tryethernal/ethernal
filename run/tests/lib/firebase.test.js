@@ -3212,6 +3212,20 @@ describe('getWorkspaceBlock', () => {
             });
     });
 
+    it('Should keep orbitStatus when the workspace has an Orbit config', async () => {
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({ toJSON: () => ({ number: 1, orbitStatus: 'processed_on_rollup', hasOrbitConfig: true })});
+        const block = await db.getWorkspaceBlock(1, 1);
+        expect(block).toEqual({ number: 1, orbitStatus: 'processed_on_rollup' });
+    });
+
+    it('Should strip orbitStatus when the workspace has no Orbit config', async () => {
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({ toJSON: () => ({ number: 1, orbitStatus: 'processed_on_rollup', hasOrbitConfig: false })});
+        const block = await db.getWorkspaceBlock(1, 1);
+        expect(block).toEqual({ number: 1 });
+        expect(block).not.toHaveProperty('orbitStatus');
+        expect(block).not.toHaveProperty('hasOrbitConfig');
+    });
+
     it('Should return null when block not found', (done) => {
         jest.spyOn(Block, 'findOne').mockResolvedValueOnce(null);
         db.getWorkspaceBlock(1, 'latest')

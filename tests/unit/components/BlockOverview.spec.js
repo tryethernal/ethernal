@@ -62,6 +62,39 @@ describe('Block.vue', () => {
         expect(wrapper.emitted()['change-tab'][0]).toEqual(['transactions']);
     });
 
+    it('Should not show the rollup status when the workspace has no Orbit config', async () => {
+        const wrapper = mount(BlockOverview, {
+            props: {
+                block: {
+                    number: 26930943,
+                    timestamp: '2022-08-07T12:33:37.000Z',
+                    transactionsCount: 3,
+                    gasUsed: '21000',
+                    gasLimit: '30000000',
+                    raw: {},
+                    orbitStatus: 'processed_on_rollup'
+                }
+            },
+            global: {
+                stubs,
+                plugins: [createTestingPinia({
+                    createSpy: vi.fn,
+                    initialState: {
+                        currentWorkspace: {
+                            orbitConfig: null,
+                            chain: { token: 'ETH' }
+                        }
+                    }
+                })]
+            }
+        });
+
+        await flushPromises();
+
+        expect(wrapper.findComponent({ name: 'OrbitBlockStatus' }).exists()).toBe(false);
+        expect(wrapper.html()).not.toContain('orbit-block-status-stub');
+    });
+
     it('Should show block details without orbit data', async () => {
         const mockBlock = {
             number: 12345678,
