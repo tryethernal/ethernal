@@ -58,7 +58,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item v-if="block.orbitStatus" class="d-flex flex-column flex-sm-row">
+                    <v-list-item v-if="block.orbitStatus && currentWorkspaceStore.orbitConfig" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Batch lifecycle status'">mdi-help-circle-outline</v-icon>

@@ -3997,6 +3997,14 @@ const getWorkspaceBlock = async (workspaceId, number) => {
                 WHERE transactions."blockId" = "Block".id
                 AND transactions.state = 'ready'
             )`), 'syncedTransactionCount'
+        ],
+        // Resolved in the same query so non-Orbit workspaces don't get a rollup status
+        [
+            Sequelize.literal(`EXISTS (
+                SELECT 1
+                FROM orbit_chain_configs
+                WHERE orbit_chain_configs."workspaceId" = "Block"."workspaceId"
+            )`), 'hasOrbitConfig'
         ]
     ];
 
@@ -4016,7 +4024,16 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         }
     });
 
-    return block ? block.toJSON() : null;
+    if (!block)
+        return null;
+
+    const { hasOrbitConfig, ...result } = block.toJSON();
+    // orbitStatus is a virtual that defaults to 'processed_on_rollup' when there is no batch,
+    // so it must only be exposed on workspaces that actually have an Orbit config.
+    if (!hasOrbitConfig)
+        delete result.orbitStatus;
+
+    return result;
 };
 
 /**
