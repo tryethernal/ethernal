@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.278] - 2026-10-25
+### Fixed
+- blog: publish - The 12% Problem: What Actually Helps Humans Catch Business-Logic Bugs
+
+
 ## [5.17.277] - 2026-10-23
 ### Fixed
 - blog: publish - The Security Scanner You Trust Was Never Benchmarked
