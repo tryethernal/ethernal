@@ -42,6 +42,24 @@ describe('PublicExplorerFooter.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
+    it('Should not link to the explorer API reference', async () => {
+        const wrapper = mount(PrivateExplorerFooter, {
+            global: {
+                plugins: [
+                    createTestingPinia({
+                        initialState: {
+                            env: mockEnvStore,
+                            currentWorkspace: mockCurrentWorkspaceStore
+                        }
+                    })
+                ]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).not.toContain('/docs/api');
+    });
+
     it('Should try to add network to metamask when clicking the button', async () => {
         const mockRequest = vi.fn();
         global.window.ethereum = {

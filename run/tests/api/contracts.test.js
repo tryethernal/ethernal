@@ -651,3 +651,126 @@ describe(`GET ${BASE_URL}`, () => {
             });
     });
 });
+
+describe('Explorer resolution of the verification endpoints', () => {
+    const PUBLIC_EXPLORER = {
+        id: 5,
+        name: 'My Chain',
+        slug: 'mychain',
+        userId: 3,
+        workspaceId: 7,
+        stripeSubscription: { id: 1 },
+        workspace: { id: 7, name: 'my-workspace', public: true },
+        admin: { firebaseUserId: 'uid-admin' }
+    };
+    const VERIFIED_CONTRACT = {
+        id: 1,
+        name: 'Ethernal',
+        abi: [{ type: 'function', name: 'foo' }],
+        verification: { sources: [{ content: 'contract Ethernal {}' }], compilerVersion: '0.8.0', runs: 200, constructorArguments: '', evmVersion: 'paris', libraries: {} }
+    };
+
+    beforeEach(() => {
+        process.env.APP_DOMAIN = 'ethernal.com';
+        ['getPublicExplorerParamsBySlug', 'getPublicExplorerParamsByDomain', 'getWorkspaceByNameAuth', 'getContractByWorkspaceId'].forEach(name => db[name].mockReset());
+        db.getWorkspaceByNameAuth.mockResolvedValue({ id: 7, name: 'my-workspace', public: true });
+    });
+
+    afterAll(() => {
+        delete process.env.APP_DOMAIN;
+    });
+
+    describe('legacy resolution stays first', () => {
+        it('Should resolve the apikey before the host on a <slug>.APP_DOMAIN host, without public checks', async () => {
+            db.getPublicExplorerParamsByDomain.mockResolvedValue(null);
+            db.getPublicExplorerParamsBySlug.mockResolvedValue({ id: 1, workspaceId: 1 });
+            db.getContractByWorkspaceId.mockResolvedValue(VERIFIED_CONTRACT);
+
+            const { body } = await request.get(`${BASE_URL}/sourceCode`)
+                .set('X-Forwarded-Host', 'hostslug.ethernal.com')
+                .query({ address: '0xABC', apikey: 'keyslug' })
+                .expect(200);
+
+            expect(body.status).toBe('1');
+            expect(db.getPublicExplorerParamsByDomain).toHaveBeenCalledWith('hostslug.ethernal.com');
+            expect(db.getPublicExplorerParamsBySlug).toHaveBeenCalledTimes(1);
+            expect(db.getPublicExplorerParamsBySlug).toHaveBeenCalledWith('keyslug');
+            expect(db.getWorkspaceByNameAuth).not.toHaveBeenCalled();
+            expect(db.getContractByWorkspaceId).toHaveBeenCalledWith(1, '0xabc');
+        });
+
+        it('Should resolve a custom domain header first', async () => {
+            db.getPublicExplorerParamsByDomain.mockResolvedValue({ id: 2, workspaceId: 2 });
+            db.getContractByWorkspaceId.mockResolvedValue(VERIFIED_CONTRACT);
+
+            const { body } = await request.get(`${BASE_URL}/getabi`)
+                .set('Apx-Incoming-Host', 'explorer.example.org')
+                .query({ address: '0xabc' })
+                .expect(200);
+
+            expect(body).toEqual({ status: '1', message: 'OK', result: JSON.stringify(VERIFIED_CONTRACT.abi) });
+            expect(db.getPublicExplorerParamsByDomain).toHaveBeenCalledWith('explorer.example.org');
+            expect(db.getPublicExplorerParamsBySlug).not.toHaveBeenCalled();
+            expect(db.getWorkspaceByNameAuth).not.toHaveBeenCalled();
+        });
+
+        it('Should keep the legacy error when nothing resolves', async () => {
+            const { body } = await request.get(`${BASE_URL}/sourceCode`).set('X-Forwarded-Host', 'unknown.example.org').query({ address: '0xabc' }).expect(200);
+
+            expect(body).toEqual({
+                status: '0',
+                message: 'OK',
+                result: 'Request failed: Could not find explorer. If you are using the apiKey param, make sure it is correct.'
+            });
+        });
+    });
+
+    describe('additive fallback when the legacy resolution found nothing', () => {
+        it('Should serve the source code on a <slug>.APP_DOMAIN host', async () => {
+            db.getPublicExplorerParamsByDomain.mockResolvedValue(null);
+            db.getPublicExplorerParamsBySlug.mockResolvedValue(PUBLIC_EXPLORER);
+            db.getContractByWorkspaceId.mockResolvedValue(VERIFIED_CONTRACT);
+
+            const { body } = await request.get(`${BASE_URL}/sourceCode`)
+                .set('X-Forwarded-Host', 'mychain.ethernal.com')
+                .query({ address: '0xABC' })
+                .expect(200);
+
+            expect(body.status).toBe('1');
+            expect(body.result[0].ContractName).toBe('Ethernal');
+            expect(db.getContractByWorkspaceId).toHaveBeenCalledWith(7, '0xabc');
+            expect(db.getWorkspaceByNameAuth).toHaveBeenCalledWith('uid-admin', 'my-workspace');
+        });
+
+        it('Should serve the ABI on a <slug>.APP_DOMAIN host', async () => {
+            db.getPublicExplorerParamsBySlug.mockResolvedValue(PUBLIC_EXPLORER);
+            db.getContractByWorkspaceId.mockResolvedValue(VERIFIED_CONTRACT);
+
+            const { body } = await request.get(`${BASE_URL}/getabi`).set('X-Forwarded-Host', 'mychain.ethernal.com').query({ address: '0xabc' }).expect(200);
+
+            expect(body).toEqual({ status: '1', message: 'OK', result: JSON.stringify(VERIFIED_CONTRACT.abi) });
+        });
+
+        it('Should reach the verification flow on a <slug>.APP_DOMAIN host', async () => {
+            db.getPublicExplorerParamsBySlug.mockResolvedValue(PUBLIC_EXPLORER);
+            db.getContractByWorkspaceId.mockResolvedValue({ id: 1, verification: {} });
+
+            const { body } = await request.post(`${BASE_URL}/verify`)
+                .set('X-Forwarded-Host', 'mychain.ethernal.com')
+                .send({ sourceCode: 'a', contractaddress: '0xabc', compilerversion: '0.8.0', contractname: 'Ethernal' })
+                .expect(200);
+
+            expect(body).toEqual({ status: '1', message: 'OK', result: 'Already Verified' });
+        });
+
+        it('Should not use the fallback when the workspace is not public', async () => {
+            db.getPublicExplorerParamsBySlug.mockResolvedValue(PUBLIC_EXPLORER);
+            db.getWorkspaceByNameAuth.mockResolvedValue({ id: 7, name: 'my-workspace', public: false });
+
+            const { body } = await request.get(`${BASE_URL}/sourceCode`).set('X-Forwarded-Host', 'mychain.ethernal.com').query({ address: '0xabc' }).expect(200);
+
+            expect(body.result).toMatch(/Could not find explorer/);
+            expect(db.getContractByWorkspaceId).not.toHaveBeenCalled();
+        });
+    });
+});

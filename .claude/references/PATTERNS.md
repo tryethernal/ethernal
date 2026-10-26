@@ -20,6 +20,13 @@ router.get('/:id', workspaceAuthMiddleware, async (req, res, next) => {
 3. Register route in `run/api/index.js`: `router.use('/feature', require('./feature'));`
 4. Add frontend method in `src/plugins/server.js`: `getFeature(id) { return this.get(`/feature/${id}`); }`
 5. Create tests in `run/tests/api/[feature].test.js`
+6. Public read routes (anything using `workspaceAuthMiddleware`, or with no auth middleware): document the route in `run/lib/openapi/openapi.yaml`, or list it as `"METHOD /express/path"` in `run/lib/openapi/excluded-routes.json`. `run/tests/openapi.test.js` fails CI otherwise (and when a documented or excluded route no longer exists).
+
+### Public API: explorer resolution and Etherscan layer
+
+- `workspaceAuthMiddleware` accepts GET requests without `workspace`/credentials: the explorer is then resolved from the host (`X-Forwarded-Host`, custom domain or `<slug>.APP_DOMAIN`) or the `apikey` param (slug) by `run/lib/publicExplorer.js`, and the workspace is re-checked as public on every request. Writes never use this fallback.
+- `/api?module=...&action=...` is rewritten by the table in `run/lib/etherscanDispatch.js`. New actions live in `run/api/etherscan.js` (always HTTP 200, Etherscan envelope); each needs a dedicated bounded query (see `run/lib/etherscanQueries.js`) and an entry in `x-etherscan-actions` of the OpenAPI document.
+- `GET /api/openapi.json` serves `run/lib/openapi/openapi.yaml`.
 
 ## Adding a New Model
 

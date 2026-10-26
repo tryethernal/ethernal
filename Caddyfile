@@ -213,7 +213,7 @@ app.tryethernal.com {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
     }
 
-    @landingPaths path /blockscout-alternative /etherscan-alternative /routescan-alternative /build-vs-buy-block-explorer /op-stack /arbitrum-orbit /pricing /features /developers /teams /app-chains /transaction-tracing /contact-us /hardhat-block-explorer /anvil-block-explorer /ganache-block-explorer /kaleido /chainstack /github-actions /terms /privacy
+    @landingPaths path /blockscout-alternative /etherscan-alternative /routescan-alternative /build-vs-buy-block-explorer /op-stack /arbitrum-orbit /pricing /features /developers /teams /app-chains /transaction-tracing /contact-us /hardhat-block-explorer /anvil-block-explorer /ganache-block-explorer /kaleido /chainstack /github-actions /terms /privacy /docs/api
     handle @landingPaths {
         redir https://tryethernal.com{uri} permanent
     }

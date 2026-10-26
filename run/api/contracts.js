@@ -24,6 +24,7 @@ const processContractVerification = require('../lib/processContractVerification'
 const { holderHistory, circulatingSupply, holders, transfers } = require('./modules/tokens');
 const { managedError, unmanagedError } = require('../lib/errors');
 const verifierParamsFormatters = require('../lib/verifierParams');
+const { resolveExplorerParamsFallback } = require('../lib/publicExplorer');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
 router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
@@ -70,6 +71,9 @@ router.get('/getabi', async (req, res) => {
         }
 
         if (!explorer)
+            explorer = await resolveExplorerParamsFallback(req, data);
+
+        if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
 
         let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
@@ -114,6 +118,9 @@ router.get('/sourceCode', async (req, res) => {
         if (!explorer && data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
+
+        if (!explorer)
+            explorer = await resolveExplorerParamsFallback(req, data);
 
         if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
@@ -182,6 +189,9 @@ router.post('/verify', async (req, res) => {
         if (!explorer && data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
+
+        if (!explorer)
+            explorer = await resolveExplorerParamsFallback(req, data);
 
         if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
