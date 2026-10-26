@@ -56,7 +56,8 @@ CMD ["yarn", "serve"]
 # --- Build Stage ---
 FROM base AS build
 ENV NODE_ENV=production
-RUN yarn build
+# The app build (with the lazy-loaded API reference) needs more than the default ~2GB heap
+RUN NODE_OPTIONS=--max-old-space-size=4096 yarn build
 
 # --- Production Runtime Stage ---
 FROM node:18-alpine AS prod
