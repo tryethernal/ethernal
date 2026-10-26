@@ -65,7 +65,8 @@ ENV NODE_ENV=production \
     VITE_SENTRY_PROJECT=$VITE_SENTRY_PROJECT \
     VITE_SENTRY_URL=$VITE_SENTRY_URL \
     VITE_SENTRY_ENABLED=$VITE_SENTRY_ENABLED
-RUN yarn build
+# The app build (with the lazy-loaded API reference) needs more than the default ~2GB heap
+RUN NODE_OPTIONS=--max-old-space-size=4096 yarn build
 
 # Build Caddy with Cloudflare DNS module
 FROM caddy:2.9.1-builder AS caddy-build
