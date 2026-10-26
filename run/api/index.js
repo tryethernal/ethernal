@@ -39,6 +39,7 @@ const opWithdrawals = require('./opWithdrawals');
 const rpc = require('./rpc');
 const onboarding = require('./onboarding');
 const etherscan = require('./etherscan');
+const openapi = require('./openapi');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -72,6 +73,7 @@ router.use('/opWithdrawals', opWithdrawals);
 router.use('/rpc', rpc);
 router.use('/onboarding', onboarding);
 router.use('/etherscan', etherscan);
+router.use('/openapi.json', openapi);
 
 if (isProspectingEnabled()) {
     // Public unsubscribe route (no auth) must be registered first

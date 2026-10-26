@@ -1,0 +1,4654 @@
+# Ethernal public explorer API (OpenAPI 3.1).
+# Hand-maintained: update it together with the routes (see run/tests/openapi.test.js, which fails on drift).
+openapi: 3.1.0
+info:
+  title: Ethernal Explorer API
+  version: 1.0.0
+  description: 'Public read API of every Ethernal explorer. The explorer is identified by the domain you call (a
+    custom domain or `<slug>.tryethernal.com`); when calling another host (for example `app.tryethernal.com`) pass
+    the explorer slug in the `apikey` query parameter. No authentication is required for public explorers.
+
+
+    Most list endpoints use `page` / `itemsPerPage` pagination. Amounts are decimal strings in the smallest unit
+    (wei).
+
+
+    The Etherscan-compatible endpoints (`/api?module=…&action=…`) are described on `/`.'
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+- url: https://{explorerDomain}/api
+  description: Public explorer. Set explorerDomain to the domain of the explorer you want to query.
+  variables:
+    explorerDomain:
+      default: demo.tryethernal.com
+tags:
+- name: Blocks
+  description: Blocks and their transactions.
+- name: Transactions
+  description: Transactions, logs, token transfers and traces.
+- name: Addresses
+  description: Per-address activity and balances.
+- name: Contracts & tokens
+  description: Contracts, verified source, token holders and transfers.
+- name: NFTs
+  description: ERC-721 collections and tokens.
+- name: Search
+  description: Free-form search.
+- name: Stats
+  description: Chain statistics.
+- name: Gas
+  description: Gas price and usage analytics.
+- name: OP Stack
+  description: OP Stack rollup data (only on OP Stack explorers).
+- name: Arbitrum Orbit
+  description: Arbitrum Orbit rollup data (only on Orbit explorers).
+- name: Explorer
+  description: Explorer configuration and status.
+- name: Etherscan-compatible API
+  description: Etherscan-style `module`/`action` endpoints on `/api`.
+paths:
+  /blocks:
+    get:
+      operationId: listBlocks
+      tags:
+      - Blocks
+      summary: List blocks
+      description: Blocks sorted by number.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Block'
+                required:
+                - items
+        '400': &id001
+          $ref: '#/components/responses/BadRequest'
+        '401': &id002
+          $ref: '#/components/responses/Unauthorized'
+        '404': &id003
+          $ref: '#/components/responses/NotFound'
+        '500': &id004
+          $ref: '#/components/responses/ServerError'
+  /blocks/{number}:
+    get:
+      operationId: getBlock
+      tags:
+      - Blocks
+      summary: Get a block
+      description: Returns `null` when the block is not indexed.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Block number.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/BlockDetail'
+                - type: 'null'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /blocks/{number}/transactions:
+    get:
+      operationId: listBlockTransactions
+      tags:
+      - Blocks
+      summary: List the transactions of a block
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Block number.
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - hash
+          - timestamp
+          - value
+          - from
+          - to
+          default: timestamp
+        description: Field to sort by.
+      - name: withCount
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'true'
+        description: Set to `false` to skip computing `total` (the field is then omitted).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlockTransactionListItem'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags:
+      - Transactions
+      summary: List transactions
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: blockNumber
+        description: Transaction field to sort by.
+      - name: withCount
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'true'
+        description: Set to `false` to skip computing `total` (the field is then omitted).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionListItem'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions/{hash}:
+    get:
+      operationId: getTransaction
+      tags:
+      - Transactions
+      summary: Get a transaction
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id005
+        name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Hash'
+        description: Transaction hash.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetail'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions/{hash}/logs:
+    get:
+      operationId: listTransactionLogs
+      tags:
+      - Transactions
+      summary: List the event logs of a transaction
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id005
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 20
+        description: Number of items per page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: Total number of logs.
+                  logs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionLog'
+                required:
+                - count
+                - logs
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions/{hash}/tokenTransfers:
+    get:
+      operationId: listTransactionTokenTransfers
+      tags:
+      - Transactions
+      summary: List the token transfers of a transaction
+      description: Returns a 500 error with the message `Cannot find transaction` for an unknown hash.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id005
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: id
+        description: Token transfer field to sort by.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionTokenTransfer'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions/{hash}/tokenBalanceChanges:
+    get:
+      operationId: listTransactionTokenBalanceChanges
+      tags:
+      - Transactions
+      summary: List the token balance changes of a transaction
+      description: Returns a 500 error with the message `Could not find transaction` for an unknown hash.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id005
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokenBalanceChange'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /transactions/{hash}/traceSteps:
+    get:
+      operationId: listTransactionTraceSteps
+      tags:
+      - Transactions
+      summary: List the trace steps of a transaction
+      description: Returns every step of the trace (no pagination). Empty when the explorer has no tracing.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id005
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TraceStep'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/transactions:
+    get:
+      operationId: listAddressTransactions
+      tags:
+      - Addresses
+      summary: List the transactions sent from or to an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id006
+        name: address
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Address'
+        description: Address (case-insensitive).
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: blockNumber
+        description: Transaction field to sort by.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionListItem'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/internalTransactions:
+    get:
+      operationId: listAddressInternalTransactions
+      tags:
+      - Addresses
+      summary: List the internal transactions involving an address
+      description: Only available on explorers with tracing enabled.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 50
+        description: Number of items per page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InternalTransaction'
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/tokenTransfers:
+    get:
+      operationId: listAddressTokenTransfers
+      tags:
+      - Addresses
+      summary: List the token transfers sent or received by an address
+      description: Native-token transfers are excluded.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: id
+        description: Sort field (`timestamp`, `transactionHash`, `blockNumber`, `amount`, or a token transfer field).
+      - name: tokenTypes
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - erc20
+            - erc721
+            - erc1155
+        description: Restrict to these token standards. Send as `tokenTypes[]=erc20`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AddressTokenTransfer'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/balances:
+    get:
+      operationId: listAddressTokenBalances
+      tags:
+      - Addresses
+      summary: List the latest token balances of an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - name: patterns
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - erc20
+            - erc721
+        description: Restrict to these token standards. Send as `patterns[]=erc20`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokenBalance'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/nativeTokenBalance:
+    get:
+      operationId: getAddressNativeBalance
+      tags:
+      - Addresses
+      summary: Get the native token balance of an address
+      description: Read live from the explorer's RPC.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type:
+                    - string
+                    - 'null'
+                    description: Balance in wei, or null when the RPC is unreachable.
+                required:
+                - balance
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/stats:
+    get:
+      operationId: getAddressStats
+      tags:
+      - Addresses
+      summary: Get statistics of an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressStats'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/transactionHistory:
+    get:
+      operationId: getAddressTransactionHistory
+      tags:
+      - Addresses
+      summary: Daily number of transactions of an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - &id007
+        $ref: '#/components/parameters/From'
+      - &id008
+        $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: &id009
+                      type: string
+                      format: date-time
+                    count:
+                      type:
+                      - string
+                      - integer
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/tokenTransferHistory:
+    get:
+      operationId: getAddressTokenTransferHistory
+      tags:
+      - Addresses
+      summary: Daily number of token transfers sent and received by an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    from_count: &id010
+                      type: integer
+                    to_count: *id010
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /addresses/{address}/spentTransactionFeeHistory:
+    get:
+      operationId: getAddressSpentTransactionFeeHistory
+      tags:
+      - Addresses
+      summary: Daily transaction fees spent by an address
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    transaction_fees:
+                      type:
+                      - string
+                      - integer
+                      description: Fees in wei.
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts:
+    get:
+      operationId: listContracts
+      tags:
+      - Contracts & tokens
+      summary: List contracts
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - name
+          - address
+          - tokenName
+          - tokenSymbol
+          - tokenTotalSupply
+          - timestamp
+          default: timestamp
+        description: Field to sort by.
+      - name: pattern
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - erc20
+          - erc721
+        description: Only return contracts of this token standard.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContractListItem'
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/verified:
+    get:
+      operationId: listVerifiedContracts
+      tags:
+      - Contracts & tokens
+      summary: List verified contracts
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VerifiedContractListItem'
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}:
+    get:
+      operationId: getContract
+      tags:
+      - Contracts & tokens
+      summary: Get a contract
+      description: Returns `null` when the contract is unknown.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/ContractDetail'
+                - type: 'null'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/logs:
+    get:
+      operationId: listContractLogs
+      tags:
+      - Contracts & tokens
+      summary: List the event logs emitted by a contract
+      description: 'Returns `{ "items": [], "total": 0 }` when the contract is unknown.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: id
+        description: Sort field (`timestamp`, `blockNumber` or a log field).
+      - name: signature
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Only return logs whose first topic equals this value.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContractLog'
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/stats:
+    get:
+      operationId: getContractStats
+      tags:
+      - Contracts & tokens
+      summary: Get statistics of a token contract
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenStats'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/holders:
+    get:
+      operationId: listTokenHolders
+      tags:
+      - Contracts & tokens
+      summary: List the holders of a token
+      description: Returns a 500 error when the contract is unknown.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - address
+          - amount
+          - share
+          default: amount
+        description: Field to sort by.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TokenHolder'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/holderHistory:
+    get:
+      operationId: getTokenHolderHistory
+      tags:
+      - Contracts & tokens
+      summary: Daily number of holders of a token
+      description: Returns a 500 error when the contract is unknown.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    count:
+                      type:
+                      - string
+                      - integer
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/transfers:
+    get:
+      operationId: listTokenTransfers
+      tags:
+      - Contracts & tokens
+      summary: List the transfers of a token
+      description: Returns a 500 error when the contract is unknown.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: id
+        description: Sort field (`timestamp`, `transactionHash`, `blockNumber`, `amount` or a token transfer field).
+      - name: fromBlock
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+        description: Only return transfers from this block on.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContractTokenTransfer'
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /contracts/{address}/circulatingSupply:
+    get:
+      operationId: getTokenCirculatingSupply
+      tags:
+      - Contracts & tokens
+      summary: Daily circulating supply of a token
+      description: Returns a 500 error when the contract is unknown.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    amount:
+                      type:
+                      - string
+                      - integer
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /erc721Collections/{address}/tokens:
+    get:
+      operationId: listErc721Tokens
+      tags:
+      - NFTs
+      summary: List the indexed NFTs of a collection
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tokenId
+        description: Token field to sort by.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Erc721Token'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /erc721Collections/{address}/totalSupply:
+    get:
+      operationId: getErc721TotalSupply
+      tags:
+      - NFTs
+      summary: Get the total supply of a collection
+      description: Read live from the explorer's RPC.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalSupply:
+                    type: string
+                required:
+                - totalSupply
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /erc721Tokens/{address}/tokenIndex/{tokenIndex}:
+    get:
+      operationId: getErc721TokenByIndex
+      tags:
+      - NFTs
+      summary: Get an NFT by its index in the collection
+      description: Read live from the RPC. The body is empty when the token does not exist.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - name: tokenIndex
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Index in the enumerable collection.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Erc721TokenLive'
+                - type: 'null'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /erc721Tokens/{address}/{tokenId}/transfers:
+    get:
+      operationId: listErc721TokenTransfers
+      tags:
+      - NFTs
+      summary: List the transfers of an NFT
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Token id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Erc721TokenTransfer'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /erc721Tokens/{address}/{tokenId}:
+    get:
+      operationId: getErc721Token
+      tags:
+      - NFTs
+      summary: Get an NFT
+      description: Read live from the RPC. The body is empty when the token does not exist.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id006
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Token id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Erc721TokenLive'
+                - type: 'null'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /search:
+    get:
+      operationId: search
+      tags:
+      - Search
+      summary: Search an address, hash, block number or token name
+      description: Returns an empty array when nothing matches.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - address
+          - hash
+          - number
+          - text
+        description: '`address` searches contracts, `hash` a transaction then a block, `number` a block number,
+          `text` contracts by name or symbol.'
+      - name: query
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Search term. Must be longer than 2 characters, except for `number`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /status:
+    get:
+      operationId: getStatus
+      tags:
+      - Explorer
+      summary: Get the sync and RPC status of the explorer
+      description: Returns 404 (`Status page not enabled`) when the explorer owner has not enabled the status page,
+        and 400 when no status information is available.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerStatus'
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /explorers/search:
+    get:
+      operationId: getExplorerByDomain
+      tags:
+      - Explorer
+      summary: Get the public configuration of an explorer
+      description: Returns 200 with an empty body for the central domains (`tryethernal.com`, `app.tryethernal.com`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: domain
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Host of the explorer (custom domain or `<slug>.tryethernal.com`).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerSearchResult'
+        '400':
+          description: Explorer not found or not active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerSearchError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /stats/topTokensByHolders:
+    get:
+      operationId: getTopTokensByHolders
+      tags:
+      - Stats
+      summary: Tokens with the most holders
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: patterns
+        in: query
+        required: false
+        schema:
+          type: string
+          default: erc20
+        description: Comma-separated token standards (`erc20`, `erc721`, `erc1155`).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        token:
+                          $ref: '#/components/schemas/Address'
+                        holders:
+                          type:
+                          - string
+                          - integer
+                        contract:
+                          type: object
+                          properties:
+                            name:
+                              type:
+                              - string
+                              - 'null'
+                            tokenSymbol:
+                              type:
+                              - string
+                              - 'null'
+                            tokenName:
+                              type:
+                              - string
+                              - 'null'
+                            tokenTotalSupply:
+                              type:
+                              - string
+                              - 'null'
+                            patterns:
+                              type: array
+                              items: &id014
+                                type: string
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/contracts:
+    get:
+      operationId: getContractStats24h
+      tags:
+      - Stats
+      summary: Contract counts
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    type: object
+                    properties:
+                      total_contracts: *id010
+                      contracts_last_24_hours: *id010
+                      verified_contracts: *id010
+                      verified_contracts_last_24_hours: *id010
+                required:
+                - stats
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/last24hBurntFees:
+    get:
+      operationId: getLast24hBurntFees
+      tags:
+      - Stats
+      summary: Fees burnt in the last 24 hours (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  burntFees: &id011
+                    type:
+                    - string
+                    - 'null'
+                    description: Decimal string, null when there is no data.
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/last24hTotalGasUsed:
+    get:
+      operationId: getLast24hTotalGasUsed
+      tags:
+      - Stats
+      summary: Gas used in the last 24 hours
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalGasUsed: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/gasUtilisationRatio24h:
+    get:
+      operationId: getGasUtilisationRatio24h
+      tags:
+      - Stats
+      summary: Average gas utilisation ratio over the last 24 hours
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gasUtilisationRatio24h: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/averageTransactionFee24h:
+    get:
+      operationId: getAverageTransactionFee24h
+      tags:
+      - Stats
+      summary: Average transaction fee over the last 24 hours (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  avgTransactionFee24h: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/transactionFee24h:
+    get:
+      operationId: getTransactionFee24h
+      tags:
+      - Stats
+      summary: Total transaction fees over the last 24 hours (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionFee24h: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/transactionFeeHistory:
+    get:
+      operationId: getTransactionFeeHistory
+      tags:
+      - Stats
+      summary: Daily total transaction fees (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    transactionFees: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/blockSizeHistory:
+    get:
+      operationId: getBlockSizeHistory
+      tags:
+      - Stats
+      summary: Daily average block size (transactions)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    size: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/blockTimeHistory:
+    get:
+      operationId: getBlockTimeHistory
+      tags:
+      - Stats
+      summary: Daily average block time (seconds)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    blockTime: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/transactions:
+    get:
+      operationId: getTransactionVolume
+      tags:
+      - Stats
+      summary: Daily transaction count
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: &id012
+                      type:
+                      - string
+                      - integer
+                      description: Count (decimal string or integer).
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/tokenTransferVolume:
+    get:
+      operationId: getTokenTransferVolume
+      tags:
+      - Stats
+      summary: Daily token transfer count
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - name: address
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/Address'
+        description: Restrict to this token contract.
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - erc20
+          - erc721
+          - erc1155
+        description: Restrict to this token standard.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: *id012
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/uniqueWalletCount:
+    get:
+      operationId: getUniqueWalletCount
+      tags:
+      - Stats
+      summary: Daily number of active wallets
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: *id012
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/cumulativeWalletCount:
+    get:
+      operationId: getCumulativeWalletCount
+      tags:
+      - Stats
+      summary: Cumulative number of wallets per day
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: *id012
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/deployedContractCount:
+    get:
+      operationId: getDeployedContractCount
+      tags:
+      - Stats
+      summary: Daily number of deployed contracts
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: *id012
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/cumulativeDeployedContractCount:
+    get:
+      operationId: getCumulativeDeployedContractCount
+      tags:
+      - Stats
+      summary: Cumulative number of deployed contracts per day
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    count: *id012
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/averageGasPrice:
+    get:
+      operationId: getAverageGasPrice
+      tags:
+      - Stats
+      summary: Daily average gas price (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    avg: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/averageTransactionFee:
+    get:
+      operationId: getAverageTransactionFee
+      tags:
+      - Stats
+      summary: Daily average transaction fee (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date: *id009
+                    avg: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/txCount24h:
+    get:
+      operationId: getTxCount24h
+      tags:
+      - Stats
+      summary: Number of transactions in the last 24 hours
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: *id010
+                required:
+                - count
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/txCountTotal:
+    get:
+      operationId: getTxCountTotal
+      tags:
+      - Stats
+      summary: Total number of indexed transactions
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: *id010
+                required:
+                - count
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /stats/activeWalletCount:
+    get:
+      operationId: getActiveWalletCount
+      tags:
+      - Stats
+      summary: Number of active wallets
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: *id010
+                required:
+                - count
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/stats:
+    get:
+      operationId: getGasStats
+      tags:
+      - Gas
+      summary: Latest gas statistics
+      description: Returns a 500 error when no block has been indexed.
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: intervalInMinutes
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Accepted for compatibility; the statistics are computed over the 20 latest blocks.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  averageBlockSize: &id013
+                    type: number
+                  averageUtilization: *id013
+                  averageBlockTime:
+                    type: number
+                    description: Seconds.
+                  latestBlockNumber: *id010
+                  latestBlockTimestamp: *id009
+                  baseFeePerGas:
+                    type:
+                    - string
+                    - 'null'
+                  priorityFeePerGas:
+                    type: object
+                    properties:
+                      slow: *id014
+                      average: *id014
+                      fast: *id014
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/priceHistory:
+    get:
+      operationId: getGasPriceHistory
+      tags:
+      - Gas
+      summary: Daily gas price history (wei)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    minSlow: *id011
+                    slow: *id011
+                    maxSlow: *id011
+                    minAverage: *id011
+                    average: *id011
+                    maxAverage: *id011
+                    minFast: *id011
+                    fast: *id011
+                    maxFast: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/limitHistory:
+    get:
+      operationId: getGasLimitHistory
+      tags:
+      - Gas
+      summary: Daily average block gas limit
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    gasLimit: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/utilizationRatioHistory:
+    get:
+      operationId: getGasUtilizationRatioHistory
+      tags:
+      - Gas
+      summary: Daily gas utilization ratio (percent)
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id007
+      - *id008
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    day: *id009
+                    gasUtilizationRatio: *id011
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/consumers:
+    get:
+      operationId: listGasConsumers
+      tags:
+      - Gas
+      summary: Addresses that received the most gas usage
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: intervalInHours
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 24
+        description: Look-back window in hours.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 50
+        description: Maximum number of rows.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    to:
+                      $ref: '#/components/schemas/Address'
+                    gasUsed: *id014
+                    gasCost: *id014
+                    percentUsed:
+                      type: string
+                      description: Share of the total gas used (0 to 1, decimal string).
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /gas/spenders:
+    get:
+      operationId: listGasSpenders
+      tags:
+      - Gas
+      summary: Addresses that spent the most gas
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: intervalInHours
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 24
+        description: Look-back window in hours.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 50
+        description: Maximum number of rows.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      $ref: '#/components/schemas/Address'
+                    gasUsed: *id014
+                    gasCost: *id014
+                    percentUsed:
+                      type: string
+                      description: Share of the total gas used (0 to 1, decimal string).
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opBatches:
+    get:
+      operationId: listOpBatches
+      tags:
+      - OP Stack
+      summary: List batches posted to the parent chain
+      description: 'Batch fields: `batchIndex`, `l1BlockNumber`, `l1TransactionHash`, `l1TransactionIndex`, `epochNumber`,
+        `timestamp`, `txCount`, `l2BlockStart`, `l2BlockEnd`, `blobHash`, `dataContainer`, `status`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id017
+        $ref: '#/components/parameters/Page'
+      - &id018
+        name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        description: Number of items per page (capped at 100).
+      - &id019
+        name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: &id015
+                      $ref: '#/components/schemas/L2Item'
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opBatches/{batchIndex}:
+    get:
+      operationId: getOpBatch
+      tags:
+      - OP Stack
+      summary: Get a batch
+      description: Adds `parentChainExplorer`. An unknown batch currently returns a 500 error (`Could not find batch`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id016
+        name: batchIndex
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Batch index.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opBatches/{batchIndex}/transactions:
+    get:
+      operationId: listOpBatchTransactions
+      tags:
+      - OP Stack
+      summary: List the L2 transactions of a batch
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id016
+      - *id017
+      - *id018
+      - *id019
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opBatches/{batchIndex}/blocks:
+    get:
+      operationId: listOpBatchBlocks
+      tags:
+      - OP Stack
+      summary: List the L2 blocks of a batch
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id016
+      - *id017
+      - *id018
+      - *id019
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opDeposits:
+    get:
+      operationId: listOpDeposits
+      tags:
+      - OP Stack
+      summary: List deposits (L1 to L2)
+      description: 'Deposit fields: `l1BlockNumber`, `l1TransactionHash`, `l2TransactionHash`, `from`, `to`, `value`,
+        `gasLimit`, `data`, `isCreation`, `timestamp`, `status`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id017
+      - *id018
+      - *id019
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opDeposits/{hash}:
+    get:
+      operationId: getOpDeposit
+      tags:
+      - OP Stack
+      summary: Get a deposit by its L1 transaction hash
+      description: An unknown deposit currently returns a 500 error (`Could not find deposit`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Hash'
+        description: L1 transaction hash.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opOutputs:
+    get:
+      operationId: listOpOutputs
+      tags:
+      - OP Stack
+      summary: List L2 output proposals
+      description: 'Output fields: `outputIndex`, `outputRoot`, `l2BlockNumber`, `l1BlockNumber`, `l1TransactionHash`,
+        `proposer`, `timestamp`, `challengePeriodEnds`, `disputeGameAddress`, `gameType`, `status`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id017
+      - *id018
+      - *id019
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opOutputs/{outputIndex}:
+    get:
+      operationId: getOpOutput
+      tags:
+      - OP Stack
+      summary: Get an output proposal
+      description: Adds `parentChainExplorer`. An unknown output currently returns a 500 error (`Could not find
+        output`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: outputIndex
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Output index.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opWithdrawals:
+    get:
+      operationId: listOpWithdrawals
+      tags:
+      - OP Stack
+      summary: List withdrawals (L2 to L1)
+      description: 'Withdrawal fields: `withdrawalHash`, `nonce`, `l2BlockNumber`, `l2TransactionHash`, `l1ProofTransactionHash`,
+        `l1FinalizeTransactionHash`, `sender`, `target`, `value`, `gasLimit`, `data`, `timestamp`, `status`, `provenAt`,
+        `finalizedAt`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id017
+      - *id018
+      - *id019
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opWithdrawals/{hash}:
+    get:
+      operationId: getOpWithdrawal
+      tags:
+      - OP Stack
+      summary: Get a withdrawal by its L2 transaction hash
+      description: An unknown withdrawal currently returns a 500 error (`Could not find withdrawal`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id020
+        name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Hash'
+        description: L2 transaction hash.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /opWithdrawals/{hash}/proof:
+    get:
+      operationId: getOpWithdrawalProof
+      tags:
+      - OP Stack
+      summary: Get the data needed to prove a withdrawal on L1
+      description: An unknown withdrawal currently returns a 500 error (`Could not find withdrawal`).
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id020
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitBatches:
+    get:
+      operationId: listOrbitBatches
+      tags:
+      - Arbitrum Orbit
+      summary: List batches posted to the parent chain
+      description: 'Batch fields: `id`, `confirmationStatus`, `batchSequenceNumber`, `parentChainBlockNumber`, `parentChainTxHash`,
+        `postedAt`, `transactionCount`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitBatches/{batchNumber}:
+    get:
+      operationId: getOrbitBatch
+      tags:
+      - Arbitrum Orbit
+      summary: Get a batch
+      description: 'Fields: `id`, `batchSequenceNumber`, `postedAt`, `confirmationStatus`, `parentChainBlockNumber`,
+        `parentChainTxHash`, `beforeAcc`, `afterAcc`, `transactionCount`, `blockCount`. An unknown batch currently
+        returns a 500 error (`Could not find batch`).'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - &id021
+        name: batchNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Batch sequence number.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: *id015
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitBatches/{batchNumber}/transactions:
+    get:
+      operationId: listOrbitBatchTransactions
+      tags:
+      - Arbitrum Orbit
+      summary: List the transactions of a batch
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id021
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Transaction field to sort by.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitBatches/{batchNumber}/blocks:
+    get:
+      operationId: listOrbitBatchBlocks
+      tags:
+      - Arbitrum Orbit
+      summary: List the blocks of a batch
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - *id021
+      - $ref: '#/components/parameters/Page'
+      - name: itemsPerPage
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+        description: Number of items per page.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        description: Sort direction (case-insensitive).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitDeposits:
+    get:
+      operationId: listOrbitDeposits
+      tags:
+      - Arbitrum Orbit
+      summary: List deposits (L1 to L2)
+      description: 'Deposit fields: `l1Block`, `l1TransactionHash`, `l2TransactionHash`, `messageIndex`, `sender`,
+        `timestamp`, `status` (`pending`, `confirmed`, `failed`).'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Page number, starting at 1. Required.
+      - name: itemsPerPage
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Number of items per page. Required.
+      - name: order
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        description: Sort direction by message index. Required.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitWithdrawals:
+    get:
+      operationId: listOrbitWithdrawals
+      tags:
+      - Arbitrum Orbit
+      summary: List withdrawals (L2 to L1)
+      description: 'Withdrawal fields: `to`, `amount`, `messageNumber`, `status` (`waiting`, `ready`, `relayed`),
+        `l1TokenAddress`, `tokenSymbol`, `tokenDecimals`, `timestamp`, `from`, `l2TransactionHash`, `l1TransactionHash`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Page number, starting at 1. Required.
+      - name: itemsPerPage
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Number of items per page. Required.
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        description: Sort direction by message index. Defaults to `desc`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitWithdrawals/{hash}:
+    get:
+      operationId: listOrbitTransactionWithdrawals
+      tags:
+      - Arbitrum Orbit
+      summary: List the withdrawals initiated by an L2 transaction
+      description: 'Withdrawal fields: `messageNumber`, `status`, `to`, `amount`, `l1TokenAddress`, `tokenSymbol`,
+        `tokenDecimals`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Hash'
+        description: L2 transaction hash.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: *id015
+                  total:
+                    type: integer
+                    description: Total number of records.
+                required:
+                - items
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /orbitWithdrawals/{hash}/claimCalldata:
+    get:
+      operationId: getOrbitWithdrawalClaimCalldata
+      tags:
+      - Arbitrum Orbit
+      summary: Get the calldata to claim a withdrawal on the parent chain
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Hash'
+        description: L2 transaction hash.
+      - name: messageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+        description: Message number of the withdrawal.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  callData: *id014
+                  to:
+                    $ref: '#/components/schemas/Address'
+                  l1RpcServer: *id014
+                  l1ChainId: *id010
+        '400': *id001
+        '401': *id002
+        '404': *id003
+        '500': *id004
+  /:
+    get:
+      operationId: etherscanGet
+      tags:
+      - Etherscan-compatible API
+      summary: Etherscan-compatible API (GET)
+      description: 'Etherscan-style endpoint: `GET /api?module=<module>&action=<action>&…`. Select the operation
+        with `module` and `action`; the parameters of each action are listed in `x-etherscan-actions`. Existing
+        Etherscan tooling (Hardhat, Foundry, …) can point at `https://<explorer-domain>/api`.'
+      parameters:
+      - $ref: '#/components/parameters/ApiKey'
+      - name: module
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - contract
+          - account
+          - transaction
+          - block
+          - logs
+        description: Etherscan module.
+      - name: action
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - getsourcecode
+          - getabi
+          - checkverifystatus
+          - balance
+          - balancemulti
+          - txlist
+          - getstatus
+          - gettxreceiptstatus
+          - getblocknumberbytime
+          - getLogs
+        description: Etherscan action. See `x-etherscan-actions` for the parameters of each action.
+      - name: address
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Address (`0x` + 40 hex characters). For `balancemulti`, up to 20 comma-separated addresses.
+      - name: guid
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Verification id (`checkverifystatus`).
+      - name: tag
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Only `latest` is supported.
+      - name: chainid
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Accepted and ignored.
+      - name: startblock
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: First block (default 0).
+      - name: endblock
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Last block (default: latest).'
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Page number, starting at 1 (default 1).
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Page size, 1 to 1000 (default 100). `page × offset` must not exceed 10000.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '`asc` (default) or `desc`.'
+      - name: txhash
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Transaction hash.
+      - name: timestamp
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Unix timestamp in seconds.
+      - name: closest
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '`before` or `after`.'
+      - name: fromBlock
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: First block (inclusive).
+      - name: toBlock
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Last block (inclusive). `toBlock − fromBlock` must not exceed 10000.
+      - name: topic0
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Topic 0 filter (32-byte hex).
+      - name: topic1
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Topic 1 filter.
+      - name: topic2
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Topic 2 filter.
+      - name: topic3
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Topic 3 filter.
+      responses:
+        '200': &id022
+          description: 'Etherscan envelope. The HTTP status is always 200; errors are reported with `status: "0"`.
+            Per-action results are listed in `x-etherscan-actions`.'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/EtherscanOk'
+                - $ref: '#/components/schemas/EtherscanFailure'
+              examples:
+                account/txlist:
+                  summary: account/txlist
+                  value:
+                    status: '1'
+                    message: OK
+                    result:
+                    - blockNumber: '20000'
+                      timeStamp: '1767265600'
+                      hash: '0xabababababababababababababababababababababababababababababababab'
+                      nonce: '1'
+                      blockHash: '0xcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd'
+                      transactionIndex: '4'
+                      from: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+                      to: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+                      value: '1000'
+                      gas: '21000'
+                      gasPrice: '1000000000'
+                      isError: '0'
+                      txreceipt_status: '1'
+                      input: 0x
+                      contractAddress: ''
+                      cumulativeGasUsed: '21000'
+                      gasUsed: '21000'
+                      confirmations: '12'
+                      methodId: 0x
+                      functionName: ''
+                account/balance:
+                  summary: account/balance
+                  value:
+                    status: '1'
+                    message: OK
+                    result: '1000000000000000000'
+                transaction/getstatus:
+                  summary: transaction/getstatus
+                  value:
+                    status: '1'
+                    message: OK
+                    result:
+                      isError: '0'
+                      errDescription: ''
+                logs/getLogs:
+                  summary: logs/getLogs
+                  value:
+                    status: '1'
+                    message: OK
+                    result:
+                    - address: '0xcccccccccccccccccccccccccccccccccccccccc'
+                      topics:
+                      - '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+                      data: '0x0000000000000000000000000000000000000000000000000000000000000000'
+                      blockNumber: '0x64'
+                      timeStamp: '0x6955b9c8'
+                      gasPrice: '0x3b9aca00'
+                      gasUsed: '0x5208'
+                      logIndex: '0x0'
+                      transactionHash: '0xabababababababababababababababababababababababababababababababab'
+                      transactionIndex: '0x0'
+                error:
+                  summary: Error
+                  value:
+                    status: '0'
+                    message: NOTOK
+                    result: Invalid API key or explorer not found
+                empty:
+                  summary: Empty list
+                  value:
+                    status: '0'
+                    message: No transactions found
+                    result: []
+      x-etherscan-actions:
+      - key: contract/verifysourcecode
+        methods:
+        - POST
+        params:
+        - apikey
+        - contractaddress
+        - sourceCode
+        - codeformat
+        - contractname
+        - compilerversion
+        - optimizationUsed
+        - runs
+        - constructorArguements
+        - evmVersion
+        - viaIR
+        description: Verify a contract (POST only).
+        result:
+          type: string
+          description: '`1234` when the verification was submitted, `Already Verified`, or an error text.'
+      - key: contract/getsourcecode
+        methods:
+        - GET
+        params:
+        - apikey
+        - address
+        description: Get the verified source code of a contract.
+        result:
+          type:
+          - array
+          - string
+          items:
+            $ref: '#/components/schemas/EtherscanSourceCode'
+          description: One-element array when verified; an error text otherwise.
+      - key: contract/getabi
+        methods:
+        - GET
+        params:
+        - apikey
+        - address
+        description: Get the ABI of a verified contract. Reads `address` from the query string only.
+        result:
+          type: string
+          description: ABI as a JSON string, or an error text.
+      - key: contract/checkverifystatus
+        methods:
+        - GET
+        - POST
+        params:
+        - guid
+        description: Check a verification status (needs `guid`).
+        result:
+          type: string
+          description: Always `Pass - Verified`.
+      - key: account/balance
+        methods:
+        - GET
+        params:
+        - address
+        - tag
+        - chainid
+        description: Native balance of an address, read live from the explorer RPC.
+        result:
+          type: string
+          description: Balance in wei.
+      - key: account/balancemulti
+        methods:
+        - GET
+        params:
+        - address
+        - tag
+        - chainid
+        description: Native balances of up to 20 comma-separated addresses.
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              account:
+                $ref: '#/components/schemas/Address'
+              balance: *id014
+      - key: account/txlist
+        methods:
+        - GET
+        params:
+        - address
+        - startblock
+        - endblock
+        - page
+        - offset
+        - sort
+        - chainid
+        description: Transactions sent from or to an address.
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/EtherscanTransaction'
+      - key: transaction/getstatus
+        methods:
+        - GET
+        params:
+        - txhash
+        - chainid
+        description: Execution status of a transaction.
+        result:
+          type: object
+          properties:
+            isError:
+              type: string
+              enum:
+              - '0'
+              - '1'
+            errDescription: *id014
+      - key: transaction/gettxreceiptstatus
+        methods:
+        - GET
+        params:
+        - txhash
+        - chainid
+        description: Receipt status of a transaction (empty when there is no receipt yet).
+        result:
+          type: object
+          properties:
+            status:
+              type: string
+              enum:
+              - '0'
+              - '1'
+              - ''
+      - key: block/getblocknumberbytime
+        methods:
+        - GET
+        params:
+        - timestamp
+        - closest
+        - chainid
+        description: Block number closest to a unix timestamp.
+        result:
+          type: string
+          description: Block number.
+      - key: logs/getLogs
+        methods:
+        - GET
+        params:
+        - address
+        - fromBlock
+        - toBlock
+        - topic0
+        - topic1
+        - topic2
+        - topic3
+        - page
+        - offset
+        - sort
+        - chainid
+        description: Logs emitted by a contract in a block range.
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/EtherscanLog'
+    post:
+      operationId: etherscanPost
+      tags:
+      - Etherscan-compatible API
+      summary: Etherscan-compatible API (POST)
+      description: POST variant used by `module=contract&action=verifysourcecode` (contract verification) and `module=contract&action=checkverifystatus`.
+        `module` and `action` may be sent in the query string or in the body.
+      parameters:
+      - name: module
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - contract
+      - name: action
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - verifysourcecode
+          - checkverifystatus
+      - $ref: '#/components/parameters/ApiKey'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EtherscanPostBody'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtherscanPostBody'
+      responses:
+        '200': *id022
+components:
+  parameters:
+    ApiKey:
+      name: apikey
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^[a-z0-9-]{1,64}$
+      description: Slug of the explorer. Only needed when you do not call the explorer's own domain (for example
+        when calling `app.tryethernal.com`). When calling `<slug>.tryethernal.com` or a custom domain the explorer
+        is identified by the host.
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Page number, starting at 1.
+    ItemsPerPage:
+      name: itemsPerPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+      description: Number of items per page.
+    Order:
+      name: order
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+      description: Sort direction (case-insensitive). Defaults to `desc` unless stated otherwise.
+    From:
+      name: from
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+        examples:
+        - '1970-01-01T00:00:00.000Z'
+      description: Start of the range (ISO 8601). `1970-01-01` means "since the first indexed block".
+    To:
+      name: to
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+      description: End of the range (ISO 8601).
+  responses:
+    BadRequest:
+      description: Invalid or missing parameters. Plain-text message.
+      content:
+        text/plain:
+          schema: *id014
+    Unauthorized:
+      description: The explorer could not be identified from the host or the `apikey` parameter. Plain-text body
+        `Missing parameter`.
+      content:
+        text/plain:
+          schema: *id014
+    NotFound:
+      description: The explorer is not public (or the resource does not exist).
+      content:
+        text/plain:
+          schema: *id014
+    ServerError:
+      description: Unexpected error, including some "not found" conditions of detail routes (message in the body).
+      content:
+        text/plain:
+          schema: *id014
+  schemas:
+    Address:
+      type: string
+      pattern: ^0x[a-fA-F0-9]{40}$
+      description: EVM address. Lowercase in responses.
+    Hash:
+      type: string
+      pattern: ^0x[a-fA-F0-9]{64}$
+      description: Transaction or block hash.
+    MethodDetails:
+      type: object
+      properties:
+        name: *id014
+        label: *id014
+        signature: *id014
+        sighash:
+          type: string
+          description: 4-byte selector, present when the method could not be decoded.
+      description: Decoded method of the transaction input. An empty object when there is no input. Additional fields
+        may be present; only the fields listed here are part of the documented contract.
+    CreatedContract:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        name:
+          type:
+          - string
+          - 'null'
+        tokenName:
+          type:
+          - string
+          - 'null'
+        tokenSymbol:
+          type:
+          - string
+          - 'null'
+        tokenDecimals:
+          type:
+          - integer
+          - 'null'
+        patterns:
+          type: array
+          items: *id014
+        workspaceId: *id010
+        verification:
+          type:
+          - object
+          - 'null'
+      description: Contract created by the transaction. Additional fields may be present; only the fields listed
+        here are part of the documented contract.
+    TransactionReceiptSummary:
+      type: object
+      properties:
+        gasUsed:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - boolean
+          - 'null'
+        contractAddress:
+          type:
+          - string
+          - 'null'
+        root:
+          type:
+          - string
+          - 'null'
+        cumulativeGasUsed:
+          type:
+          - string
+          - 'null'
+        effectiveGasPrice:
+          type:
+          - string
+          - 'null'
+        createdContract:
+          oneOf:
+          - $ref: '#/components/schemas/CreatedContract'
+          - type: 'null'
+      description: Receipt fields included in transaction lists. Additional fields may be present; only the fields
+        listed here are part of the documented contract.
+    TransactionListItem:
+      type: object
+      properties:
+        hash: &id023
+          $ref: '#/components/schemas/Hash'
+        blockNumber: *id010
+        from: &id024
+          $ref: '#/components/schemas/Address'
+        to: &id025
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          - type: 'null'
+          description: Null for contract creations.
+        value: &id026
+          type: string
+          description: Value in wei (decimal string).
+        gasPrice: &id027
+          type: string
+          description: Gas price in wei (decimal string).
+        data: &id028
+          type: string
+          description: Input data (hex).
+        timestamp: *id009
+        workspaceId: &id029
+          type: integer
+          description: Internal explorer id.
+        state: &id031
+          type: string
+          enum:
+          - syncing
+          - ready
+          description: '`ready` once the receipt has been stored.'
+        methodDetails: &id030
+          $ref: '#/components/schemas/MethodDetails'
+        receipt:
+          oneOf:
+          - $ref: '#/components/schemas/TransactionReceiptSummary'
+          - type: 'null'
+        contract:
+          type:
+          - object
+          - 'null'
+          description: Contract at the `to` address, when known (name, tokenName, tokenSymbol, abi).
+      description: A transaction as returned in lists. Additional fields may be present; only the fields listed
+        here are part of the documented contract.
+    BlockTransactionListItem:
+      allOf:
+      - $ref: '#/components/schemas/TransactionListItem'
+      - type: object
+        properties:
+          block:
+            type: object
+            properties:
+              number: *id010
+    TransactionDetail:
+      type: object
+      properties:
+        hash: *id023
+        blockNumber: *id010
+        from: *id024
+        to: *id025
+        value: *id026
+        gasPrice: *id027
+        data: *id028
+        timestamp: *id009
+        workspaceId: *id029
+        methodDetails: *id030
+        id: *id010
+        state: *id031
+        transactionIndex:
+          type:
+          - integer
+          - 'null'
+        nonce:
+          type:
+          - integer
+          - 'null'
+        type:
+          type:
+          - integer
+          - 'null'
+        gasLimit: *id014
+        gas:
+          type: string
+        maxFeePerGas:
+          type: string
+        maxPriorityFeePerGas:
+          type: string
+        parsedError:
+          type:
+          - string
+          - 'null'
+          description: Decoded revert reason for failed transactions.
+        tokenTransferCount: *id010
+        tokenBalanceChangeCount: *id010
+        internalTransactionCount: *id010
+        receipt:
+          type:
+          - object
+          - 'null'
+          properties:
+            gasUsed:
+              type:
+              - string
+              - 'null'
+            status:
+              type:
+              - boolean
+              - 'null'
+            contractAddress:
+              type:
+              - string
+              - 'null'
+            cumulativeGasUsed:
+              type:
+              - string
+              - 'null'
+            logCount: *id010
+            createdContract:
+              oneOf:
+              - $ref: '#/components/schemas/CreatedContract'
+              - type: 'null'
+        block:
+          type:
+          - object
+          - 'null'
+          properties:
+            gasLimit: *id014
+            timestamp: *id009
+            baseFeePerGas:
+              type:
+              - string
+              - 'null'
+        contract:
+          type:
+          - object
+          - 'null'
+          description: Contract at the `to` address, when known.
+        extraFields:
+          type: array
+          items: {}
+          description: Custom fields configured by the explorer owner (empty by default).
+      description: 'Full transaction detail. For an unknown hash the response is `{ "extraFields": [] }`. Additional
+        fields may be present; only the fields listed here are part of the documented contract.'
+    Block:
+      type: object
+      properties:
+        id: *id010
+        number: *id010
+        hash:
+          $ref: '#/components/schemas/Hash'
+        parentHash:
+          $ref: '#/components/schemas/Hash'
+        timestamp: *id009
+        transactionsCount: *id010
+        miner:
+          type:
+          - string
+          - 'null'
+        gasUsed: *id014
+        gasLimit: *id014
+        baseFeePerGas:
+          type:
+          - string
+          - 'null'
+        difficulty:
+          type:
+          - string
+          - 'null'
+        extraData: *id014
+        nonce:
+          type:
+          - string
+          - 'null'
+        state:
+          type: string
+          enum:
+          - syncing
+          - ready
+        l1BlockNumber:
+          type:
+          - integer
+          - 'null'
+        orbitStatus:
+          type: string
+          enum:
+          - processed_on_rollup
+          - pending_on_parent
+          - confirmed_on_parent
+          - finalized_on_parent
+          description: Arbitrum Orbit rollup status.
+        workspaceId:
+          type: integer
+          description: Internal explorer id.
+      description: A block as returned in lists. Additional fields may be present; only the fields listed here are
+        part of the documented contract.
+    BlockDetail:
+      type: object
+      properties:
+        id: *id010
+        number: *id010
+        hash:
+          $ref: '#/components/schemas/Hash'
+        parentHash:
+          $ref: '#/components/schemas/Hash'
+        timestamp: *id009
+        transactionsCount: *id010
+        miner:
+          type:
+          - string
+          - 'null'
+        gasUsed: *id014
+        gasLimit: *id014
+        baseFeePerGas:
+          type:
+          - string
+          - 'null'
+        difficulty:
+          type:
+          - string
+          - 'null'
+        extraData: *id014
+        syncedTransactionCount:
+          type: integer
+          description: Number of transactions already indexed with their receipt.
+        orbitBatch:
+          type:
+          - object
+          - 'null'
+          description: Arbitrum Orbit batch containing the block (id, batchSequenceNumber, confirmationStatus, parentChainTxHash,
+            parentChainBlockNumber).
+        orbitStatus:
+          type: string
+          description: Present only on Arbitrum Orbit explorers.
+      description: Block detail. Additional fields may be present; only the fields listed here are part of the documented
+        contract.
+    TokenContractSummary:
+      type: object
+      properties:
+        name: &id033
+          type:
+          - string
+          - 'null'
+        tokenName: &id034
+          type:
+          - string
+          - 'null'
+        tokenSymbol: &id035
+          type:
+          - string
+          - 'null'
+        tokenDecimals: &id036
+          type:
+          - integer
+          - 'null'
+        patterns: &id037
+          type: array
+          items: *id014
+          description: Detected standards, e.g. `erc20`, `erc721`.
+        isToken: &id032
+          type: boolean
+        verification:
+          type:
+          - object
+          - 'null'
+      description: Token metadata of the transferred contract. Additional fields may be present; only the fields
+        listed here are part of the documented contract.
+    TransactionLog:
+      type: object
+      properties:
+        id: *id010
+        address:
+          $ref: '#/components/schemas/Address'
+        data: *id014
+        logIndex: *id010
+        topics:
+          type: array
+          items: *id014
+        receipt:
+          type: object
+          properties:
+            transactionHash:
+              $ref: '#/components/schemas/Hash'
+      description: An event log. Additional fields may be present; only the fields listed here are part of the documented
+        contract.
+    TransactionTokenTransfer:
+      type: object
+      properties:
+        id: *id010
+        src:
+          $ref: '#/components/schemas/Address'
+        dst:
+          $ref: '#/components/schemas/Address'
+        token:
+          $ref: '#/components/schemas/Address'
+        amount:
+          type: string
+          description: Raw amount (decimal string).
+        tokenId:
+          type:
+          - string
+          - 'null'
+          description: NFT token id; null for fungible tokens.
+        transactionId: *id010
+        transactionLogId:
+          type:
+          - integer
+          - 'null'
+        isReward: *id032
+        contract:
+          oneOf:
+          - $ref: '#/components/schemas/TokenContractSummary'
+          - type: 'null'
+      description: A token transfer inside a transaction. The native token uses the token address `0xeeee…eeee`.
+        Additional fields may be present; only the fields listed here are part of the documented contract.
+    TokenBalanceChange:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/Address'
+        address:
+          $ref: '#/components/schemas/Address'
+        currentBalance: *id014
+        previousBalance: *id014
+        diff: *id014
+        contract:
+          type: object
+          properties:
+            tokenSymbol:
+              type:
+              - string
+              - 'null'
+            tokenName:
+              type:
+              - string
+              - 'null'
+            tokenDecimals:
+              type:
+              - integer
+              - 'null'
+            name:
+              type:
+              - string
+              - 'null'
+      description: Balance change of an address for a token in a transaction (decimal strings). Additional fields
+        may be present; only the fields listed here are part of the documented contract.
+    TraceStep:
+      type: object
+      properties:
+        id: *id010
+        transactionId: *id010
+        address:
+          $ref: '#/components/schemas/Address'
+        depth:
+          type:
+          - integer
+          - 'null'
+        op: *id014
+        input:
+          type:
+          - string
+          - 'null'
+        returnData:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+        contract:
+          type: object
+          properties:
+            tokenSymbol:
+              type:
+              - string
+              - 'null'
+            tokenName:
+              type:
+              - string
+              - 'null'
+            tokenDecimals:
+              type:
+              - integer
+              - 'null'
+            name:
+              type:
+              - string
+              - 'null'
+            abi:
+              type:
+              - array
+              - 'null'
+      description: A call of the execution trace. Only available on explorers with tracing enabled. Additional fields
+        may be present; only the fields listed here are part of the documented contract.
+    InternalTransaction:
+      type: object
+      properties:
+        stepId: *id010
+        op: *id014
+        input:
+          type:
+          - string
+          - 'null'
+        returnData:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+        from:
+          type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/Address'
+        to:
+          type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/Address'
+        transaction:
+          type: object
+          properties:
+            hash:
+              $ref: '#/components/schemas/Hash'
+            timestamp: *id009
+        workspaceId: *id010
+      description: Internal call involving the address. Additional fields may be present; only the fields listed
+        here are part of the documented contract.
+    AddressTokenTransfer:
+      type: object
+      properties:
+        id: *id010
+        src:
+          $ref: '#/components/schemas/Address'
+        dst:
+          $ref: '#/components/schemas/Address'
+        token:
+          $ref: '#/components/schemas/Address'
+        amount:
+          type:
+          - string
+          - number
+          description: Amount cast to numeric by the server; may be a string or a number in JSON.
+        tokenId:
+          type:
+          - string
+          - 'null'
+        transaction:
+          type: object
+          properties:
+            hash:
+              $ref: '#/components/schemas/Hash'
+            blockNumber: *id010
+            timestamp: *id009
+            data: *id014
+            methodDetails:
+              $ref: '#/components/schemas/MethodDetails'
+        contract:
+          type:
+          - object
+          - 'null'
+          properties:
+            id: *id010
+            name: *id033
+            tokenName: *id034
+            tokenSymbol: *id035
+            tokenDecimals: *id036
+            patterns: *id037
+      description: Token transfer sent or received by an address. Additional fields may be present; only the fields
+        listed here are part of the documented contract.
+    TokenBalance:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/Address'
+        address:
+          $ref: '#/components/schemas/Address'
+        currentBalance: *id014
+        previousBalance: *id014
+        diff: *id014
+        transactionId: *id010
+        tokenTransferId: *id010
+        tokenContract:
+          type:
+          - object
+          - 'null'
+          description: Token metadata (name, tokenName, tokenSymbol, tokenDecimals, address).
+        transaction:
+          type: object
+          properties:
+            blockNumber: *id010
+      description: Latest known balance of an address for a token. Additional fields may be present; only the fields
+        listed here are part of the documented contract.
+    AddressStats:
+      type: object
+      properties:
+        tokenTransferCount: *id010
+        transactionCount: *id010
+        firstTransactionTimestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastTransactionTimestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        firstTransactionHash:
+          type:
+          - string
+          - 'null'
+        lastTransactionHash:
+          type:
+          - string
+          - 'null'
+        erc20TransferCount: *id010
+        erc721TransferCount: *id010
+        erc1155TransferCount: *id010
+        internalTransactionCount:
+          type: integer
+          description: Only present on explorers with tracing enabled.
+    ContractListItem:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        name:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        patterns:
+          type: array
+          items: *id014
+        tokenName:
+          type:
+          - string
+          - 'null'
+        tokenSymbol:
+          type:
+          - string
+          - 'null'
+        tokenTotalSupply:
+          type:
+          - string
+          - 'null'
+        verification:
+          type:
+          - object
+          - 'null'
+          properties:
+            createdAt: *id009
+        creationTransaction:
+          type:
+          - object
+          - 'null'
+      description: Contract summary. Additional fields may be present; only the fields listed here are part of the
+        documented contract.
+    VerifiedContractListItem:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        name:
+          type:
+          - string
+          - 'null'
+        patterns:
+          type: array
+          items: *id014
+        abi:
+          type:
+          - array
+          - 'null'
+        verification:
+          type: object
+          properties:
+            id: *id010
+            createdAt: *id009
+            evmVersion: *id014
+            compilerVersion: *id014
+            constructorArguments:
+              type:
+              - string
+              - 'null'
+            runs:
+              type:
+              - integer
+              - 'null'
+        transactionCount:
+          type:
+          - string
+          - integer
+          description: Number of transactions sent to the contract (decimal string).
+      description: Verified contract summary. Additional fields may be present; only the fields listed here are
+        part of the documented contract.
+    ContractDetail:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        name:
+          type:
+          - string
+          - 'null'
+        abi:
+          type:
+          - array
+          - 'null'
+        patterns:
+          type: array
+          items: *id014
+        isToken: *id032
+        tokenName:
+          type:
+          - string
+          - 'null'
+        tokenSymbol:
+          type:
+          - string
+          - 'null'
+        tokenDecimals:
+          type:
+          - integer
+          - 'null'
+        tokenTotalSupply:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        proxy:
+          type:
+          - string
+          - 'null'
+          description: Implementation address when the contract is a proxy.
+        verificationStatus:
+          type:
+          - string
+          - 'null'
+        logCount:
+          type:
+          - string
+          - integer
+          description: Number of logs emitted by the contract.
+        verification:
+          type:
+          - object
+          - 'null'
+          description: Verification metadata (compilerVersion, evmVersion, contractName, runs, libraries, constructorArguments,
+            createdAt, sources).
+        proxyContract:
+          type:
+          - object
+          - 'null'
+        creationTransaction:
+          type:
+          - object
+          - 'null'
+      description: Contract detail, or `null` when the address is unknown. Additional fields may be present; only
+        the fields listed here are part of the documented contract.
+    ContractLog:
+      type: object
+      properties:
+        id: *id010
+        address:
+          $ref: '#/components/schemas/Address'
+        data: *id014
+        topics:
+          type: array
+          items: *id014
+        logIndex: *id010
+        receipt:
+          type: object
+          properties:
+            transactionHash:
+              $ref: '#/components/schemas/Hash'
+            from: *id014
+            to:
+              type:
+              - string
+              - 'null'
+            blockNumber: *id010
+            transaction:
+              type: object
+              properties:
+                timestamp: *id009
+        contract:
+          type:
+          - object
+          - 'null'
+      description: Event log emitted by a contract. Additional fields may be present; only the fields listed here
+        are part of the documented contract.
+    TokenStats:
+      type: object
+      properties:
+        tokenHolderCount:
+          type:
+          - integer
+          - 'null'
+        transactionCount:
+          type:
+          - integer
+          - 'null'
+        tokenTransferCount:
+          type:
+          - integer
+          - 'null'
+        tokenCirculatingSupply:
+          type:
+          - string
+          - 'null'
+      description: Statistics of a token contract; all null when the contract is unknown.
+    TokenHolder:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        amount:
+          type: string
+          description: Balance (raw units, decimal string).
+        share:
+          type: number
+          description: Share of the circulating supply (0 to 1).
+    ContractTokenTransfer:
+      type: object
+      properties:
+        id: *id010
+        src:
+          $ref: '#/components/schemas/Address'
+        dst:
+          $ref: '#/components/schemas/Address'
+        token:
+          $ref: '#/components/schemas/Address'
+        amount:
+          type:
+          - string
+          - number
+        tokenId:
+          type:
+          - string
+          - 'null'
+        transaction:
+          type: object
+          properties:
+            hash:
+              $ref: '#/components/schemas/Hash'
+            blockNumber: *id010
+            timestamp: *id009
+            data: *id014
+            methodDetails:
+              $ref: '#/components/schemas/MethodDetails'
+        contract:
+          type:
+          - object
+          - 'null'
+          properties:
+            id: *id010
+            name: *id033
+            tokenName: *id034
+            tokenSymbol: *id035
+            tokenDecimals: *id036
+            patterns: *id037
+      description: Transfer of a token. Additional fields may be present; only the fields listed here are part of
+        the documented contract.
+    Erc721Token:
+      type: object
+      properties:
+        id: *id010
+        contractId: *id010
+        tokenId: *id014
+        owner:
+          type:
+          - string
+          - 'null'
+        URI:
+          type:
+          - string
+          - 'null'
+        metadata:
+          type:
+          - object
+          - 'null'
+        attributes:
+          type: object
+          description: Normalised metadata attributes (name, properties, levels, boosts, stats, dates, …).
+      description: An indexed NFT. Additional fields may be present; only the fields listed here are part of the
+        documented contract.
+    Erc721TokenLive:
+      type: object
+      properties:
+        tokenId: *id014
+        owner: *id014
+        URI:
+          type:
+          - string
+          - 'null'
+        attributes:
+          type: object
+        metadata:
+          type: object
+      description: NFT data read live from the chain RPC and the token metadata URI. Additional fields may be present;
+        only the fields listed here are part of the documented contract.
+    Erc721TokenTransfer:
+      type: object
+      properties:
+        id: *id010
+        amount: *id014
+        src:
+          $ref: '#/components/schemas/Address'
+        dst:
+          $ref: '#/components/schemas/Address'
+        token:
+          $ref: '#/components/schemas/Address'
+        tokenId: *id014
+        contract:
+          type: object
+        transaction:
+          type: object
+          properties:
+            hash:
+              $ref: '#/components/schemas/Hash'
+            timestamp: *id009
+            blockNumber: *id010
+      description: Transfer of one NFT. Additional fields may be present; only the fields listed here are part of
+        the documented contract.
+    SearchResult:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - contract
+          - transaction
+          - block
+        data:
+          type: object
+          description: A contract (ContractDetail / summary), a transaction (TransactionDetail) or a block, depending
+            on `type`.
+      required:
+      - type
+      - data
+    ExplorerStatus:
+      type: object
+      properties:
+        syncStatus:
+          type: string
+        latestCheckedBlock: *id010
+        latestCheckedAt: *id009
+        startingBlock: *id010
+        isRpcReachable: *id032
+        rpcHealthCheckedAt: *id009
+      description: Fields are omitted when unknown.
+    ExplorerSearchResult:
+      type: object
+      properties:
+        explorer:
+          type: object
+          properties:
+            id: *id010
+            chainId:
+              type:
+              - integer
+              - 'null'
+            domain:
+              type:
+              - string
+              - 'null'
+            domains:
+              type: array
+              items:
+                type: object
+            name: *id014
+            rpcServer: *id014
+            slug: *id014
+            admin:
+              type: object
+            workspace:
+              type: object
+            gasAnalyticsEnabled: *id032
+            displayTopAccounts: *id032
+            isDemo: *id032
+            mainDomain: *id014
+            token:
+              type:
+              - string
+              - 'null'
+              description: Native token symbol; `ether` when the plan has no native token capability.
+            themes:
+              type: object
+            totalSupply:
+              type:
+              - string
+              - 'null'
+            adsEnabled: *id032
+            faucet:
+              type: object
+              description: Present only when the explorer has an active faucet.
+            v2Dex:
+              type: object
+              description: Present only when the explorer has an active V2 DEX.
+      description: Public configuration of an explorer. Additional fields may be present; only the fields listed
+        here are part of the documented contract.
+    ExplorerSearchError:
+      type: object
+      properties:
+        error: *id014
+        mainDomain: *id014
+      required:
+      - error
+    L2Item:
+      type: object
+      description: Rollup record. See the description of the operation for the available fields. Additional fields
+        may be present; only the fields listed here are part of the documented contract.
+    EtherscanOk:
+      type: object
+      properties:
+        status:
+          type: string
+          const: '1'
+        message:
+          type: string
+          const: OK
+        result: {}
+      required:
+      - status
+      - message
+      - result
+      description: Success envelope.
+    EtherscanFailure:
+      type: object
+      properties:
+        status:
+          type: string
+          const: '0'
+        message: *id014
+        result: {}
+      required:
+      - status
+      - message
+      description: Failure envelope. Always returned with HTTP 200.
+    EtherscanTransaction:
+      type: object
+      properties:
+        blockNumber: *id014
+        timeStamp: *id014
+        hash: *id014
+        nonce: *id014
+        blockHash: *id014
+        transactionIndex: *id014
+        from: *id014
+        to: *id014
+        value: *id014
+        gas: *id014
+        gasPrice: *id014
+        isError: *id014
+        txreceipt_status: *id014
+        input: *id014
+        contractAddress: *id014
+        cumulativeGasUsed: *id014
+        gasUsed: *id014
+        confirmations: *id014
+        methodId: *id014
+        functionName: *id014
+      required:
+      - blockNumber
+      - timeStamp
+      - hash
+      - nonce
+      - blockHash
+      - transactionIndex
+      - from
+      - to
+      - value
+      - gas
+      - gasPrice
+      - isError
+      - txreceipt_status
+      - input
+      - contractAddress
+      - cumulativeGasUsed
+      - gasUsed
+      - confirmations
+      - methodId
+      - functionName
+      description: Transaction as returned by `account/txlist`. Numeric values are decimal strings; unavailable
+        values are empty strings.
+    EtherscanLog:
+      type: object
+      properties:
+        address: *id014
+        topics:
+          type: array
+          items: *id014
+        data: *id014
+        blockNumber: *id014
+        timeStamp: *id014
+        gasPrice: *id014
+        gasUsed: *id014
+        logIndex: *id014
+        transactionHash: *id014
+        transactionIndex: *id014
+      required:
+      - address
+      - topics
+      - data
+      - blockNumber
+      - timeStamp
+      - gasPrice
+      - gasUsed
+      - logIndex
+      - transactionHash
+      - transactionIndex
+      description: Log as returned by `logs/getLogs`. Quantities (`blockNumber`, `timeStamp`, `gasPrice`, `gasUsed`,
+        `logIndex`, `transactionIndex`) are hex strings.
+    EtherscanSourceCode:
+      type: object
+      properties:
+        SourceCode: *id014
+        ABI:
+          type:
+          - array
+          - 'null'
+        ContractName:
+          type:
+          - string
+          - 'null'
+        CompilerVersion: *id014
+        OptimizationUsed:
+          type: string
+          enum:
+          - '0'
+          - '1'
+        Runs:
+          type:
+          - integer
+          - 'null'
+        ConstructorArguments:
+          type:
+          - string
+          - 'null'
+        EVMVersion: *id014
+        Library:
+          type:
+          - object
+          - 'null'
+    EtherscanPostBody:
+      type: object
+      properties:
+        module:
+          type: string
+          enum:
+          - contract
+        action:
+          type: string
+          enum:
+          - verifysourcecode
+          - checkverifystatus
+        contractaddress: *id014
+        sourceCode:
+          type: string
+          description: Solidity source, or a standard-json-input document.
+        codeformat:
+          type: string
+          enum:
+          - solidity-single-file
+          - solidity-standard-json-input
+        contractname: *id014
+        compilerversion: *id014
+        optimizationUsed:
+          type: string
+          enum:
+          - '0'
+          - '1'
+        runs: *id014
+        constructorArguements:
+          type: string
+          description: ABI-encoded constructor arguments (spelled like Etherscan).
+        evmVersion: *id014
+        viaIR:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+        guid:
+          type: string
+          description: Verification id (`checkverifystatus`).
+      description: 'Fields depend on the action: `verifysourcecode` needs `contractaddress`, `sourceCode`, `compilerversion`,
+        `contractname` and `codeformat`; `checkverifystatus` needs `guid`.'
