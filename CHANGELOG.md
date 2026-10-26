@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.0] - 2026-10-26
+### Added
+- Interactive API reference on every public explorer at /docs/api, and a central reference at tryethernal.com/docs/api
+- Public explorer API: call any public explorer's API on its own domain (or with the explorer slug as `apikey`), no workspace parameters needed
+- Etherscan-compatible actions: account balance/balancemulti/txlist, transaction getstatus/gettxreceiptstatus, block getblocknumberbytime and logs getLogs
+- Contract verification now also works on `<slug>.tryethernal.com` explorer domains without an `apikey`
+
+
 ## [5.17.278] - 2026-10-25
 ### Fixed
 - blog: publish - The 12% Problem: What Actually Helps Humans Catch Business-Logic Bugs
