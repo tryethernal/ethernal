@@ -141,6 +141,8 @@ const routes = [
     { path: '/op/outputs/:outputIndex', component: OpOutputDetail, name: 'opOutputDetail', props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/op/withdrawals', component: OpWithdrawals, name: 'opWithdrawals', beforeEnter: redirectIfLoggedOut },
     { path: '/op/deposits', component: OpDeposits, name: 'opDeposits', beforeEnter: redirectIfLoggedOut },
+    // Lazy-loaded so Scalar (and its stylesheet) stay out of the main bundle
+    { path: '/docs/api', name: 'api-docs', component: () => import(/* webpackChunkName: "api-docs" */ '../components/ApiDocs.vue') },
 { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 

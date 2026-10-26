@@ -13,13 +13,14 @@ export default defineConfig({
         exclude: ['run/**', 'node_modules/**'],
         server: {
             deps: {
-                inline: ['vuetify', '@web3-onboard/wagmi']
+                inline: ['vuetify', '@web3-onboard/wagmi', /@scalar\//]
             }
         }
     },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
-        }
+        },
+        dedupe: ['vue']
     }
 });
