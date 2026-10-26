@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the Etherscan-compatible SQL query builders and data access helpers (transaction/log lists, point queries, closest block lookup).
+ */
+
 require('../mocks/models');
 require('../mocks/lib/env');
 require('../mocks/lib/utils');

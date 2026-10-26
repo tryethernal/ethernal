@@ -17,7 +17,7 @@ import { computed, onBeforeUnmount } from 'vue';
 import { useTheme } from 'vuetify';
 import { ApiReference } from '@scalar/api-reference';
 import '@scalar/api-reference/style.css';
-import { useExplorerStore } from '../stores/explorer';
+import { useExplorerStore } from '@/stores/explorer';
 
 const CENTRAL_DOCS_URL = 'https://tryethernal.com/docs/api';
 

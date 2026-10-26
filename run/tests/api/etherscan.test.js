@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the Etherscan-compatible API: action dispatcher, explorer resolution, query timeouts, and the account/transaction actions.
+ */
+
 require('../mocks/lib/queue');
 require('../mocks/lib/rpc');
 require('../mocks/lib/utils');

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for public explorer resolution by host or slug, host normalisation, caching, and the public workspace loader.
+ */
+
 require('../mocks/models');
 require('../mocks/lib/env');
 require('../mocks/lib/flags');

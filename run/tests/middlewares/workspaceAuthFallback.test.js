@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the workspace auth middleware host/API key fallback for public explorers and its backward compatibility with existing auth.
+ */
+
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/firebase-admin');

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the ApiDocs component and the /docs/api route on public explorers and in dashboard mode.
+ */
+
 import { setActivePinia, createPinia } from 'pinia';
 import { useExplorerStore } from '@/stores/explorer';
 import ApiDocs from '@/components/ApiDocs.vue';

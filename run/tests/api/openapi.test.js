@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the GET /api/openapi.json endpoint serving the public API specification.
+ */
+
 require('../mocks/lib/queue');
 require('../mocks/lib/utils');
 require('../mocks/lib/env');
