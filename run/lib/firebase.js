@@ -16,6 +16,7 @@ const logger = require('./logger');
 const { firebaseHash }  = require('./crypto');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
 const { sanitize, withTimeout } = require('./utils');
+const etherscanQueries = require('./etherscanQueries');
 
 const ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS = 300;
 // Shared Redis client uses maxRetriesPerRequest: null, so commands queue indefinitely
@@ -5236,7 +5237,134 @@ const skipDripEmailsForExplorer = async (explorerId) => {
     return count;
 };
 
+
+/**
+ * Runs a read-only SQL query built by lib/etherscanQueries.
+ * @param {{sql: string, replacements: Object}} query - Query and its named replacements
+ * @returns {Promise<Array<Object>>} Rows
+ */
+const runEtherscanQuery = (query) => {
+    const replacements = Object.fromEntries(Object.entries(query.replacements).filter(([, value]) => value !== undefined));
+    return models.sequelize.query(query.sql, { replacements, type: Sequelize.QueryTypes.SELECT });
+};
+
+/**
+ * Gets the latest indexed block of a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<{number: number, timeStamp: string}|null>} The latest block, or null if none is indexed
+ */
+const getLatestIndexedBlock = async (workspaceId) => {
+    if (!workspaceId) throw new Error('Missing parameter.');
+
+    const rows = await runEtherscanQuery(etherscanQueries.buildLatestBlockQuery(workspaceId));
+    return rows[0] || null;
+};
+
+/**
+ * Gets one page of the transactions sent from or to an address, with receipt data (Etherscan txlist).
+ * Dedicated bounded query, no COUNT.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} params - Query parameters
+ * @param {string} params.address - Lowercase address
+ * @param {number} params.startBlock - First block (inclusive)
+ * @param {number} params.endBlock - Last block (inclusive)
+ * @param {string} params.sort - 'asc' or 'desc'
+ * @param {number} params.page - 1-based page
+ * @param {number} params.offset - Page size
+ * @returns {Promise<Array<Object>>} Rows
+ */
+const getEtherscanTransactions = (workspaceId, params) => {
+    if (!workspaceId || !params || !params.address) throw new Error('Missing parameter.');
+
+    return runEtherscanQuery(etherscanQueries.buildTransactionListQuery({ ...params, workspaceId }));
+};
+
+/**
+ * Gets one page of the logs emitted by a contract in a block range (Etherscan getLogs).
+ * Dedicated bounded query, no COUNT.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} params - Query parameters
+ * @param {string} params.address - Lowercase emitting address
+ * @param {number} params.fromBlock - First block (inclusive)
+ * @param {number} params.toBlock - Last block (inclusive)
+ * @param {Array<string|null>} params.topics - Lowercase topics 0..3 (null = unconstrained)
+ * @param {string} params.sort - 'asc' or 'desc'
+ * @param {number} params.page - 1-based page
+ * @param {number} params.offset - Page size
+ * @returns {Promise<Array<Object>>} Rows
+ */
+const getEtherscanLogs = (workspaceId, params) => {
+    if (!workspaceId || !params || !params.address) throw new Error('Missing parameter.');
+
+    return runEtherscanQuery(etherscanQueries.buildLogListQuery({ ...params, workspaceId }));
+};
+
+/**
+ * Gets the receipt status and stored error of a transaction.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} hash - Lowercase transaction hash
+ * @returns {Promise<{id: number, parsedError: string|null, receiptId: number|null, status: boolean|null}|null>} Row, or null if the transaction is unknown
+ */
+const getEtherscanTransactionStatus = async (workspaceId, hash) => {
+    if (!workspaceId || !hash) throw new Error('Missing parameter.');
+
+    const rows = await runEtherscanQuery(etherscanQueries.buildTransactionStatusQuery(workspaceId, hash));
+    return rows[0] || null;
+};
+
+/**
+ * Finds the block number closest to a unix timestamp, using a binary search over
+ * indexed block numbers (about 25 single-row index probes, regardless of chain length).
+ * Assumes block timestamps are non-decreasing with block number.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} timestamp - Unix timestamp in seconds
+ * @param {string} closest - 'before' (last block at or before the timestamp) or 'after' (first block at or after it)
+ * @returns {Promise<number|null>} The block number, or null if there is no such block
+ */
+const getClosestBlockNumber = async (workspaceId, timestamp, closest) => {
+    if (!workspaceId || timestamp === undefined || timestamp === null || !['before', 'after'].includes(closest))
+        throw new Error('Missing parameter.');
+
+    const [first] = await runEtherscanQuery(etherscanQueries.buildFirstBlockQuery(workspaceId));
+    if (!first)
+        return null;
+    const latest = await getLatestIndexedBlock(workspaceId);
+
+    // Smallest indexed block satisfying the (monotonic) predicate
+    const matches = closest === 'before' ? (b => Number(b.timeStamp) > timestamp) : (b => Number(b.timeStamp) >= timestamp);
+
+    let candidate = null;
+    let lo = first.number;
+    let hi = latest.number + 1;
+    for (let i = 0; lo < hi && i < 64; i++) {
+        const mid = Math.floor((lo + hi) / 2);
+        const [block] = await runEtherscanQuery(etherscanQueries.buildBlockAtOrAfterQuery(workspaceId, mid));
+        if (!block)
+            hi = mid;
+        else if (matches(block)) {
+            candidate = block;
+            hi = mid;
+        }
+        else
+            lo = block.number + 1;
+    }
+
+    if (closest === 'after')
+        return candidate ? candidate.number : null;
+
+    if (!candidate)
+        return latest.number;
+
+    const [previous] = await runEtherscanQuery(etherscanQueries.buildBlockBeforeQuery(workspaceId, candidate.number));
+    return previous ? previous.number : null;
+};
+
 module.exports = {
+    getLatestIndexedBlock,
+    getEtherscanTransactions,
+    getEtherscanLogs,
+    getEtherscanTransactionStatus,
+    getClosestBlockNumber,
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
     storeContractData: storeContractData,
