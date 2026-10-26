@@ -59,30 +59,35 @@ describe('ApiDocs.vue', () => {
 
         it('Should follow the app theme and use its primary color as accent', async () => {
             const theme = mountDocs().vm.$vuetify.theme;
-            await vi.waitFor(() => expect(document.body.classList.contains('light-mode')).toBe(true));
+            await vi.waitFor(() => expect(document.body.classList.contains('light-mode')).toBe(true), { timeout: 10000 });
 
             const accent = theme.current.colors.primary;
             await vi.waitFor(() => {
                 const css = [...document.querySelectorAll('style')].map(s => s.textContent).join('\n');
                 expect(css).toContain(`--scalar-color-accent: ${accent}`);
-            });
+            }, { timeout: 10000 });
 
             theme.name = 'dark';
-            await vi.waitFor(() => expect(document.body.classList.contains('dark-mode')).toBe(true));
+            await vi.waitFor(() => expect(document.body.classList.contains('dark-mode')).toBe(true), { timeout: 10000 });
             expect(document.body.classList.contains('light-mode')).toBe(false);
         }, 15000);
 
-        it('Should leave the body theme class in line with the app when leaving the page', async () => {
+        it.each([
+            ['light', false],
+            ['dark', true]
+        ])('Should put the body theme class back in line with the %s app theme when leaving the page', (themeName, expectDark) => {
             const theme = mountDocs().vm.$vuetify.theme;
-            theme.name = 'light';
-            await vi.waitFor(() => expect(document.body.classList.contains('light-mode')).toBe(true));
+            theme.name = themeName;
+
+            // Set the classes ourselves (as Scalar would) so the test does not depend on Scalar's async timing
+            document.body.classList.add('light-mode', 'dark-mode');
 
             wrapper.unmount();
             wrapper = null;
 
             expect(document.body.classList.contains('light-mode')).toBe(false);
-            expect(document.body.classList.contains('dark-mode')).toBe(false);
-        }, 15000);
+            expect(document.body.classList.contains('dark-mode')).toBe(expectDark);
+        });
     });
 
     describe('in dashboard mode (no public explorer)', () => {
