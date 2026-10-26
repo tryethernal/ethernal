@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.1] - 2026-10-26
+### Fixed
+- Frontend deploy failing because the app build ran out of memory
+
+
 ## [5.18.0] - 2026-10-26
 ### Added
 - Interactive API reference on every public explorer at /docs/api, and a central reference at tryethernal.com/docs/api
