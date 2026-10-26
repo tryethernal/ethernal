@@ -19,6 +19,14 @@
                     </v-btn>
                 </div>
 
+                <div class="d-flex flex-column ga-2">
+                    <span class="text-subtitle-2">Developers</span>
+                    <router-link class="text-decoration-none text-body-2" to="/docs/api">
+                        <v-icon size="small" icon="mdi-api" class="me-1" />
+                        API
+                    </router-link>
+                </div>
+
                 <div class="d-flex flex-column ga-2" v-if="explorerStore.themes?.links?.length > 0">
                     <span class="text-subtitle-2">Resources</span>
                     <div class="links-grid">

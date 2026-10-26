@@ -7,6 +7,7 @@ vi.mock('@/stores/env', () => ({
     host: 'localhost:3000'
 }));
 
+import { RouterLinkStub } from '@vue/test-utils';
 import { setActivePinia, createPinia } from 'pinia';
 import { useEnvStore } from '@/stores/env';
 import { useExplorerStore } from '@/stores/explorer';
@@ -167,6 +168,25 @@ describe('PrivateExplorerFooter.vue', () => {
         });
 
         expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should link to the API reference of the explorer', async () => {
+        const wrapper = mount(PublicExplorerFooter, {
+            global: {
+                plugins: [pinia],
+                stubs: {
+                    'v-footer': { template: '<div class="v-footer"><slot /></div>' },
+                    'v-container': { template: '<div class="v-container"><slot /></div>' },
+                    'v-btn': { template: '<button class="v-btn"><slot /></button>' },
+                    'v-icon': { template: '<span class="v-icon"><slot /></span>' },
+                    'v-divider': { template: '<hr class="v-divider" />' }
+                }
+            }
+        });
+
+        const apiLinks = wrapper.findAllComponents(RouterLinkStub).filter(l => l.props('to') === '/docs/api');
+        expect(apiLinks).toHaveLength(1);
+        expect(apiLinks[0].text()).toContain('API');
     });
 
     it('Should attempt to add network to MetaMask when button is clicked', async () => {
