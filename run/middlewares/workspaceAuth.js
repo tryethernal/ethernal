@@ -9,6 +9,7 @@ const db = require('../lib/firebase');
 const { sanitize, getEnv }  = require('../lib/utils');
 const { decrypt, decode, encode } = require('../lib/crypto');
 const logger = require('../lib/logger');
+const { resolvePublicExplorer, loadPublicWorkspace } = require('../lib/publicExplorer');
 
 module.exports = async (req, res, next) => {
     let firebaseUser = {};
@@ -17,8 +18,30 @@ module.exports = async (req, res, next) => {
     const data = { ...req.body.data, ...req.query, ...pusherData };
 
     try {
-        if (!data.workspace)
-            throw new Error('Missing parameter');
+        if (!data.workspace) {
+            const canUseHostFallback = req.method === 'GET'
+                && (data.workspace === undefined || data.workspace === '')
+                && !authorizationHeader
+                && !data.firebaseAuthToken
+                && !data.firebaseUserId;
+
+            if (!canUseHostFallback)
+                throw new Error('Missing parameter');
+
+            const resolved = await resolvePublicExplorer(req, data);
+            if (!resolved)
+                throw new Error('Missing parameter');
+
+            const publicWorkspace = await loadPublicWorkspace(resolved);
+            if (!publicWorkspace)
+                return res.sendStatus(404);
+
+            req.query.authenticated = false;
+            req.query.firebaseUserId = resolved.adminFirebaseUserId;
+            req.query.workspace = publicWorkspace;
+
+            return next();
+        }
 
         if (authorizationHeader) {
             const headerSplit = authorizationHeader.split('Bearer ');

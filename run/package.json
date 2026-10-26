@@ -43,6 +43,7 @@
     "firebase-scrypt": "^2.2.0",
     "free-email-domains": "^1.2.24",
     "ioredis": "^5.4.1",
+    "js-yaml": "^4.3.2",
     "jsonwebtoken": "^8.5.1",
     "lru-cache": "^7.18.3",
     "mixpanel": "^0.16.0",
@@ -70,6 +71,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
     "jest": "^29.2.1",
     "sequelize-cli": "^6.5.2",
     "supertest": "^6.2.3"

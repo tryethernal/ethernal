@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "5.17.278",
+  "version": "5.18.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
     "@replit/codemirror-lang-solidity": "^6.0.1",
+    "@scalar/api-reference": "~1.28.34",
     "@sentry/vue": "^8.25.0",
     "@sentry/webpack-plugin": "^2.22.2",
     "@truffle/artifactor": "^4.0.93",
@@ -115,7 +116,8 @@
     "worker-plugin": "^5.0.1"
   },
   "resolutions": {
-    "@achrinza/node-ipc": "9.2.5"
+    "@achrinza/node-ipc": "9.2.5",
+    "idn-hostname": "15.1.16"
   },
   "eslintConfig": {
     "root": true,

@@ -23,6 +23,16 @@ export default ({ mode }) => {
                 '@': path.resolve(__dirname, './src'),
             },
             extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+            // @scalar/api-reference pulls newer, nested copies of CodeMirror. Two copies of
+            // @codemirror/state break its editors ("multiple instances of @codemirror/state").
+            dedupe: [
+                '@codemirror/state',
+                '@codemirror/view',
+                '@codemirror/language',
+                '@codemirror/commands',
+                '@codemirror/autocomplete',
+                '@codemirror/lint'
+            ],
         },
         server: {
             allowedHosts: true,

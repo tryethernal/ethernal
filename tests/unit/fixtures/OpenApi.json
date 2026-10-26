@@ -1,0 +1,692 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Example Chain API",
+    "version": "1.0.0",
+    "description": "Public read API of every Ethernal explorer. The explorer is identified by the domain you call (a custom domain or `<slug>.tryethernal.com`); when calling another host (for example `app.tryethernal.com`) pass the explorer slug in the `apikey` query parameter. No authentication is required for public explorers.\n\nMost list endpoints use `page` / `itemsPerPage` pagination. Amounts are decimal strings in the smallest unit (wei).\n\nThe Etherscan-compatible endpoints (`/api?module=…&action=…`) are described on `/`.",
+    "license": {
+      "name": "Apache-2.0",
+      "identifier": "Apache-2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://explorer.example.com/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Blocks",
+      "description": "Blocks and their transactions."
+    },
+    {
+      "name": "Transactions",
+      "description": "Transactions, logs, token transfers and traces."
+    }
+  ],
+  "paths": {
+    "/blocks": {
+      "get": {
+        "operationId": "listBlocks",
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "List blocks",
+        "description": "Blocks sorted by number.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "name": "itemsPerPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            },
+            "description": "Number of items per page."
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "description": "Sort direction (case-insensitive)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Block"
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/blocks/{number}": {
+      "get": {
+        "operationId": "getBlock",
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Get a block",
+        "description": "Returns `null` when the block is not indexed.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Block number."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BlockDetail"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{hash}": {
+      "get": {
+        "operationId": "getTransaction",
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Get a transaction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Hash"
+            },
+            "description": "Transaction hash."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ApiKey": {
+        "name": "apikey",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]{1,64}$"
+        },
+        "description": "Slug of the explorer. Only needed when you do not call the explorer's own domain (for example when calling `app.tryethernal.com`). When calling `<slug>.tryethernal.com` or a custom domain the explorer is identified by the host."
+      },
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "description": "Page number, starting at 1."
+      }
+    },
+    "schemas": {
+      "Block": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/Hash"
+          },
+          "parentHash": {
+            "$ref": "#/components/schemas/Hash"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transactionsCount": {
+            "type": "integer"
+          },
+          "miner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gasUsed": {
+            "type": "string"
+          },
+          "gasLimit": {
+            "type": "string"
+          },
+          "baseFeePerGas": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "difficulty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "extraData": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "syncing",
+              "ready"
+            ]
+          },
+          "l1BlockNumber": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "orbitStatus": {
+            "type": "string",
+            "enum": [
+              "processed_on_rollup",
+              "pending_on_parent",
+              "confirmed_on_parent",
+              "finalized_on_parent"
+            ],
+            "description": "Arbitrum Orbit rollup status."
+          },
+          "workspaceId": {
+            "type": "integer",
+            "description": "Internal explorer id."
+          }
+        },
+        "description": "A block as returned in lists. Additional fields may be present; only the fields listed here are part of the documented contract."
+      },
+      "Hash": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{64}$",
+        "description": "Transaction or block hash."
+      },
+      "BlockDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "hash": {
+            "$ref": "#/components/schemas/Hash"
+          },
+          "parentHash": {
+            "$ref": "#/components/schemas/Hash"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transactionsCount": {
+            "type": "integer"
+          },
+          "miner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gasUsed": {
+            "type": "string"
+          },
+          "gasLimit": {
+            "type": "string"
+          },
+          "baseFeePerGas": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "difficulty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "extraData": {
+            "type": "string"
+          },
+          "syncedTransactionCount": {
+            "type": "integer",
+            "description": "Number of transactions already indexed with their receipt."
+          },
+          "orbitBatch": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Arbitrum Orbit batch containing the block (id, batchSequenceNumber, confirmationStatus, parentChainTxHash, parentChainBlockNumber)."
+          },
+          "orbitStatus": {
+            "type": "string",
+            "description": "Present only on Arbitrum Orbit explorers."
+          }
+        },
+        "description": "Block detail. Additional fields may be present; only the fields listed here are part of the documented contract."
+      },
+      "TransactionDetail": {
+        "type": "object",
+        "properties": {
+          "hash": {
+            "$ref": "#/components/schemas/Hash"
+          },
+          "blockNumber": {
+            "type": "integer"
+          },
+          "from": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null for contract creations."
+          },
+          "value": {
+            "type": "string",
+            "description": "Value in wei (decimal string)."
+          },
+          "gasPrice": {
+            "type": "string",
+            "description": "Gas price in wei (decimal string)."
+          },
+          "data": {
+            "type": "string",
+            "description": "Input data (hex)."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "workspaceId": {
+            "type": "integer",
+            "description": "Internal explorer id."
+          },
+          "methodDetails": {
+            "$ref": "#/components/schemas/MethodDetails"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "syncing",
+              "ready"
+            ],
+            "description": "`ready` once the receipt has been stored."
+          },
+          "transactionIndex": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "nonce": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "type": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "gasLimit": {
+            "type": "string"
+          },
+          "gas": {
+            "type": "string"
+          },
+          "maxFeePerGas": {
+            "type": "string"
+          },
+          "maxPriorityFeePerGas": {
+            "type": "string"
+          },
+          "parsedError": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Decoded revert reason for failed transactions."
+          },
+          "tokenTransferCount": {
+            "type": "integer"
+          },
+          "tokenBalanceChangeCount": {
+            "type": "integer"
+          },
+          "internalTransactionCount": {
+            "type": "integer"
+          },
+          "receipt": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "gasUsed": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "contractAddress": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cumulativeGasUsed": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "logCount": {
+                "type": "integer"
+              },
+              "createdContract": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CreatedContract"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "block": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "gasLimit": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "baseFeePerGas": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "contract": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Contract at the `to` address, when known."
+          },
+          "extraFields": {
+            "type": "array",
+            "items": {},
+            "description": "Custom fields configured by the explorer owner (empty by default)."
+          }
+        },
+        "description": "Full transaction detail. For an unknown hash the response is `{ \"extraFields\": [] }`. Additional fields may be present; only the fields listed here are part of the documented contract."
+      },
+      "Address": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{40}$",
+        "description": "EVM address. Lowercase in responses."
+      },
+      "MethodDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "sighash": {
+            "type": "string",
+            "description": "4-byte selector, present when the method could not be decoded."
+          }
+        },
+        "description": "Decoded method of the transaction input. An empty object when there is no input. Additional fields may be present; only the fields listed here are part of the documented contract."
+      },
+      "CreatedContract": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tokenName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tokenSymbol": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tokenDecimals": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspaceId": {
+            "type": "integer"
+          },
+          "verification": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "description": "Contract created by the transaction. Additional fields may be present; only the fields listed here are part of the documented contract."
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid or missing parameters. Plain-text message.",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "The explorer could not be identified from the host or the `apikey` parameter. Plain-text body `Missing parameter`.",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The explorer is not public (or the resource does not exist).",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Unexpected error, including some \"not found\" conditions of detail routes (message in the body).",
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -78,7 +78,8 @@
 
 ## Documentation
 
-- [API Reference](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf): Postman collection for Ethernal's REST API
+- [API Reference](https://tryethernal.com/docs/api): Interactive OpenAPI reference for the public explorer API (REST and Etherscan-compatible endpoints). Every explorer also serves its own at `/docs/api` and the raw document at `/api/openapi.json`
+- [Postman Collection](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf): Postman collection for Ethernal's REST API
 - [Documentation](https://doc.tryethernal.com): Full product documentation
 - [GitHub](https://github.com/tryethernal/ethernal): Open-source repository
 
