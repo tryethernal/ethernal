@@ -15,8 +15,8 @@ info:
 
     The Etherscan-compatible endpoints (`/api?module=…&action=…`) are described on `/`.'
   license:
-    name: Apache-2.0
-    identifier: Apache-2.0
+    name: MIT
+    identifier: MIT
 servers:
 - url: https://{explorerDomain}/api
   description: Public explorer. Set explorerDomain to the domain of the explorer you want to query.
