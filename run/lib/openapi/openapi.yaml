@@ -2973,7 +2973,13 @@ paths:
       summary: Etherscan-compatible API (GET)
       description: 'Etherscan-style endpoint: `GET /api?module=<module>&action=<action>&…`. Select the operation
         with `module` and `action`; the parameters of each action are listed in `x-etherscan-actions`. Existing
-        Etherscan tooling (Hardhat, Foundry, …) can point at `https://<explorer-domain>/api`.'
+        Etherscan tooling (Hardhat, Foundry, …) can point at `https://<explorer-domain>/api`.
+
+
+        Database-backed actions (`account/txlist`, `logs/getLogs`, `transaction/*`, `block/getblocknumberbytime`)
+        are bounded by a 5 second database timeout. A query that exceeds it is cancelled and answered (HTTP 200)
+        with `{"status":"0","message":"NOTOK","result":"Query timed out. Narrow the block range or use a smaller
+        page size."}`.'
       parameters:
       - $ref: '#/components/parameters/ApiKey'
       - name: module
@@ -3181,6 +3187,12 @@ paths:
                       logIndex: '0x0'
                       transactionHash: '0xabababababababababababababababababababababababababababababababab'
                       transactionIndex: '0x0'
+                timeout:
+                  summary: Query timed out
+                  value:
+                    status: '0'
+                    message: NOTOK
+                    result: Query timed out. Narrow the block range or use a smaller page size.
                 error:
                   summary: Error
                   value:
@@ -3348,7 +3360,9 @@ paths:
         - offset
         - sort
         - chainid
-        description: Logs emitted by a contract in a block range.
+        description: 'Logs emitted by a contract in a block range. Subject to the 5 second database timeout: on
+          a very active contract a wide block range or a deep page can return `Query timed out. Narrow the block
+          range or use a smaller page size.`; use a narrower range or a smaller `offset`.'
         result:
           type: array
           items:

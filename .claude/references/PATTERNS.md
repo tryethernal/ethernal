@@ -25,7 +25,7 @@ router.get('/:id', workspaceAuthMiddleware, async (req, res, next) => {
 ### Public API: explorer resolution and Etherscan layer
 
 - `workspaceAuthMiddleware` accepts GET requests without `workspace`/credentials: the explorer is then resolved from the host (`X-Forwarded-Host`, custom domain or `<slug>.APP_DOMAIN`) or the `apikey` param (slug) by `run/lib/publicExplorer.js`, and the workspace is re-checked as public on every request. Writes never use this fallback.
-- `/api?module=...&action=...` is rewritten by the table in `run/lib/etherscanDispatch.js` (exposed as `app.etherscanDispatch`). New actions live in `run/api/etherscan.js` (always HTTP 200, Etherscan envelope); each needs a dedicated bounded query (see `run/lib/etherscanQueries.js`) and an entry in `x-etherscan-actions` of the OpenAPI document.
+- `/api?module=...&action=...` is rewritten by the table in `run/lib/etherscanDispatch.js`. New actions live in `run/api/etherscan.js` (always HTTP 200, Etherscan envelope); each needs a dedicated bounded query (see `run/lib/etherscanQueries.js`) and an entry in `x-etherscan-actions` of the OpenAPI document.
 - `GET /api/openapi.json` serves `run/lib/openapi/openapi.yaml`.
 
 ## Adding a New Model

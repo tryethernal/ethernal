@@ -22,6 +22,7 @@ const logger = require('../lib/logger');
 const { ProviderConnector } = require('../lib/rpc');
 const { withTimeout } = require('../lib/utils');
 const { resolvePublicExplorer, loadPublicWorkspace } = require('../lib/publicExplorer');
+const { EtherscanQueryTimeoutError } = require('../lib/etherscanQueries');
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/;
 const HASH_REGEX = /^0x[0-9a-fA-F]{64}$/;
@@ -34,6 +35,7 @@ const MAX_LOG_RANGE = 10000;
 const MAX_BALANCE_ADDRESSES = 20;
 const MAX_BLOCK_NUMBER = 2147483647;
 const RPC_TIMEOUT_MS = 15000;
+const QUERY_TIMEOUT_MESSAGE = 'Query timed out. Narrow the block range or use a smaller page size.';
 
 /**
  * Error carrying a message that is returned to the caller in the Etherscan envelope.
@@ -58,7 +60,7 @@ const notOk = (res, result) => res.status(200).json({ status: '0', message: 'NOT
 
 /**
  * Wraps an action handler: resolves and re-checks the public explorer, then converts
- * thrown errors into the Etherscan error envelope.
+ * thrown errors into the Etherscan error envelope (database statement timeouts included, not logged as errors).
  * @param {string} location - Name used in logs
  * @param {Function} handler - Async function `({ params, workspace, res }) => Object` returning the response
  * @returns {Function} Express handler
@@ -76,6 +78,8 @@ const action = (location, handler) => async (req, res) => {
     } catch (error) {
         if (error instanceof EtherscanError)
             return notOk(res, error.message);
+        if (error instanceof EtherscanQueryTimeoutError)
+            return notOk(res, QUERY_TIMEOUT_MESSAGE);
 
         logger.error(error.message, { location: `get.api.etherscan.${location}`, error });
         return notOk(res, 'Internal server error');

@@ -90,7 +90,10 @@ describe('getClosestBlockNumber', () => {
      * @param {Array<{number: number, timeStamp: number}>} blocks - Indexed blocks, sorted by number
      */
     const emulate = (blocks) => {
+        models.sequelize.transaction = jest.fn(async (work) => work({ id: 'tx' }));
         models.sequelize.query = jest.fn(async (sql, { replacements }) => {
+            if (sql.startsWith('SET LOCAL'))
+                return [];
             const { number } = replacements;
             let rows;
             if (sql.includes('number >= :number'))
@@ -151,6 +154,41 @@ describe('getClosestBlockNumber', () => {
         expect(models.sequelize.query.mock.calls.length).toBeLessThan(25);
     });
 
+    it('Should run the whole search in one transaction under one SET LOCAL statement_timeout', async () => {
+        emulate(Array.from({ length: 1000 }, (_, i) => ({ number: i, timeStamp: i * 2 })));
+
+        await db.getClosestBlockNumber(7, 777, 'before');
+
+        expect(models.sequelize.transaction).toHaveBeenCalledTimes(1);
+        const calls = models.sequelize.query.mock.calls;
+        expect(calls[0][0]).toBe('SET LOCAL statement_timeout = 5000');
+        expect(calls.filter(([sql]) => sql.startsWith('SET LOCAL'))).toHaveLength(1);
+        expect(calls.length).toBeGreaterThan(5);
+        calls.forEach(([, options]) => expect(options.transaction).toEqual({ id: 'tx' }));
+    });
+
+    it('Should raise a timeout error when a probe is cancelled by Postgres', async () => {
+        emulate([{ number: 1, timeStamp: 1 }, { number: 2, timeStamp: 2 }]);
+        const cancelled = Object.assign(new Error('canceling statement due to statement timeout'), { parent: { code: '57014' } });
+        models.sequelize.query.mockImplementation(async (sql) => {
+            if (sql.startsWith('SET LOCAL'))
+                return [];
+            throw cancelled;
+        });
+
+        await expect(db.getClosestBlockNumber(7, 1, 'before')).rejects.toBeInstanceOf(queries.EtherscanQueryTimeoutError);
+    });
+
+    it('Should stop the search once the time budget is spent', async () => {
+        emulate(Array.from({ length: 1000 }, (_, i) => ({ number: i, timeStamp: i * 2 })));
+        const now = jest.spyOn(Date, 'now');
+        now.mockReturnValueOnce(0).mockReturnValue(6000);
+
+        await expect(db.getClosestBlockNumber(7, 777, 'before')).rejects.toBeInstanceOf(queries.EtherscanQueryTimeoutError);
+
+        now.mockRestore();
+    });
+
     it('Should reject invalid parameters', async () => {
         await expect(db.getClosestBlockNumber(7, 1, 'near')).rejects.toThrow('Missing parameter');
         await expect(db.getClosestBlockNumber(null, 1, 'before')).rejects.toThrow('Missing parameter');
@@ -159,13 +197,50 @@ describe('getClosestBlockNumber', () => {
 
 describe('Etherscan data access', () => {
     beforeEach(() => {
+        models.sequelize.transaction = jest.fn(async (work) => work({ id: 'tx' }));
         models.sequelize.query = jest.fn().mockResolvedValue([{ id: 1 }]);
+    });
+
+    it('Should issue SET LOCAL statement_timeout first, in the same transaction as the query', async () => {
+        await db.getEtherscanLogs(7, { address: '0xabc', fromBlock: 0, toBlock: 9, topics: [], sort: 'asc', page: 1, offset: 10 });
+
+        expect(models.sequelize.transaction).toHaveBeenCalledTimes(1);
+        const [setLocal, query] = models.sequelize.query.mock.calls;
+        expect(setLocal[0]).toBe('SET LOCAL statement_timeout = 5000');
+        expect(setLocal[1].transaction).toEqual({ id: 'tx' });
+        expect(query[0]).toContain('FROM transaction_logs');
+        expect(query[1].transaction).toEqual({ id: 'tx' });
+    });
+
+    it.each([
+        ['txlist', () => db.getEtherscanTransactions(7, { address: '0xabc', startBlock: 0, endBlock: 9, sort: 'asc', page: 1, offset: 10 })],
+        ['status', () => db.getEtherscanTransactionStatus(7, '0xhash')],
+        ['latest block', () => db.getLatestIndexedBlock(7)]
+    ])('Should bound the %s query with the statement timeout', async (_name, run) => {
+        await run();
+
+        expect(models.sequelize.query.mock.calls[0][0]).toBe('SET LOCAL statement_timeout = 5000');
+        expect(models.sequelize.query.mock.calls[1][1].transaction).toEqual({ id: 'tx' });
+    });
+
+    it('Should turn a Postgres statement timeout (57014) into a dedicated error', async () => {
+        models.sequelize.query.mockResolvedValueOnce([]).mockRejectedValueOnce(Object.assign(new Error('canceling statement due to statement timeout'), { parent: { code: '57014' } }));
+
+        await expect(db.getEtherscanLogs(7, { address: '0xabc', fromBlock: 0, toBlock: 9, topics: [], sort: 'asc', page: 1, offset: 10 }))
+            .rejects.toBeInstanceOf(queries.EtherscanQueryTimeoutError);
+    });
+
+    it('Should rethrow other database errors untouched', async () => {
+        const failure = Object.assign(new Error('boom'), { parent: { code: '23505' } });
+        models.sequelize.query.mockResolvedValueOnce([]).mockRejectedValueOnce(failure);
+
+        await expect(db.getEtherscanTransactionStatus(7, '0xhash')).rejects.toBe(failure);
     });
 
     it('Should run read-only SELECT queries with the named replacements, dropping undefined ones', async () => {
         await db.getEtherscanTransactions(7, { address: '0xabc', startBlock: 0, endBlock: 9, sort: 'asc', page: 1, offset: 10, unused: undefined });
 
-        const [sql, options] = models.sequelize.query.mock.calls[0];
+        const [sql, options] = models.sequelize.query.mock.calls[1];
         expect(sql).toContain('FROM transactions');
         expect(options.type).toBe(Sequelize.QueryTypes.SELECT);
         expect(Object.values(options.replacements)).not.toContain(undefined);
@@ -173,7 +248,7 @@ describe('Etherscan data access', () => {
     });
 
     it('Should return the first row of the status and latest block lookups', async () => {
-        models.sequelize.query.mockResolvedValueOnce([{ id: 4, status: true }]).mockResolvedValueOnce([]);
+        models.sequelize.query.mockResolvedValueOnce([]).mockResolvedValueOnce([{ id: 4, status: true }]).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
         expect(await db.getEtherscanTransactionStatus(7, '0xhash')).toEqual({ id: 4, status: true });
         expect(await db.getLatestIndexedBlock(7)).toBeNull();

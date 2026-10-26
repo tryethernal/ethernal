@@ -23,7 +23,6 @@ const yaml = require('js-yaml');
 const SwaggerParser = require('@apidevtools/swagger-parser');
 
 const api = require('../api');
-const app = require('../app');
 const { dispatchTable } = require('../lib/etherscanDispatch');
 
 const OPENAPI_PATH = path.join(__dirname, '../lib/openapi/openapi.yaml');
@@ -148,10 +147,6 @@ describe('Route drift', () => {
 
 describe('Etherscan dispatcher', () => {
     const actions = doc.paths['/'].get['x-etherscan-actions'];
-
-    it('Should be exposed by app.js', () => {
-        expect(app.etherscanDispatch).toBe(dispatchTable);
-    });
 
     it('Should match x-etherscan-actions in both directions, including methods', () => {
         const fromDispatcher = Object.fromEntries(dispatchTable.map(entry => [entry.key, [...entry.methods].sort()]));

@@ -19,6 +19,9 @@ const { sanitize, withTimeout } = require('./utils');
 const etherscanQueries = require('./etherscanQueries');
 
 const ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS = 300;
+// Postgres statement_timeout (ms) applied to every Etherscan query; for getClosestBlockNumber it covers the whole search
+const ETHERSCAN_QUERY_TIMEOUT_MS = 5000;
+const STATEMENT_TIMEOUT_SQLSTATE = '57014';
 // Shared Redis client uses maxRetriesPerRequest: null, so commands queue indefinitely
 // during a connection outage instead of rejecting. Cap each cache op so the DB fallback
 // stays reachable.
@@ -5241,12 +5244,42 @@ const skipDripEmailsForExplorer = async (explorerId) => {
 /**
  * Runs a read-only SQL query built by lib/etherscanQueries.
  * @param {{sql: string, replacements: Object}} query - Query and its named replacements
+ * @param {Object} transaction - Sequelize transaction the query runs in
  * @returns {Promise<Array<Object>>} Rows
  */
-const runEtherscanQuery = (query) => {
+const runEtherscanQuery = (query, transaction) => {
     const replacements = Object.fromEntries(Object.entries(query.replacements).filter(([, value]) => value !== undefined));
-    return models.sequelize.query(query.sql, { replacements, type: Sequelize.QueryTypes.SELECT });
+    return models.sequelize.query(query.sql, { replacements, type: Sequelize.QueryTypes.SELECT, transaction });
 };
+
+/**
+ * Runs read-only work in a transaction whose first statement is `SET LOCAL statement_timeout`,
+ * so every query of the work is cancelled by Postgres once the shared budget is exhausted.
+ * These queries back public, unauthenticated endpoints and must never hold the database for long.
+ * @param {Function} work - Async function receiving the Sequelize transaction
+ * @returns {Promise<*>} The result of the work
+ * @throws {EtherscanQueryTimeoutError} If Postgres cancels a statement (SQLSTATE 57014)
+ */
+const withEtherscanTimeout = async (work) => {
+    try {
+        return await models.sequelize.transaction(async (transaction) => {
+            await models.sequelize.query(`SET LOCAL statement_timeout = ${ETHERSCAN_QUERY_TIMEOUT_MS}`, { transaction });
+            return work(transaction);
+        });
+    } catch (error) {
+        const code = (error.parent && error.parent.code) || (error.original && error.original.code) || error.code;
+        if (code === STATEMENT_TIMEOUT_SQLSTATE)
+            throw new etherscanQueries.EtherscanQueryTimeoutError(error);
+        throw error;
+    }
+};
+
+/**
+ * Runs a single Etherscan query under the statement timeout.
+ * @param {{sql: string, replacements: Object}} query - Query and its named replacements
+ * @returns {Promise<Array<Object>>} Rows
+ */
+const runBoundedEtherscanQuery = (query) => withEtherscanTimeout(transaction => runEtherscanQuery(query, transaction));
 
 /**
  * Gets the latest indexed block of a workspace.
@@ -5256,7 +5289,7 @@ const runEtherscanQuery = (query) => {
 const getLatestIndexedBlock = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
-    const rows = await runEtherscanQuery(etherscanQueries.buildLatestBlockQuery(workspaceId));
+    const rows = await runBoundedEtherscanQuery(etherscanQueries.buildLatestBlockQuery(workspaceId));
     return rows[0] || null;
 };
 
@@ -5276,7 +5309,7 @@ const getLatestIndexedBlock = async (workspaceId) => {
 const getEtherscanTransactions = (workspaceId, params) => {
     if (!workspaceId || !params || !params.address) throw new Error('Missing parameter.');
 
-    return runEtherscanQuery(etherscanQueries.buildTransactionListQuery({ ...params, workspaceId }));
+    return runBoundedEtherscanQuery(etherscanQueries.buildTransactionListQuery({ ...params, workspaceId }));
 };
 
 /**
@@ -5296,7 +5329,7 @@ const getEtherscanTransactions = (workspaceId, params) => {
 const getEtherscanLogs = (workspaceId, params) => {
     if (!workspaceId || !params || !params.address) throw new Error('Missing parameter.');
 
-    return runEtherscanQuery(etherscanQueries.buildLogListQuery({ ...params, workspaceId }));
+    return runBoundedEtherscanQuery(etherscanQueries.buildLogListQuery({ ...params, workspaceId }));
 };
 
 /**
@@ -5308,7 +5341,7 @@ const getEtherscanLogs = (workspaceId, params) => {
 const getEtherscanTransactionStatus = async (workspaceId, hash) => {
     if (!workspaceId || !hash) throw new Error('Missing parameter.');
 
-    const rows = await runEtherscanQuery(etherscanQueries.buildTransactionStatusQuery(workspaceId, hash));
+    const rows = await runBoundedEtherscanQuery(etherscanQueries.buildTransactionStatusQuery(workspaceId, hash));
     return rows[0] || null;
 };
 
@@ -5325,38 +5358,45 @@ const getClosestBlockNumber = async (workspaceId, timestamp, closest) => {
     if (!workspaceId || timestamp === undefined || timestamp === null || !['before', 'after'].includes(closest))
         throw new Error('Missing parameter.');
 
-    const [first] = await runEtherscanQuery(etherscanQueries.buildFirstBlockQuery(workspaceId));
-    if (!first)
-        return null;
-    const latest = await getLatestIndexedBlock(workspaceId);
+    // One transaction for the whole search. statement_timeout is per statement, so the loop also enforces
+    // the budget across probes.
+    return withEtherscanTimeout(async (transaction) => {
+        const startedAt = Date.now();
+        const [first] = await runEtherscanQuery(etherscanQueries.buildFirstBlockQuery(workspaceId), transaction);
+        if (!first)
+            return null;
+        const [latest] = await runEtherscanQuery(etherscanQueries.buildLatestBlockQuery(workspaceId), transaction);
 
-    // Smallest indexed block satisfying the (monotonic) predicate
-    const matches = closest === 'before' ? (b => Number(b.timeStamp) > timestamp) : (b => Number(b.timeStamp) >= timestamp);
+        // Smallest indexed block satisfying the (monotonic) predicate
+        const matches = closest === 'before' ? (b => Number(b.timeStamp) > timestamp) : (b => Number(b.timeStamp) >= timestamp);
 
-    let candidate = null;
-    let lo = first.number;
-    let hi = latest.number + 1;
-    for (let i = 0; lo < hi && i < 64; i++) {
-        const mid = Math.floor((lo + hi) / 2);
-        const [block] = await runEtherscanQuery(etherscanQueries.buildBlockAtOrAfterQuery(workspaceId, mid));
-        if (!block)
-            hi = mid;
-        else if (matches(block)) {
-            candidate = block;
-            hi = mid;
+        let candidate = null;
+        let lo = first.number;
+        let hi = latest.number + 1;
+        for (let i = 0; lo < hi && i < 64; i++) {
+            if (Date.now() - startedAt > ETHERSCAN_QUERY_TIMEOUT_MS)
+                throw new etherscanQueries.EtherscanQueryTimeoutError();
+            const mid = Math.floor((lo + hi) / 2);
+            const [block] = await runEtherscanQuery(etherscanQueries.buildBlockAtOrAfterQuery(workspaceId, mid), transaction);
+            if (!block)
+                hi = mid;
+            else if (matches(block)) {
+                candidate = block;
+                hi = mid;
+            }
+            else
+                lo = block.number + 1;
         }
-        else
-            lo = block.number + 1;
-    }
 
-    if (closest === 'after')
-        return candidate ? candidate.number : null;
+        if (closest === 'after')
+            return candidate ? candidate.number : null;
 
-    if (!candidate)
-        return latest.number;
+        if (!candidate)
+            return latest.number;
 
-    const [previous] = await runEtherscanQuery(etherscanQueries.buildBlockBeforeQuery(workspaceId, candidate.number));
-    return previous ? previous.number : null;
+        const [previous] = await runEtherscanQuery(etherscanQueries.buildBlockBeforeQuery(workspaceId, candidate.number), transaction);
+        return previous ? previous.number : null;
+    });
 };
 
 module.exports = {

@@ -12,6 +12,8 @@ require('../mocks/lib/processContractVerification');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
 const { etherscanDispatcher, dispatchTable } = require('../../lib/etherscanDispatch');
+const { EtherscanQueryTimeoutError } = require('../../lib/etherscanQueries');
+const logger = require('../../lib/logger');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -165,6 +167,34 @@ describe('Etherscan explorer resolution', () => {
         const { body } = await call({ module: 'account', action: 'txlist', address: ADDRESS }).expect(200);
 
         expect(body).toEqual(NOTOK('Internal server error'));
+    });
+});
+
+describe('Etherscan query timeouts', () => {
+    const TIMEOUT = NOTOK('Query timed out. Narrow the block range or use a smaller page size.');
+
+    it.each([
+        ['account/txlist', 'getEtherscanTransactions', { module: 'account', action: 'txlist', address: ADDRESS }],
+        ['logs/getLogs', 'getEtherscanLogs', { module: 'logs', action: 'getLogs', address: ADDRESS, fromBlock: '1', toBlock: '2' }],
+        ['transaction/getstatus', 'getEtherscanTransactionStatus', { module: 'transaction', action: 'getstatus', txhash: HASH }],
+        ['transaction/gettxreceiptstatus', 'getEtherscanTransactionStatus', { module: 'transaction', action: 'gettxreceiptstatus', txhash: HASH }],
+        ['block/getblocknumberbytime', 'getClosestBlockNumber', { module: 'block', action: 'getblocknumberbytime', timestamp: '1', closest: 'before' }]
+    ])('Should answer %s with the timeout envelope (HTTP 200) without logging an error', async (_label, fn, query) => {
+        db[fn].mockRejectedValue(new EtherscanQueryTimeoutError());
+
+        const { body } = await call(query).expect(200);
+
+        expect(body).toEqual(TIMEOUT);
+        expect(logger.error).not.toHaveBeenCalled();
+    });
+
+    it('Should map a timeout raised while fetching the confirmations count', async () => {
+        db.getEtherscanTransactions.mockResolvedValue([{ hash: HASH, blockNumber: 1 }]);
+        db.getLatestIndexedBlock.mockRejectedValue(new EtherscanQueryTimeoutError());
+
+        const { body } = await call({ module: 'account', action: 'txlist', address: ADDRESS }).expect(200);
+
+        expect(body).toEqual(TIMEOUT);
     });
 });
 

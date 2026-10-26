@@ -7,6 +7,20 @@
  */
 
 /**
+ * Raised when Postgres cancels an Etherscan query because it exceeded the statement timeout.
+ */
+class EtherscanQueryTimeoutError extends Error {
+    /**
+     * @param {Error} [cause] - The original database error
+     */
+    constructor(cause) {
+        super('Query timed out');
+        this.name = 'EtherscanQueryTimeoutError';
+        this.cause = cause;
+    }
+}
+
+/**
  * Converts a sort value to a SQL direction (whitelist).
  * @param {string} sort - 'asc' or 'desc'
  * @returns {string} 'ASC' or 'DESC'
@@ -167,6 +181,7 @@ const buildBlockBeforeQuery = (workspaceId, number) => ({
 });
 
 module.exports = {
+    EtherscanQueryTimeoutError,
     buildTransactionListQuery,
     buildLogListQuery,
     buildTransactionStatusQuery,

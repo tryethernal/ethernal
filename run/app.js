@@ -15,7 +15,7 @@ const bullboardMiddleware = require('./middlewares/bullboard');
 const queues = require('./queues');
 
 const api = require('./api');
-const { etherscanDispatcher, dispatchTable } = require('./lib/etherscanDispatch');
+const { etherscanDispatcher } = require('./lib/etherscanDispatch');
 const webhooks = require('./webhooks');
 
 require('./scheduler');
@@ -56,4 +56,3 @@ if (getSentryDsn()) {
 }
 
 module.exports = app;
-module.exports.etherscanDispatch = dispatchTable;
