@@ -50,6 +50,7 @@
                     <div class="d-flex flex-column ga-2">
                         <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
                         <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+                        <router-link to="/docs/api" class="footer-link">API Reference</router-link>
                         <a href="/blog" class="footer-link">Blog</a>
                         <router-link to="/contact-us" class="footer-link">Contact</router-link>
                     </div>
