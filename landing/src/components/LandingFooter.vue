@@ -90,7 +90,6 @@
                 <v-col cols="6" sm="3" md="2" lg="2">
                     <div class="footer-heading">&nbsp;</div>
                     <div class="d-flex flex-column ga-2">
-                        <router-link to="/chains/lisk" class="footer-link">Lisk</router-link>
                         <router-link to="/chains/degen-chain" class="footer-link">Degen Chain</router-link>
                         <router-link to="/chains/xai" class="footer-link">Xai</router-link>
                         <router-link to="/chains/cyber" class="footer-link">Cyber</router-link>

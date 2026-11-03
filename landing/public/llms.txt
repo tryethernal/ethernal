@@ -54,7 +54,6 @@
 - [Xai](https://tryethernal.com/chains/xai): Xai gaming chain explorer
 - [Proof of Play Apex](https://tryethernal.com/chains/proof-of-play-apex): Proof of Play Apex explorer
 - [Redstone](https://tryethernal.com/chains/redstone): Redstone explorer
-- [Lisk](https://tryethernal.com/chains/lisk): Lisk L2 explorer
 - [Cyber](https://tryethernal.com/chains/cyber): Cyber explorer
 - [Mint](https://tryethernal.com/chains/mint): Mint explorer
 
