@@ -48,7 +48,6 @@ export const routes = [
     { path: '/chains/xai', name: 'chains-xai', component: () => import('./pages/chains/XaiPage.vue') },
     { path: '/chains/proof-of-play-apex', name: 'chains-proof-of-play-apex', component: () => import('./pages/chains/ProofOfPlayApexPage.vue') },
     { path: '/chains/redstone', name: 'chains-redstone', component: () => import('./pages/chains/RedstonePage.vue') },
-    { path: '/chains/lisk', name: 'chains-lisk', component: () => import('./pages/chains/LiskPage.vue') },
     { path: '/chains/cyber', name: 'chains-cyber', component: () => import('./pages/chains/CyberPage.vue') },
     { path: '/chains/mint', name: 'chains-mint', component: () => import('./pages/chains/MintPage.vue') },
     { path: '/chains/ethereum', name: 'chains-ethereum', component: () => import('./pages/chains/EthereumPage.vue') },

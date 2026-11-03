@@ -170,6 +170,12 @@ blog.tryethernal.com {
             redir * /blog/ethernal-x-alchemy permanent
         }
 
+        # Lisk chain page removed (chain winding down)
+        @chainsLisk path /chains/lisk /chains/lisk/
+        handle @chainsLisk {
+            redir * /op-stack permanent
+        }
+
         @blogCdnCgi path /blog/cdn-cgi/*
         handle @blogCdnCgi {
             respond 410
