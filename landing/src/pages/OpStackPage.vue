@@ -191,10 +191,6 @@
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Zora</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">NFT and creator-focused L2. Optimized for minting and media.</p>
                     </router-link>
-                    <router-link to="/chains/lisk" class="chain-card">
-                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Lisk</h3>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">Migrated from its own L1 to an OP Stack L2 for Ethereum alignment.</p>
-                    </router-link>
                     <router-link to="/chains/cyber" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Cyber</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">Social-focused L2 for decentralized social networking protocols.</p>
@@ -280,7 +276,7 @@
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">Which chains use the OP Stack?</h3>
-                        <p class="faq-a">Major OP Stack chains include Optimism, Base (Coinbase), Mode, Zora, Blast, Redstone, Lisk, Cyber, Mint, and many more. The Superchain is growing rapidly, with new chains launching regularly. Ethernal works with all of them.</p>
+                        <p class="faq-a">Major OP Stack chains include Optimism, Base (Coinbase), Mode, Zora, Blast, Redstone, Cyber, Mint, and many more. The Superchain is growing rapidly, with new chains launching regularly. Ethernal works with all of them.</p>
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">What is the difference between OP Stack and Arbitrum Orbit?</h3>
@@ -418,7 +414,7 @@ useHead({
                 "@type": "FAQPage",
                 "mainEntity": [
                     { "@type": "Question", "name": "What is the OP Stack?", "acceptedAnswer": { "@type": "Answer", "text": "The OP Stack is a modular framework for building optimistic rollups on Ethereum. It powers the Superchain, including Optimism, Base, Mode, Zora, and many other L2 chains." } },
-                    { "@type": "Question", "name": "Which chains use the OP Stack?", "acceptedAnswer": { "@type": "Answer", "text": "Major OP Stack chains include Optimism, Base (Coinbase), Mode, Zora, Blast, Redstone, Lisk, Cyber, Mint, and many more." } },
+                    { "@type": "Question", "name": "Which chains use the OP Stack?", "acceptedAnswer": { "@type": "Answer", "text": "Major OP Stack chains include Optimism, Base (Coinbase), Mode, Zora, Blast, Redstone, Cyber, Mint, and many more." } },
                     { "@type": "Question", "name": "What is the difference between OP Stack and Arbitrum Orbit?", "acceptedAnswer": { "@type": "Answer", "text": "Both are L2 rollup frameworks. OP Stack uses fault proofs with a 7-day challenge window. Arbitrum Orbit uses Nitro with BOLD fraud proofs. OP Stack chains form the Superchain; Orbit chains can choose rollup or AnyTrust mode. Ethernal supports both." } },
                     { "@type": "Question", "name": "How do I set up a block explorer for my OP Stack chain?", "acceptedAnswer": { "@type": "Answer", "text": "Create a workspace on Ethernal, paste your RPC endpoint, configure the OptimismPortal and Batch Inbox addresses. Your explorer is live in under 5 minutes." } },
                     { "@type": "Question", "name": "Does Ethernal work with custom OP Stack chains?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with any chain running op-geth and using standard OP Stack contracts, including private and permissioned chains." } }
