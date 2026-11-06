@@ -235,22 +235,121 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
         expect(createIncident).not.toHaveBeenCalled();
     });
 
-    it('Should raise P1 when the most recent archive ATTEMPT failed, even if recent', async () => {
+    it('Should NOT alert on a single recent failed attempt (slow upload that timed out)', async () => {
+        // 2026-11-06: a 93s upload outlasted pgBackRest's wait, Postgres
+        // recorded a failure, and the retry succeeded a minute later.
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/10000000', archived: '000000010000000000000010', failed: false
+        }));
         mockQuery = jest.fn()
             .mockResolvedValueOnce([[{ '?column?': 1 }]])
             .mockResolvedValueOnce(replicationRow({
-                wal_archive_age_seconds: '10',
+                wal_archive_age_seconds: '351',
                 last_archive_attempt_failed: true
             }));
 
         const result = await infraHealthCheck();
 
-        // A failing archiver must be caught immediately, not only once the last
-        // success has aged past the staleness threshold.
+        expect(result.replication.status).toEqual('ok');
+        expect(createIncident).not.toHaveBeenCalled();
+        // The failure is recorded so the next run can confirm it persists.
+        expect(redis.set).toHaveBeenCalledWith(
+            'infra:wal:lastsample',
+            expect.stringContaining('"failed":true'),
+            'EX', 3600
+        );
+    });
+
+    it('Should NOT alert on a recent failure with no previous sample to confirm it', async () => {
+        redis.get.mockResolvedValueOnce(null);
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '351',
+                last_archive_attempt_failed: true
+            }));
+
+        const result = await infraHealthCheck();
+
+        expect(result.replication.status).toEqual('ok');
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should raise P1 when attempts are still failing on the next check with no success between', async () => {
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/10000000', archived: '000000010000000000000010', failed: true
+        }));
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '420',
+                last_archive_attempt_failed: true
+            }));
+
+        const result = await infraHealthCheck();
+
+        // Caught well before the last success ages past the staleness threshold.
+        expect(result.replication.issues).toContain('archive-stale');
+        expect(result.replication.archiveFailingPersistently).toBe(true);
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL WAL archiving stalled',
+            expect.stringContaining('Archive uploads are FAILING'),
+            'P1', { alias: 'infra-postgres-wal-archive-stale' }
+        );
+    });
+
+    it('Should NOT alert when a segment was archived between two failed samples', async () => {
+        // Failed, then a success moved the archived position, then another
+        // isolated failure: two separate slow uploads, not a broken archiver.
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/10000000', archived: '00000001000000000000000F', failed: true
+        }));
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '20',
+                last_archive_attempt_failed: true
+            }));
+
+        const result = await infraHealthCheck();
+
+        expect(result.replication.status).toEqual('ok');
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should raise P1 on a failed attempt when the last success is already stale, even without Redis', async () => {
+        redis.get.mockRejectedValueOnce(new Error('redis down'));
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({
+                wal_archive_age_seconds: '1800',
+                last_archive_attempt_failed: true
+            }));
+
+        const result = await infraHealthCheck();
+
         expect(result.replication.issues).toContain('archive-stale');
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL WAL archiving stalled',
-            expect.any(String), 'P1', { alias: 'infra-postgres-wal-archive-stale' }
+            expect.stringContaining('Last successful archive was 1800s ago'),
+            'P1', { alias: 'infra-postgres-wal-archive-stale' }
+        );
+    });
+
+    it('Should describe a hung archiver as STUCK, not failing', async () => {
+        redis.get.mockResolvedValueOnce(JSON.stringify({
+            lsn: '0/10000000', archived: '000000010000000000000010', failed: false
+        }));
+        mockQuery = jest.fn()
+            .mockResolvedValueOnce([[{ '?column?': 1 }]])
+            .mockResolvedValueOnce(replicationRow({ wal_archive_age_seconds: '99999' }));
+
+        await infraHealthCheck();
+
+        expect(createIncident).toHaveBeenCalledWith(
+            'PostgreSQL WAL archiving stalled',
+            expect.stringContaining('Archiving is STUCK'),
+            'P1', { alias: 'infra-postgres-wal-archive-stale' }
         );
     });
 

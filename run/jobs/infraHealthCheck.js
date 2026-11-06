@@ -119,6 +119,7 @@ async function checkReplication() {
         walArchiveAgeSeconds: null,
         walArchiveFailedCount: null,
         lastArchiveAttemptFailed: null,
+        archiveFailingPersistently: null,
         archiveNotProgressing: null
     };
 
@@ -184,9 +185,15 @@ async function checkReplication() {
 
         // Two independent signals that archiving is broken.
         //
-        // 1. DEFINITIVE: the most recent archive ATTEMPT failed. Unambiguous —
-        //    the archiver tried and could not deliver. Catches it immediately,
-        //    without waiting for the last success to age past a threshold.
+        // 1. FAILING: the most recent archive ATTEMPT failed, and it was
+        //    already failing on the previous sample with no success since.
+        //    A single failed attempt is not enough: a slow object-store upload
+        //    that outlasts pgBackRest's archive-timeout is recorded as a
+        //    failure even though the upload completes and the retry succeeds
+        //    (93s upload on 2026-11-06, paged for a healthy archive). If the
+        //    last success is also older than the staleness threshold, one
+        //    failed sample is enough — that also covers a missing previous
+        //    sample (first run, Redis unavailable).
         //
         // 2. PROGRESS: WAL is being WRITTEN but the archived position is not
         //    advancing. This catches an archive_command that HANGS rather than
@@ -201,23 +208,33 @@ async function checkReplication() {
         //    removes that ambiguity entirely.
         const archiveIsOld = result.walArchiveAgeSeconds === null
             || result.walArchiveAgeSeconds > getWalArchiveStaleAlertSeconds();
+        const attemptFailed = result.lastArchiveAttemptFailed === true;
         let archiveNotProgressing = false;
+        let archiveFailingPersistently = attemptFailed && archiveIsOld;
 
-        if (archiveIsOld && row.current_wal_lsn) {
+        // Sampled on every run (not only when the archive is old) so that a
+        // failure can be confirmed against the previous run's state.
+        if (row.current_wal_lsn) {
             try {
                 const key = 'infra:wal:lastsample';
                 const raw = await withTimeout(redis.get(key), CHECK_TIMEOUT_MS);
                 const previous = raw ? JSON.parse(raw) : null;
 
                 if (previous) {
-                    const wroteMoreWal = previous.lsn !== row.current_wal_lsn;
                     const archiveStuck = previous.archived === row.last_archived_wal;
-                    archiveNotProgressing = wroteMoreWal && archiveStuck;
+                    if (archiveIsOld) {
+                        const wroteMoreWal = previous.lsn !== row.current_wal_lsn;
+                        archiveNotProgressing = wroteMoreWal && archiveStuck;
+                    }
+                    if (attemptFailed && previous.failed === true && archiveStuck) {
+                        archiveFailingPersistently = true;
+                    }
                 }
 
                 await withTimeout(redis.set(key, JSON.stringify({
                     lsn: row.current_wal_lsn,
-                    archived: row.last_archived_wal
+                    archived: row.last_archived_wal,
+                    failed: attemptFailed
                 }), 'EX', 3600), CHECK_TIMEOUT_MS);
             } catch (stateError) {
                 // Never let a Redis problem turn into a false archiving alert.
@@ -226,8 +243,9 @@ async function checkReplication() {
         }
 
         result.archiveNotProgressing = archiveNotProgressing;
+        result.archiveFailingPersistently = archiveFailingPersistently;
 
-        if (result.lastArchiveAttemptFailed === true || archiveNotProgressing) {
+        if (archiveFailingPersistently || archiveNotProgressing) {
             result.issues.push('archive-stale');
         }
 
@@ -499,13 +517,18 @@ module.exports = async () => {
         // archiving stopped, and that gap widens every minute.
         if (issues.includes('archive-stale')) {
             const age = replicationResult.walArchiveAgeSeconds;
+            const cause = replicationResult.archiveFailingPersistently
+                ? 'Archive uploads are FAILING: the latest attempt failed and no upload has '
+                    + 'succeeded since the previous check. '
+                : 'Archiving is STUCK: WAL is being written but the archived position has not '
+                    + `moved, and the last success is older than ${getWalArchiveStaleAlertSeconds()}s `
+                    + '(archive_command may be hung). ';
             await createIncident(
                 'PostgreSQL WAL archiving stalled',
                 age === null
-                    ? 'No WAL segment has ever been archived on this primary, and there is WAL waiting.'
-                    : `Last WAL archive was ${Math.round(age)}s ago (threshold `
-                        + `${getWalArchiveStaleAlertSeconds()}s, archive_timeout is 300s) and there is `
-                        + 'WAL waiting to be archived. '
+                    ? cause + 'No WAL segment has ever been archived on this primary.'
+                    : cause
+                        + `Last successful archive was ${Math.round(age)}s ago. `
                         + `Archiver failed_count is ${replicationResult.walArchiveFailedCount}. `
                         + 'Point-in-time recovery is frozen at the last archived segment.',
                 'P1',
