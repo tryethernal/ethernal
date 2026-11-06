@@ -291,9 +291,10 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
         // Caught well before the last success ages past the staleness threshold.
         expect(result.replication.issues).toContain('archive-stale');
         expect(result.replication.archiveFailingPersistently).toBe(true);
+        expect(result.replication.archiveFailureConfirmedByPreviousCheck).toBe(true);
         expect(createIncident).toHaveBeenCalledWith(
             'PostgreSQL WAL archiving stalled',
-            expect.stringContaining('Archive uploads are FAILING'),
+            expect.stringContaining('since the previous check, which was also failing'),
             'P1', { alias: 'infra-postgres-wal-archive-stale' }
         );
     });
@@ -329,11 +330,12 @@ describe('infraHealthCheck - replication and WAL archiving', () => {
         const result = await infraHealthCheck();
 
         expect(result.replication.issues).toContain('archive-stale');
-        expect(createIncident).toHaveBeenCalledWith(
-            'PostgreSQL WAL archiving stalled',
-            expect.stringContaining('Last successful archive was 1800s ago'),
-            'P1', { alias: 'infra-postgres-wal-archive-stale' }
-        );
+        expect(result.replication.archiveFailureConfirmedByPreviousCheck).toBe(false);
+        const [, details] = createIncident.mock.calls.find(c => c[0] === 'PostgreSQL WAL archiving stalled');
+        // No previous sample was compared, so the text must not claim one was.
+        expect(details).toContain('the last success is older than 900s');
+        expect(details).not.toContain('previous check');
+        expect(details).toContain('Last successful archive was 1800s ago');
     });
 
     it('Should describe a hung archiver as STUCK, not failing', async () => {

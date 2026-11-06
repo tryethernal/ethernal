@@ -120,6 +120,7 @@ async function checkReplication() {
         walArchiveFailedCount: null,
         lastArchiveAttemptFailed: null,
         archiveFailingPersistently: null,
+        archiveFailureConfirmedByPreviousCheck: null,
         archiveNotProgressing: null
     };
 
@@ -211,6 +212,7 @@ async function checkReplication() {
         const attemptFailed = result.lastArchiveAttemptFailed === true;
         let archiveNotProgressing = false;
         let archiveFailingPersistently = attemptFailed && archiveIsOld;
+        let confirmedByPreviousCheck = false;
 
         // Sampled on every run (not only when the archive is old) so that a
         // failure can be confirmed against the previous run's state.
@@ -228,6 +230,7 @@ async function checkReplication() {
                     }
                     if (attemptFailed && previous.failed === true && archiveStuck) {
                         archiveFailingPersistently = true;
+                        confirmedByPreviousCheck = true;
                     }
                 }
 
@@ -244,6 +247,7 @@ async function checkReplication() {
 
         result.archiveNotProgressing = archiveNotProgressing;
         result.archiveFailingPersistently = archiveFailingPersistently;
+        result.archiveFailureConfirmedByPreviousCheck = confirmedByPreviousCheck;
 
         if (archiveFailingPersistently || archiveNotProgressing) {
             result.issues.push('archive-stale');
@@ -517,12 +521,20 @@ module.exports = async () => {
         // archiving stopped, and that gap widens every minute.
         if (issues.includes('archive-stale')) {
             const age = replicationResult.walArchiveAgeSeconds;
-            const cause = replicationResult.archiveFailingPersistently
-                ? 'Archive uploads are FAILING: the latest attempt failed and no upload has '
-                    + 'succeeded since the previous check. '
-                : 'Archiving is STUCK: WAL is being written but the archived position has not '
+            let cause;
+            if (replicationResult.archiveFailureConfirmedByPreviousCheck) {
+                cause = 'Archive uploads are FAILING: the latest attempt failed and no upload has '
+                    + 'succeeded since the previous check, which was also failing. ';
+            } else if (replicationResult.archiveFailingPersistently) {
+                cause = age === null
+                    ? 'Archive uploads are FAILING: the latest attempt failed. '
+                    : 'Archive uploads are FAILING: the latest attempt failed and the last '
+                        + `success is older than ${getWalArchiveStaleAlertSeconds()}s. `;
+            } else {
+                cause = 'Archiving is STUCK: WAL is being written but the archived position has not '
                     + `moved, and the last success is older than ${getWalArchiveStaleAlertSeconds()}s `
                     + '(archive_command may be hung). ';
+            }
             await createIncident(
                 'PostgreSQL WAL archiving stalled',
                 age === null
