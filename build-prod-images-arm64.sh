@@ -7,8 +7,9 @@ TAG="${1:-latest}"
 echo "Using image tag: $TAG"
 echo "Using platforms: linux/arm64"
 
-# Build and push amd64 and arm64 images using buildx (multi-arch, same tag)
-echo "Building and pushing multi-arch images (linux/arm64) with buildx..."
+# Build and push linux/arm64 images using buildx. Docker Hub tags are arch-suffixed (<tag>-arm64);
+# the publish_dockerhub_multiarch workflow job merges them into the multi-arch <tag>.
+echo "Building and pushing linux/arm64 images with buildx..."
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/arm64 \
     --no-cache \
@@ -25,23 +26,23 @@ DOCKER_BUILDKIT=1 docker buildx build \
     --build-arg VITE_SENTRY_ENABLED \
     --build-arg VITE_VERSION \
     --build-arg VITE_IS_SELF_HOSTED=true \
-    -t antoinedc44/ethernal-frontend:$TAG \
+    -t antoinedc44/ethernal-frontend:$TAG-arm64 \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/arm64 \
     -f Dockerfile.backend \
-    -t antoinedc44/ethernal-backend:$TAG \
+    -t antoinedc44/ethernal-backend:$TAG-arm64 \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/arm64 \
     -f Dockerfile.pm2 \
     --target prod \
-    -t antoinedc44/ethernal-pm2:$TAG \
+    -t antoinedc44/ethernal-pm2:$TAG-arm64 \
     --push .
 
 echo "All production images built & pushed successfully:"
-echo "  ethernal-frontend:$TAG (linux/arm64)"
-echo "  ethernal-backend:$TAG (linux/arm64)"
-echo "  ethernal-pm2:$TAG (linux/arm64)" 
+echo "  antoinedc44/ethernal-frontend:$TAG-arm64 (linux/arm64)"
+echo "  antoinedc44/ethernal-backend:$TAG-arm64 (linux/arm64)"
+echo "  antoinedc44/ethernal-pm2:$TAG-arm64 (linux/arm64)" 
