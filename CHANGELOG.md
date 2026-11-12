@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.5] - 2026-11-12
+### Fixed
+- Self-hosted Docker images: each release tag on Docker Hub now includes both amd64 and arm64 builds (previously only one architecture per tag), and `latest` now tracks the newest release. If you run on `latest`, back up Postgres before `make update`: this release moves `latest` from a May 2025 build to the current one.
+
 ## [5.18.4] - 2026-11-12
 ### Fixed
 - Self-hosted: stalled-block checks no longer fail on every block trying to queue hosted-only billing work (#1403)
