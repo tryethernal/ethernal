@@ -340,12 +340,23 @@ jobs:
             version="${tag#v}"
             ok=1
             for repo in $repos; do
-              if ! docker buildx imagetools inspect --raw "$repo:$version" 2>/dev/null | jq -e '
+              # Only a genuinely missing tag counts as "not published"; any other registry error fails
+              # the job, so a transient error can never make an older release win.
+              if ! raw="$(docker buildx imagetools inspect --raw "$repo:$version" 2>&1)"; then
+                if grep -qi 'not found' <<< "$raw"; then
+                  echo "Skipping $tag: $repo:$version is not published."
+                  ok=0
+                  break
+                fi
+                echo "::error::Could not inspect $repo:$version: $raw"
+                exit 1
+              fi
+              if ! jq -e '
                 (.manifests | type == "array")
                 and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "amd64")
                 and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "arm64")
-              ' > /dev/null; then
-                echo "Skipping $tag: $repo:$version is missing or not multi-arch."
+              ' > /dev/null 2>&1 <<< "$raw"; then
+                echo "Skipping $tag: $repo:$version is not multi-arch."
                 ok=0
                 break
               fi

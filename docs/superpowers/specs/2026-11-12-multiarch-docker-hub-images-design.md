@@ -65,8 +65,8 @@ Second problem: `docker-compose.prod.yml` uses `:latest` for frontend/backend/pm
 (`actions/checkout@3d3c42e5… # v7.0.1`, `fetch-depth: 0`, `persist-credentials: false`), `git fetch --quiet --tags --force origin`,
 Docker Hub login, then **Promote latest**. It does not promote its own `VERSION`: it takes the 5 newest stable
 tags (`git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -Vr`), walks them newest to oldest and picks
-the first whose `<version>` tag in ALL three repos passes the same jq structural check (a missing tag counts as
-not published). If none qualifies it logs and exits 0 without touching `latest`. For the chosen version it runs
+the first whose `<version>` tag in ALL three repos passes the same jq structural check (only a registry "not found" counts as
+not published; any other registry error fails the job so a transient error can never make an older release win). If none qualifies it logs and exits 0 without touching `latest`. For the chosen version it runs
 `docker buildx imagetools create -t "$repo:latest" "$repo:<chosen>"` for each repo and asserts
 `docker buildx imagetools inspect "$repo:latest" --format '{{json .Manifest.Digest}}'` equals the same for `"$repo:<chosen>"`.
 It logs the chosen version and why newer candidates were skipped.
