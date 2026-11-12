@@ -265,9 +265,9 @@ jobs:
     environment: production
     permissions:
       contents: read
-    concurrency:
-      group: dockerhub-publish
-      cancel-in-progress: false
+    # No concurrency group on purpose: GitHub keeps only one pending job per group, so a third
+    # release could cancel a queued publisher. Version tags are independent per release, and the
+    # newest-stable-tag check (tags re-fetched right before promoting) keeps `latest` from moving back.
     env:
       # Docker-Hub-only job: drop the workflow-level Fly credential.
       FLY_API_TOKEN: ''
@@ -313,6 +313,7 @@ jobs:
             echo "Version $VERSION is not a stable MAJOR.MINOR.PATCH release: leaving latest alone."
             exit 0
           fi
+          git fetch --quiet --tags --force origin
           newest="$(git tag -l 'v*' | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -V | tail -n1)"
           if [ "v$VERSION" != "$newest" ]; then
             echo "v$VERSION is not the newest stable tag (newest: ${newest:-none}): leaving latest alone."

@@ -56,9 +56,6 @@ publish_dockerhub_multiarch:
   environment: production
   permissions:
     contents: read
-  concurrency:
-    group: dockerhub-publish
-    cancel-in-progress: false
   env:
     FLY_API_TOKEN: ''            # Docker-Hub-only job: drop the workflow-level Fly credential
     VERSION: ${{ needs.create_release.outputs.current_version }}
@@ -96,8 +93,9 @@ same for `"$repo:$VERSION"`.
 
 Notes:
 - All `${{ }}` values reach shell via `env:` only.
-- The concurrency group serialises publications; the newest-tag check prevents an older release (or a
-  re-run of one) from moving `latest` backwards.
+- No concurrency group: GitHub keeps only one pending job per group, so a third release would cancel a
+  queued publisher (Greptile, PR #1406). The newest-stable-tag check, run after `git fetch --tags` right
+  before promoting, prevents an older release (or a re-run of one) from moving `latest` backwards.
 - If an arch build job fails, this job is skipped (`needs`), so neither `<version>` nor `latest` moves;
   the `-amd64`/`-arm64` staging tags may exist and are harmless. Recovery = re-run the failed jobs (every step is
   idempotent) while the release is still the newest stable one; otherwise the next stable release fixes it. A failure mid-step-3 can leave `latest` mixed across the three
