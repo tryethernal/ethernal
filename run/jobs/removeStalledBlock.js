@@ -6,6 +6,7 @@
 
 const { Block } = require('../models');
 const { enqueue } = require('../lib/queue');
+const { isSelfHosted } = require('../lib/flags');
 
 module.exports = async (job) => {
     const data = job.data;
@@ -33,7 +34,7 @@ module.exports = async (job) => {
     if (wasReverted) {
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
     }
-    else {
+    else if (!isSelfHosted()) {
         await enqueue('increaseStripeBillingQuota', `increaseStripeBillingQuota-${data.blockId}-${block.workspaceId}`, { blockId: data.blockId, workspaceId: block.workspaceId });
     }
 

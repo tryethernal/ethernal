@@ -9,9 +9,19 @@ const queues = require('../queues');
 const { sanitize } = require('./utils');
 const queueCaps = require('./queueCaps');
 const logger = require('./logger');
+const { isSelfHosted } = require('./flags');
+const hostedOnly = require('../workers/hostedOnlyQueues');
 
 /** @constant {number} Maximum number of jobs to add in a single bulk operation */
 const MAX_BATCH_SIZE = 2000;
+
+/**
+ * Checks whether a queue is only registered on hosted (non self-hosted) instances.
+ *
+ * @param {string} queueName - Name of the queue
+ * @returns {boolean} True if the queue is hosted-only
+ */
+const isHostedOnlyQueue = (queueName) => hostedOnly.high.includes(queueName) || hostedOnly.low.includes(queueName);
 
 /**
  * Adds a single job to a named queue.
@@ -23,11 +33,20 @@ const MAX_BATCH_SIZE = 2000;
  * @param {Object} [repeat] - BullMQ repeat options for recurring jobs
  * @param {number} [delay] - Delay in milliseconds before processing
  * @param {boolean} [unique] - If true, uses jobName as jobId for deduplication
- * @returns {Promise<Job|null>} BullMQ Job instance, or null if dropped due to cap
+ * @returns {Promise<Job|null>} BullMQ Job instance, or null if dropped due to cap or if the queue is hosted-only and this instance is self-hosted
+ * @throws {Error} If the queue is not registered (and is not a hosted-only queue on a self-hosted instance)
  * @example
  * await enqueue('blockSync', 'sync-block-123', { blockNumber: 123 }, 1);
  */
 const enqueue = async (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
+    if (!queues[queueName]) {
+        if (isSelfHosted() && isHostedOnlyQueue(queueName)) {
+            logger.debug('Skipping enqueue on hosted-only queue (self-hosted)', { queueName, location: 'lib.queue.enqueue' });
+            return null;
+        }
+        throw new Error(`Queue "${queueName}" is not registered`);
+    }
+
     const cap = queueCaps.getCap(queueName);
     const workspaceId = data && data.workspaceId;
 
@@ -77,7 +96,8 @@ const enqueue = async (queueName, jobName, data, priority = 1, repeat, delay, un
  * @returns {Promise<Object>} Object with {attempted, accepted, dropped} counts.
  *   - attempted: total jobs requested by caller
  *   - accepted: jobs actually enqueued to BullMQ
- *   - dropped: jobs filtered out (dropped > 0 indicates workspace hit its queue cap)
+ *   - dropped: jobs filtered out (dropped > 0 indicates workspace hit its queue cap, or the queue is hosted-only on a self-hosted instance)
+ * @throws {Error} If the queue is not registered (and is not a hosted-only queue on a self-hosted instance)
  * @example
  * const result = await bulkEnqueue('processContract', [
  *   { name: 'contract-0x123', data: { address: '0x123' } },
@@ -89,6 +109,14 @@ const bulkEnqueue = async (queueName, jobData, priority = 10, maxBatchSize = MAX
     const attempted = Array.isArray(jobData) ? jobData.length : 0;
 
     if (!queueName || !jobData || !jobData.length) return { attempted, accepted: 0, dropped: attempted };
+
+    if (!queues[queueName]) {
+        if (isSelfHosted() && isHostedOnlyQueue(queueName)) {
+            logger.debug('Skipping bulk enqueue on hosted-only queue (self-hosted)', { queueName, location: 'lib.queue.bulkEnqueue' });
+            return { attempted, accepted: 0, dropped: attempted };
+        }
+        throw new Error(`Queue "${queueName}" is not registered`);
+    }
 
     let acceptedJobs = jobData;
     const cap = queueCaps.getCap(queueName);
