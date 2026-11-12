@@ -4,7 +4,19 @@ const { Block } = require('../mocks/models');
 const removeStalledBlock = require('../../jobs/removeStalledBlock');
 const { enqueue } = require('../../lib/queue');
 
-beforeEach(() => jest.clearAllMocks());
+const originalSelfHosted = process.env.SELF_HOSTED;
+
+beforeEach(() => {
+    jest.clearAllMocks();
+    delete process.env.SELF_HOSTED;
+});
+
+afterAll(() => {
+    if (originalSelfHosted === undefined)
+        delete process.env.SELF_HOSTED;
+    else
+        process.env.SELF_HOSTED = originalSelfHosted;
+});
 
 describe('removeStalledBlock', () => {
     it('Should enqueue for quota increase if block is ready', (done) => {
@@ -95,5 +107,20 @@ describe('removeStalledBlock', () => {
                 expect(res).toEqual('Could not find block');
                 done();
             });
+    });
+
+    it('Should not enqueue for quota increase on self-hosted instances', async () => {
+        process.env.SELF_HOSTED = 'true';
+        const revertIfPartial = jest.fn().mockResolvedValue(false);
+        jest.spyOn(Block, 'findByPk').mockResolvedValue({
+            workspaceId: 1,
+            revertIfPartial
+        });
+
+        const res = await removeStalledBlock({ data: { blockId: 1 }});
+
+        expect(revertIfPartial).toHaveBeenCalled();
+        expect(enqueue).not.toHaveBeenCalled();
+        expect(res).toEqual(true);
     });
 });

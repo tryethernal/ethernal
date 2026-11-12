@@ -1,4 +1,5 @@
 const { isSelfHosted } = require('../lib/flags');
+const hostedOnly = require('./hostedOnlyQueues');
 
 const priorities = {
     'high': [
@@ -66,8 +67,8 @@ const priorities = {
 }
 
 if (!isSelfHosted()) {
-    priorities.high.push('updateApproximatedRecord', 'increaseStripeBillingQuota');
-    priorities.low.push('sendDemoExplorerLink', 'sendDripEmail', 'processDripEmails', 'enrichDemoProfile', 'processDetectedProspects', 'enrichProspect');
+    priorities.high.push(...hostedOnly.high);
+    priorities.low.push(...hostedOnly.low, 'processDetectedProspects', 'enrichProspect');
 }
 
 module.exports = priorities;

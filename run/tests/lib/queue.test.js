@@ -24,6 +24,7 @@ jest.mock('../../lib/logger', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
+    debug: jest.fn(),
 }));
 
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
@@ -31,7 +32,18 @@ const queues = require('../../queues');
 const queueCaps = require('../../lib/queueCaps');
 const logger = require('../../lib/logger');
 
+const originalSelfHosted = process.env.SELF_HOSTED;
+
+afterAll(() => {
+    if (originalSelfHosted === undefined)
+        delete process.env.SELF_HOSTED;
+    else
+        process.env.SELF_HOSTED = originalSelfHosted;
+});
+
 beforeEach(() => {
+    delete process.env.SELF_HOSTED;
+    delete queues['increaseStripeBillingQuota'];
     queues['test'].addBulk.mockReset();
     queues['blockSync'] = { add: jest.fn(), addBulk: jest.fn() };
     queueCaps.getCap.mockReset().mockReturnValue(Infinity);
@@ -39,6 +51,7 @@ beforeEach(() => {
     queueCaps.countWaitingForWorkspace.mockReset().mockResolvedValue(0);
     queueCaps.shouldLogDrop.mockReset().mockResolvedValue(true);
     logger.warn.mockReset();
+    logger.debug.mockReset();
 });
 
 describe('bulkEnqueue', () => {
@@ -252,5 +265,70 @@ describe('bulkEnqueue cap enforcement', () => {
         // total enqueued = 3
         const sent = queues['blockSync'].addBulk.mock.calls[0][0];
         expect(sent).toHaveLength(3);
+    });
+});
+
+describe('unregistered queues', () => {
+    const expectNoCapCall = () => {
+        expect(queueCaps.getCap).not.toHaveBeenCalled();
+        expect(queueCaps.isLowTierWorkspace).not.toHaveBeenCalled();
+        expect(queueCaps.countWaitingForWorkspace).not.toHaveBeenCalled();
+        expect(queueCaps.shouldLogDrop).not.toHaveBeenCalled();
+    };
+
+    describe('enqueue', () => {
+        it('throws a clear error for an unregistered queue that is not hosted-only', async () => {
+            await expect(enqueue('nope', 'nope-1', {})).rejects.toThrow('Queue "nope" is not registered');
+        });
+
+        it('resolves null for a hosted-only queue on a self-hosted instance', async () => {
+            process.env.SELF_HOSTED = 'true';
+            const result = await enqueue('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { workspaceId: 1 });
+            expect(result).toBeNull();
+            expect(logger.debug).toHaveBeenCalledWith(
+                expect.stringMatching(/hosted-only/i),
+                expect.objectContaining({ queueName: 'increaseStripeBillingQuota' })
+            );
+            expectNoCapCall();
+        });
+
+        it('throws for a hosted-only queue on a hosted instance (misconfiguration stays loud)', async () => {
+            await expect(enqueue('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', {}))
+                .rejects.toThrow('Queue "increaseStripeBillingQuota" is not registered');
+        });
+
+        it('still throws for an unregistered non-hosted-only queue on a self-hosted instance', async () => {
+            process.env.SELF_HOSTED = 'true';
+            await expect(enqueue('nope', 'nope-1', {})).rejects.toThrow('Queue "nope" is not registered');
+        });
+    });
+
+    describe('bulkEnqueue', () => {
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+        ];
+
+        it('throws a clear error for an unregistered queue that is not hosted-only', async () => {
+            await expect(bulkEnqueue('nope', jobs)).rejects.toThrow('Queue "nope" is not registered');
+        });
+
+        it('returns all dropped for a hosted-only queue on a self-hosted instance', async () => {
+            process.env.SELF_HOSTED = 'true';
+            const result = await bulkEnqueue('increaseStripeBillingQuota', jobs);
+            expect(result).toEqual({ attempted: 2, accepted: 0, dropped: 2 });
+            expect(logger.debug).toHaveBeenCalled();
+            expectNoCapCall();
+        });
+
+        it('throws for a hosted-only queue on a hosted instance (misconfiguration stays loud)', async () => {
+            await expect(bulkEnqueue('increaseStripeBillingQuota', jobs))
+                .rejects.toThrow('Queue "increaseStripeBillingQuota" is not registered');
+        });
+
+        it('keeps the empty-input no-op for an unknown queue', async () => {
+            const result = await bulkEnqueue('nope', []);
+            expect(result).toEqual({ attempted: 0, accepted: 0, dropped: 0 });
+        });
     });
 });
