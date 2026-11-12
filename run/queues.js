@@ -3,25 +3,40 @@ const connection = require('./lib/redis');
 const priorities = require('./workers/priorities');
 
 const queues = {};
+
+const highDefaultJobOptions = {
+    attempts: 15,
+    stackTraceLimit: 3,
+    removeOnComplete: {
+        count: 100,
+        age: 4 * 60
+    },
+    removeOnFail: {
+        count: 50,
+        age: 4 * 60
+    },
+    timeout: 30000,
+    backoff: {
+        type: 'fixed',
+        delay: 30000
+    },
+};
+
+// updateExplorerSyncingProcess jobs are enqueued with a fixed jobId per explorer
+// (updateExplorerSyncingProcess-<explorerId>). BullMQ ignores `add` for an existing
+// jobId in any state, including completed/failed, and only trims finished jobs when
+// another job of the queue finishes. Remove them immediately so a finished job never
+// blocks the next request; in-flight (waiting/delayed/active) dedup is unaffected.
+const overrideJobOptions = {
+    updateExplorerSyncingProcess: {
+        removeOnComplete: true,
+        removeOnFail: true
+    }
+};
+
 priorities['high'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
-        defaultJobOptions: {
-            attempts: 15,
-            stackTraceLimit: 3,
-            removeOnComplete: {
-                count: 100,
-                age: 4 * 60
-            },
-            removeOnFail: {
-                count: 50,
-                age: 4 * 60
-            },
-            timeout: 30000,
-            backoff: {
-                type: 'fixed',
-                delay: 30000
-            },
-        },
+        defaultJobOptions: Object.assign({}, highDefaultJobOptions, overrideJobOptions[jobName]),
         stalledInterval: 29000,
         maxStalledCount: 5,
         connection,
