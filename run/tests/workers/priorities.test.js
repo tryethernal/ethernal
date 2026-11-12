@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Tests for workers/priorities: hosted instances keep the exact queue lists,
+ * self-hosted instances register none of the hosted-only queues.
+ */
+
 const hostedPriorities = {
     high: [
         'blockSync',
@@ -82,6 +87,11 @@ const hostedOnlyNames = [
 
 const originalSelfHosted = process.env.SELF_HOSTED;
 
+/**
+ * Re-requires workers/priorities in isolation so it re-reads SELF_HOSTED.
+ *
+ * @returns {Object} The priorities object ({ high, medium, low })
+ */
 const loadPriorities = () => {
     let priorities;
     jest.isolateModules(() => {

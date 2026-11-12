@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Tests for queues.js: per-queue default job options, in particular the
+ * immediate removal of finished updateExplorerSyncingProcess jobs.
+ */
+
 jest.mock('bullmq', () => ({
     Queue: jest.fn()
 }));
@@ -6,6 +11,12 @@ jest.mock('../lib/redis', () => ({}));
 const { Queue } = require('bullmq');
 require('../queues');
 
+/**
+ * Returns the options of the single Queue constructed for a queue name.
+ *
+ * @param {string} name - Queue name
+ * @returns {Object} Options passed to the BullMQ Queue constructor
+ */
 const optionsFor = (name) => {
     const calls = Queue.mock.calls.filter(call => call[0] === name);
     expect(calls).toHaveLength(1);
