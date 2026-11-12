@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.4] - 2026-11-12
+### Fixed
+- Self-hosted: stalled-block checks no longer fail on every block trying to queue hosted-only billing work (#1403)
+- Self-hosted: an explorer's sync process now restarts after a host or PM2 restart instead of being silently skipped when only one explorer exists; existing installs recover automatically within a few minutes of upgrading (#1404)
+
 ## [5.18.3] - 2026-11-06
 ### Fixed
 - fix(monitoring): stop paging on a single slow WAL upload (#1400)
