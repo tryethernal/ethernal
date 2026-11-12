@@ -230,7 +230,9 @@ jobs:
   deploy_back_arm64:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release, run_migrations]
-    runs-on: ubuntu-latest
+    # Native arm64 runner (free for public repos): building linux/arm64 under QEMU on an x64 runner
+    # took ~75 min vs ~9 min for amd64, holding up the multi-arch Docker Hub publication.
+    runs-on: ubuntu-24.04-arm
     environment: production
     steps:
       - uses: actions/checkout@v3
