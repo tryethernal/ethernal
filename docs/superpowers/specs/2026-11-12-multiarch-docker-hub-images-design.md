@@ -46,60 +46,47 @@ Second problem: `docker-compose.prod.yml` uses `:latest` for frontend/backend/pm
 - If `TAG` is not passed, the default stays `latest` (producing `latest-amd64` / `latest-arm64`); no
   workflow relies on that default.
 
-### B. New job `publish_dockerhub_multiarch` in `test_and_deploy.yml`
+### B. Two new jobs in `test_and_deploy.yml`: publish, then promote `latest`
 
-```yaml
-publish_dockerhub_multiarch:
-  if: startsWith(github.ref, 'refs/tags/v')
-  needs: [create_release, deploy_back_amd64, deploy_back_arm64]
-  runs-on: ubuntu-latest
-  environment: production
-  permissions:
-    contents: read
-  env:
-    FLY_API_TOKEN: ''            # Docker-Hub-only job: drop the workflow-level Fly credential
-    VERSION: ${{ needs.create_release.outputs.current_version }}
-  steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (pinned: needed for tags only)
-      with:
-        fetch-depth: 0
-        persist-credentials: false
-    - name: Log in to Docker Hub
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      run: printf '%s' "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - name: Publish multi-arch version tags     # step 1: all three <version> tags
-    - name: Verify version tags                 # step 2: all three, structural check (below)
-    - name: Promote latest                      # step 3: only if verified AND newest release
-```
+`publish_dockerhub_multiarch` — `if: startsWith(github.ref, 'refs/tags/v')`,
+`needs: [create_release, deploy_back_amd64, deploy_back_arm64]`, `environment: production`,
+`permissions: contents: read`, job env `FLY_API_TOKEN: ''` (drop the workflow-level Fly credential) and
+`VERSION: ${{ needs.create_release.outputs.current_version }}`. No checkout, no concurrency group. Steps:
+1. Log in to Docker Hub (`DOCKERHUB_*` via `env:`, `printf '%s' "$DOCKERHUB_PASSWORD" | docker login ... --password-stdin`).
+2. Publish: for each of `ethernal-frontend ethernal-backend ethernal-pm2`,
+   `docker buildx imagetools create -t "$repo:$VERSION" "$repo:$VERSION-amd64" "$repo:$VERSION-arm64"`.
+3. Verify: for each repo, `docker buildx imagetools inspect --raw "$repo:$VERSION"` piped to
+   `jq -e '(.manifests | type == "array") and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "amd64") and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "arm64")'`.
+   Attestation descriptors (`unknown/unknown`) are tolerated. (`jq` is preinstalled on `ubuntu-latest`.)
 
-Step 1, for each of `ethernal-frontend ethernal-backend ethernal-pm2`:
-`docker buildx imagetools create -t "$repo:$VERSION" "$repo:$VERSION-amd64" "$repo:$VERSION-arm64"`.
+`promote_dockerhub_latest` — same `if`, `needs: [publish_dockerhub_multiarch]`, `environment: production`,
+`permissions: contents: read`, `FLY_API_TOKEN: ''`, and
+`concurrency: {group: dockerhub-latest, cancel-in-progress: false}`. Steps: pinned checkout
+(`actions/checkout@3d3c42e5… # v7.0.1`, `fetch-depth: 0`, `persist-credentials: false`), `git fetch --quiet --tags --force origin`,
+Docker Hub login, then **Promote latest**. It does not promote its own `VERSION`: it takes the 5 newest stable
+tags (`git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -Vr`), walks them newest to oldest and picks
+the first whose `<version>` tag in ALL three repos passes the same jq structural check (a missing tag counts as
+not published). If none qualifies it logs and exits 0 without touching `latest`. For the chosen version it runs
+`docker buildx imagetools create -t "$repo:latest" "$repo:<chosen>"` for each repo and asserts
+`docker buildx imagetools inspect "$repo:latest" --format '{{json .Manifest.Digest}}'` equals the same for `"$repo:<chosen>"`.
+It logs the chosen version and why newer candidates were skipped.
 
-Step 2, for each repo: `docker buildx imagetools inspect --raw "$repo:$VERSION"` piped to
-`jq -e '(.manifests | type == "array") and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "amd64") and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "arm64")'`.
-Attestation descriptors (`unknown/unknown`) are tolerated. Any failure fails the job BEFORE step 3, so
-`latest` is never touched by a broken release. (`jq` is preinstalled on `ubuntu-latest`.)
-
-Step 3 runs only if `VERSION` is a stable `MAJOR.MINOR.PATCH` (regex `^[0-9]+\.[0-9]+\.[0-9]+$`) AND
-`v$VERSION` equals the highest STABLE tag in the repo
-(`git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1`); otherwise log why
-`latest` is left alone and exit 0 (prereleases/odd tags never move `latest`). Known limitation, accepted:
-if a newer stable tag exists but its release failed, an older release won't move `latest`; the fix is to
-ship the next release (fix forward), which this repo always does. Then for each repo: `docker buildx imagetools create -t "$repo:latest" "$repo:$VERSION"`, and
-assert `docker buildx imagetools inspect "$repo:latest" --format '{{json .Manifest.Digest}}'` equals the
-same for `"$repo:$VERSION"`.
+Why a separate, locked job: whichever promoter runs last always promotes the newest fully published stable
+release, so cancelled pending promoters and out-of-order releases converge; the lock stops two promoters
+interleaving their writes. GitHub keeps only one pending job per concurrency group, so a third release may
+cancel a queued promoter — harmless, because the surviving promoter picks the newest published release anyway.
+The publish job has no lock (version tags are independent per release). The lock serialises each promoter's whole
+walk + write, and every promoter decides from the registry state at the time it runs, so an older run can never
+overwrite `latest` after a newer release has promoted.
 
 Notes:
-- All `${{ }}` values reach shell via `env:` only.
-- No concurrency group: GitHub keeps only one pending job per group, so a third release would cancel a
-  queued publisher (Greptile, PR #1406). The newest-stable-tag check, run after `git fetch --tags` right
-  before promoting, prevents an older release (or a re-run of one) from moving `latest` backwards.
-- If an arch build job fails, this job is skipped (`needs`), so neither `<version>` nor `latest` moves;
-  the `-amd64`/`-arm64` staging tags may exist and are harmless. Recovery = re-run the failed jobs (every step is
-  idempotent) while the release is still the newest stable one; otherwise the next stable release fixes it. A failure mid-step-3 can leave `latest` mixed across the three
-  repos until the re-run; accepted (rare, self-healing on re-run).
+- All `${{ }}` values reach shell via `env:` only (in the new jobs).
+- Prereleases and odd tags are never candidates, so they never move `latest`.
+- If an arch build job fails, the publish job is skipped (`needs`) and so is the promoter; neither `<version>` nor
+  `latest` moves, and the `-amd64`/`-arm64` staging tags are harmless. Recovery = re-run the failed jobs (every step
+  is idempotent). If the failed release is the newest tag, a later promoter simply keeps promoting the newest
+  fully published older release until it is fixed. A failure mid-promotion can leave `latest` mixed across the three
+  repos until the next promoter run; accepted (rare, self-healing).
 - `release_back` keeps `needs: [deploy_back_amd64, create_release]` — Fly is not delayed by the arm64 build.
 
 ### C. Retire `buildx-amd64-push.sh`
@@ -123,19 +110,18 @@ local registry instead of Docker Hub:
    and binfmt (`docker run --privileged --rm tonistiigi/binfmt --install arm64`).
 2. Build a trivial Dockerfile for linux/amd64 → `localhost:5000/t:1.0.0-amd64` and linux/arm64 →
    `localhost:5000/t:1.0.0-arm64` (push).
-3. Extract steps 1–3 of B into the real shell (parameterised by registry prefix only for the test; the
-   committed workflow keeps the Docker Hub names) and run against three repos `localhost:5000/{a,b,c}`:
-   a. provenance-enabled sources (default `buildx build --push`) and plain sources → `1.0.0` and `latest`
-      list linux/amd64 + linux/arm64, digests equal;
-   b. one repo missing `-arm64` → job fails in step 1/2, `latest` of all three unchanged;
-   c. publishing `0.9.0` after `1.0.0` (git tags `v0.9.0`, `v1.0.0` in a scratch repo) → `0.9.0` tag
-      published, `latest` still equals `1.0.0`;
-   d. re-running `1.0.0` is a no-op success;
-   e. partial promotion: make step 3 fail after the first repo's `latest` moved (e.g. remove a source tag
-      of the second repo between steps), then restore and re-run → all three `latest` equal their `1.0.0`
-      digests;
-   f. tag eligibility: `v1.1.0-rc.1` alongside `v1.0.0` → `1.0.0` still promotes; publishing `1.1.0-rc.1`
-      does not move `latest`.
+3. Extract the run blocks of the publish steps and of the promoter from the committed workflow (parameterised by
+   registry prefix only for the test; the committed workflow keeps the Docker Hub names) and run them against
+   `localhost:5000/ethernal-{frontend,backend,pm2}` in scratch git repos holding the relevant `v*` tags (the
+   `git fetch` step is not extracted):
+   a. normal: `1.0.0` published → promoter sets `latest` = `1.0.0` (multi-arch, digests equal) in all three; covers
+      provenance-enabled and plain per-arch sources;
+   b. out-of-order: `v1.0.0` and `v1.1.0` both published, promoter run "for 1.0.0" → `latest` = `1.1.0`;
+   c. newest tag in git but not published (`v1.2.0`, no images) → `latest` = `1.1.0`;
+   d. newest partially published (`1.2.0` in two repos only, or single-arch in one) → skipped, `1.1.0` chosen;
+   e. prerelease `v1.3.0-rc.1` with images → ignored;
+   f. publish job fails on a missing arch → job fails, promoter not reached, `latest` untouched;
+   g. re-run → no-op success, digests unchanged.
 4. `actionlint` on the workflow (`docker run --rm -v $PWD:/repo -w /repo rhysd/actionlint:latest`) and
    `bash -n` + `shellcheck` on both scripts.
 Real end-to-end proof is the next release: Docker Hub tag `<version>` lists amd64 + arm64.

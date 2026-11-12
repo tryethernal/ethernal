@@ -256,8 +256,8 @@ jobs:
           ./build-prod-images-arm64.sh ${{ needs.create_release.outputs.current_version }}
 
   # Merges the per-arch Docker Hub tags (<version>-amd64 / <version>-arm64, pushed by the two
-  # deploy_back_* jobs) into one multi-arch <version> tag, then moves `latest` for the newest
-  # stable release only. Not a dependency of release_back, so the Fly deploy is not delayed.
+  # deploy_back_* jobs) into one multi-arch <version> tag. Not a dependency of release_back, so the
+  # Fly deploy is not delayed. `latest` is moved by promote_dockerhub_latest, not here.
   publish_dockerhub_multiarch:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release, deploy_back_amd64, deploy_back_arm64]
@@ -265,20 +265,11 @@ jobs:
     environment: production
     permissions:
       contents: read
-    # No concurrency group on purpose: GitHub keeps only one pending job per group, so a third
-    # release could cancel a queued publisher. Version tags are independent per release, and the
-    # newest-stable-tag check (tags re-fetched right before promoting) keeps `latest` from moving back.
     env:
       # Docker-Hub-only job: drop the workflow-level Fly credential.
       FLY_API_TOKEN: ''
       VERSION: ${{ needs.create_release.outputs.current_version }}
     steps:
-      # Pinned to a SHA: only needed for the tag list used by the `latest` check.
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
       - name: Log in to Docker Hub
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -306,26 +297,75 @@ jobs:
             echo "$repo:$VERSION lists linux/amd64 and linux/arm64"
           done
 
+  # Points `latest` at the newest stable release that is fully published (multi-arch in all three
+  # repos), whatever version triggered this run. Whichever promoter runs last therefore always
+  # promotes the newest fully published stable release, so cancelled pending promoters and
+  # out-of-order releases converge; the lock stops two promoters interleaving their writes.
+  promote_dockerhub_latest:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [publish_dockerhub_multiarch]
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    concurrency:
+      group: dockerhub-latest
+      cancel-in-progress: false
+    env:
+      # Docker-Hub-only job: drop the workflow-level Fly credential.
+      FLY_API_TOKEN: ''
+    steps:
+      # Pinned to a SHA: only needed for the tag list.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch tags
+        run: git fetch --quiet --tags --force origin
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: printf '%s' "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
       - name: Promote latest
         run: |
           set -euo pipefail
-          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Version $VERSION is not a stable MAJOR.MINOR.PATCH release: leaving latest alone."
+          repos="antoinedc44/ethernal-frontend antoinedc44/ethernal-backend antoinedc44/ethernal-pm2"
+          mapfile -t candidates < <(git tag -l 'v*' | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -Vr | sed -n '1,5p')
+          chosen=""
+          for tag in "${candidates[@]}"; do
+            version="${tag#v}"
+            ok=1
+            for repo in $repos; do
+              if ! docker buildx imagetools inspect --raw "$repo:$version" 2>/dev/null | jq -e '
+                (.manifests | type == "array")
+                and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "amd64")
+                and any(.manifests[]; .platform.os == "linux" and .platform.architecture == "arm64")
+              ' > /dev/null; then
+                echo "Skipping $tag: $repo:$version is missing or not multi-arch."
+                ok=0
+                break
+              fi
+            done
+            if [ "$ok" = 1 ]; then
+              chosen="$version"
+              break
+            fi
+          done
+          if [ -z "$chosen" ]; then
+            echo "No fully published stable release among the 5 newest tags: leaving latest alone."
             exit 0
           fi
-          git fetch --quiet --tags --force origin
-          newest="$(git tag -l 'v*' | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -V | tail -n1)"
-          if [ "v$VERSION" != "$newest" ]; then
-            echo "v$VERSION is not the newest stable tag (newest: ${newest:-none}): leaving latest alone."
-            exit 0
-          fi
-          for name in ethernal-frontend ethernal-backend ethernal-pm2; do
-            repo="antoinedc44/$name"
-            docker buildx imagetools create -t "$repo:latest" "$repo:$VERSION"
+          echo "Promoting $chosen to latest."
+          for repo in $repos; do
+            docker buildx imagetools create -t "$repo:latest" "$repo:$chosen"
             latest_digest="$(docker buildx imagetools inspect "$repo:latest" --format '{{json .Manifest.Digest}}')"
-            version_digest="$(docker buildx imagetools inspect "$repo:$VERSION" --format '{{json .Manifest.Digest}}')"
+            version_digest="$(docker buildx imagetools inspect "$repo:$chosen" --format '{{json .Manifest.Digest}}')"
             if [ "$latest_digest" != "$version_digest" ]; then
-              echo "::error::$repo:latest ($latest_digest) does not match $repo:$VERSION ($version_digest)"
+              echo "::error::$repo:latest ($latest_digest) does not match $repo:$chosen ($version_digest)"
               exit 1
             fi
             echo "$repo:latest -> $version_digest"
