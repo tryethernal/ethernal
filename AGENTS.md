@@ -87,7 +87,7 @@ If Docker is unavailable, CI runs tests locally:
 - Branch from `develop` (default branch), never `master`
 - PRs target `develop`
 - Release: tag on develop → CI runs tests → create_release → run_migrations → deploy to Fly.io
-- Blog/landing changes auto-deploy on push to `develop`
+- Blog, landing, app frontend and Caddyfile changes ship only with a release tag (`deploy_caddy` runs on `v*` tags); `sentry-batch-deploy.yml` cuts patch releases hourly when `develop` has new commits
 
 ## CI/CD
 
