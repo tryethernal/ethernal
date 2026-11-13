@@ -62,7 +62,9 @@ export const routes = [
     { path: '/chains/bnb-chain', name: 'chains-bnb-chain', component: () => import('./pages/chains/BnbChainPage.vue') },
 
     // Prerendered as the 404 page (served with HTTP 404 by Caddy); excluded from the sitemap
-    { path: '/404', name: 'not-found', component: () => import('./pages/NotFoundPage.vue') }
+    { path: '/404', name: 'not-found', component: () => import('./pages/NotFoundPage.vue') },
+    // Catch-all so the 404 page keeps rendering after hydration on unknown URLs (dynamic, so never prerendered or in the sitemap)
+    { path: '/:pathMatch(.*)*', name: 'not-found-catch-all', component: () => import('./pages/NotFoundPage.vue') }
 ];
 
 export const scrollBehavior = () => ({ top: 0 });

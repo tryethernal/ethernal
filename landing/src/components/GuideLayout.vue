@@ -13,7 +13,8 @@
   @prop {string} guide.intro - Answer-first introduction (60 words max)
   @prop {string} [guide.notice] - Optional notice shown under the intro
   @prop {string[]} guide.needs - "What you need" items
-  @prop {Array<{title: string, text: string, code?: string[]}>} guide.steps - Numbered steps
+  @prop {Array<{title: string, text: string, code?: string[], commands?: Array<{label: string, code: string, destructive?: boolean}>}>} guide.steps - Numbered steps
+    (`code` is one block of lines; `commands` are separate labelled alternatives, each with its own one-line block)
   @prop {Array<{q: string, a: string}>} guide.faqs - FAQ entries
   @prop {Array<{to: string, icon: string, title: string, desc: string}>} guide.related - Related links
   @prop {{label: string, flow?: string}} guide.cta - Primary call to action pointing at the app signup
@@ -59,6 +60,10 @@
                             <h3>{{ step.title }}</h3>
                             <p>{{ step.text }}</p>
                             <pre v-if="step.code" class="guide-code"><code>{{ step.code.join('\n') }}</code></pre>
+                            <div v-for="cmd in step.commands || []" :key="cmd.label" class="guide-command">
+                                <div :class="['guide-command-label', { 'guide-command-label--danger': cmd.destructive }]">{{ cmd.label }}</div>
+                                <pre :class="['guide-code', { 'guide-code--danger': cmd.destructive }]"><code>{{ cmd.code }}</code></pre>
+                            </div>
                         </div>
                     </li>
                 </ol>
@@ -210,6 +215,12 @@ useHead({
 .guide-step-body h3 { color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin: 4px 0 6px; }
 .guide-step-body p { color: var(--text-secondary); font-size: 0.93rem; line-height: 1.7; margin: 0; }
 .guide-code { margin: 12px 0 0; padding: 14px 16px; background: var(--glass-bg-strong); border: 1px solid var(--border-subtle); border-radius: 8px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; color: #A5D6FF; }
+
+.guide-command { margin-top: 12px; }
+.guide-command-label { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.guide-command-label--danger { color: #EF4444; }
+.guide-command .guide-code { margin-top: 4px; }
+.guide-code--danger { border-color: rgba(239, 68, 68, 0.4); }
 
 .guide-faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 800px; }
 .guide-faq-item { padding: 18px 20px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 10px; }

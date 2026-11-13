@@ -44,7 +44,7 @@ const guide = {
         },
         {
             title: 'Point your domain at the server',
-            text: 'If you used a domain instead of an IP address, add an A record at your DNS provider that points your domain to the public IP address of your server.'
+            text: 'If you used a domain instead of an IP address, add two A records at your DNS provider that point to the public IP address of your server: one for your domain (your-domain.com) and one wildcard record (*.your-domain.com). Each explorer is served on its own subdomain of your domain, so the wildcard record is needed for explorers to be reachable.'
         },
         {
             title: 'Open the setup page',
@@ -64,8 +64,12 @@ const guide = {
         },
         {
             title: 'Update, stop or reset the instance',
-            text: 'make update pulls the latest images and applies migrations and seeds. make stop stops and cleans up the containers and networks. make nuke removes containers, volumes and generated config files, which deletes all your data.',
-            code: ['make update', 'make stop', 'make nuke']
+            text: 'These are separate commands, not a sequence. To update, run make update, which pulls the latest images and applies migrations and seeds. To stop, run make stop, which stops and cleans up the containers and networks. To reset, run make nuke only if you want to start over: it is destructive and removes containers, volumes and generated config files, which deletes all your data.',
+            commands: [
+                { label: 'Update', code: 'make update' },
+                { label: 'Stop', code: 'make stop' },
+                { label: 'Reset (deletes all data)', code: 'make nuke', destructive: true }
+            ]
         }
     ],
     faqs: [
