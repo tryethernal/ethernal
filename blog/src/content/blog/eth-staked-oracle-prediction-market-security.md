@@ -11,6 +11,7 @@ image: "/blog/images/eth-staked-oracle-prediction-market-security.png"
 ogImage: "/blog/images/eth-staked-oracle-prediction-market-security-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 A $15M prediction market is live. The outcome is unambiguous. Over the past three months, an attacker has been registering ETH stake through seventeen unlinked accounts, each funded through separate paths, each aged long enough to avoid detection heuristics.

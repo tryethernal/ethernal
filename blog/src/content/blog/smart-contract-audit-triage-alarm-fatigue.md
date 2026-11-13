@@ -12,6 +12,7 @@ image: "/blog/images/smart-contract-audit-triage-alarm-fatigue.png"
 ogImage: "/blog/images/smart-contract-audit-triage-alarm-fatigue-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 The bottleneck in smart contract security is not detection. It is interpretation. You finish a 2,000-line DeFi protocol and run Slither: 87 findings, three hours of triage, and the real bug filed as "probably fine."

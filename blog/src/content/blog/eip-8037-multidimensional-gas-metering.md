@@ -13,6 +13,7 @@ image: "/blog/images/eip-8037-multidimensional-gas-metering.png"
 ogImage: "/blog/images/eip-8037-multidimensional-gas-metering-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 EIP-8037 is a finalized Ethereum protocol upgrade that splits gas accounting into two independent pools, execution gas for computation and state gas for anything that permanently grows the state trie, repricing state creation so the gas limit can keep climbing without overwhelming node storage.

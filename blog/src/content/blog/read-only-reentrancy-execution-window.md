@@ -13,6 +13,7 @@ image: "/blog/images/read-only-reentrancy-execution-window.png"
 ogImage: "/blog/images/read-only-reentrancy-execution-window-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Read-only reentrancy exploits the window between a contract's ETH transfer and its state update. External contracts that read price or collateral data during that window receive inconsistent values, and no reentrancy guard can stop them.

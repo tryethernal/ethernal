@@ -12,6 +12,7 @@ image: "/blog/images/after-the-scanner-runs-audit-workflow-visualization.png"
 ogImage: "/blog/images/after-the-scanner-runs-audit-workflow-visualization-og.png"
 status: published
 readingTime: 6
+noindex: true
 ---
 
 Pattern-scoped visualization (a subgraph built around the flagged function's context rather than the full contract) is the workflow step that resolves ambiguous scanner warnings. Here is how to build it.

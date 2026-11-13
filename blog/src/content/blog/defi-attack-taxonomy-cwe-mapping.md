@@ -11,6 +11,7 @@ image: "/blog/images/defi-attack-taxonomy-cwe-mapping.png"
 ogImage: "/blog/images/defi-attack-taxonomy-cwe-mapping-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 An auditor is three weeks into reviewing a cross-chain bridge. Slither runs clean. Echidna finds no invariant breaks. The team writes a detailed report, the bridge ships, and six months later it gets exploited via a flash-loan-assisted oracle price manipulation.

@@ -12,6 +12,7 @@ image: "/blog/images/50m-defi-routing-failure.png"
 ogImage: "/blog/images/50m-defi-routing-failure-og.png"
 status: published
 readingTime: 9
+noindex: true
 ---
 
 At block 24,643,151, a single transaction converted 50 million dollars in Aave collateral into $36,000 worth of AAVE tokens. In the same block, an MEV bot extracted $36.9 million from the trade. A Lido validator earned $1.2 million for including the block. Titan Builder kept $33.6 million.

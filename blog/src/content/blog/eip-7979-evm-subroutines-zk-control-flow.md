@@ -12,6 +12,7 @@ image: "/blog/images/eip-7979-evm-subroutines-zk-control-flow.png"
 ogImage: "/blog/images/eip-7979-evm-subroutines-zk-control-flow-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 A ZK-rollup proving team runs a benchmark. Same logic. Two bytecode variants: legacy EVM versus EOF-style static control flow. The legacy version burns three times more compute cycles during proof generation. The prover's hotspot is not the hash function or the elliptic curve multiplication. It is the control flow analysis.

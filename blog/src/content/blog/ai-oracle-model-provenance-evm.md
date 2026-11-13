@@ -12,6 +12,7 @@ image: "/blog/images/ai-oracle-model-provenance-evm.png"
 ogImage: "/blog/images/ai-oracle-model-provenance-evm-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 A lending protocol integrates an ML-based risk oracle. The model scores collateral in real time based on market volatility signals. The smart contract passes audit. Three weeks after launch, the oracle provider silently retrains the model. The new version underestimates volatility during a market stress event. Liquidations fail to trigger. Two million dollars drain.

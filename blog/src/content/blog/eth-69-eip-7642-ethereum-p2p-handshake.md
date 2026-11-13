@@ -14,6 +14,7 @@ image: "/blog/images/eth-69-eip-7642-ethereum-p2p-handshake.png"
 ogImage: "/blog/images/eth-69-eip-7642-ethereum-p2p-handshake-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 eth/69 (EIP-7642) changes how Ethereum peers advertise their available block history. Shipped in Fusaka on December 3, 2025,<sup>[2](#fn-2)</sup><sup>[6](#fn-6)</sup> it replaces the frozen total-difficulty field with earliestBlock, latestBlock, and latestBlockHash, and removes 530 GB of redundant Bloom filter data from full syncs.

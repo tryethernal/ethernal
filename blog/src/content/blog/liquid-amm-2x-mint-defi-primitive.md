@@ -13,6 +13,7 @@ image: "/blog/images/liquid-amm-2x-mint-defi-primitive.png"
 ogImage: "/blog/images/liquid-amm-2x-mint-defi-primitive-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 The 2x mint is a wrapping operation that simultaneously seeds a liquidity pool: deposit one token, and the protocol mints twice the supply, splitting it equally between you and the pool. No separate LP step. No reward token. No two-sided seeding requirement. The wrapping is the liquidity provision.

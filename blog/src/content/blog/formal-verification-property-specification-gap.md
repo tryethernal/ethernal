@@ -12,6 +12,7 @@ image: "/blog/images/formal-verification-property-specification-gap.png"
 ogImage: "/blog/images/formal-verification-property-specification-gap-og.png"
 status: published
 readingTime: 6
+noindex: true
 ---
 
 The Certora engagement ran for three weeks. Prover terminates. All 23 properties verified. No violations found. The protocol team published the audit report.

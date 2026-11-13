@@ -12,6 +12,7 @@ image: "/blog/images/erc-8191-onchain-recurring-payments.png"
 ogImage: "/blog/images/erc-8191-onchain-recurring-payments-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 You're building a SaaS-style service on your L2. Users pay 10 USDC monthly. You ship a subscription contract in a weekend. It works. Subscribers pay, you collect, status stays active. Clean.

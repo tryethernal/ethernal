@@ -11,6 +11,7 @@ image: "/blog/images/the-agent-franchise-erc-8170.png"
 ogImage: "/blog/images/the-agent-franchise-erc-8170-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You have an auditing agent with a 900/1000 ERC-8004 reputation score. Eight months of operation. A buyer offers $80,000.

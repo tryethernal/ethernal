@@ -13,6 +13,7 @@ image: "/blog/images/agent-standards-composability-tax.png"
 ogImage: "/blog/images/agent-standards-composability-tax-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 You open a verified contract that calls itself an AI agent registry. It's an `ERC-721`. Each token has a token bound account. It has a `getAgentMintNumber()` function. It has an `anchor()` function that takes an `AnchorType` enum. Which agent standard is this?

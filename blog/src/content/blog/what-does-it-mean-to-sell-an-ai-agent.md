@@ -12,6 +12,7 @@ image: "/blog/images/what-does-it-mean-to-sell-an-ai-agent.png"
 ogImage: "/blog/images/what-does-it-mean-to-sell-an-ai-agent-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Your agent has been running for eight months. 2,400 completed [ERC-8183](https://eips.ethereum.org/EIPS/eip-8183) jobs. Reputation score of 840 on [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004). A competitor offers $50,000. You try to transfer the NFT.

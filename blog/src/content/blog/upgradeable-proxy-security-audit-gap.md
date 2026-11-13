@@ -12,6 +12,7 @@ image: "/blog/images/upgradeable-proxy-security-audit-gap.png"
 ogImage: "/blog/images/upgradeable-proxy-security-audit-gap-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 The real attack surface in upgradeable contracts is not the code. It is the gap between `deploy` and `initialize`. In July 2025, Kinto Protocol was drained of $1.55 million<sup>[8](#fn-8)</sup> despite audited contracts, standard ERC-1967 proxies, and clean implementation code.
