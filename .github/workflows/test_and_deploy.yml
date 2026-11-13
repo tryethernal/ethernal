@@ -11,18 +11,16 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 18
 
       - name: Setup timezone
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: Europe/Paris
+        run: sudo timedatectl set-timezone Europe/Paris
 
       - name: Install api deps
         run: |
@@ -49,18 +47,16 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 18
 
       - name: Setup timezone
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: Europe/Paris
+        run: sudo timedatectl set-timezone Europe/Paris
 
       - name: Install deps
         run: yarn
@@ -82,7 +78,7 @@ jobs:
       release_name: ${{ steps.get_release.outputs.release_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -98,13 +94,13 @@ jobs:
 
       - name: Get Changelog Entry
         id: get_changelog
-        uses: mindsers/changelog-reader-action@v2
+        uses: mindsers/changelog-reader-action@1faaf50aa09d5793d9a100819973df801febfb31 # v2.4.0
         with:
           validation_depth: 10
           version: ${{ steps.get_tag.outputs.current_version }}
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           body: ${{ steps.get_changelog.outputs.changes }}
           tag: ${{ steps.get_changelog.outputs.version }}
@@ -116,9 +112,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 18
 
@@ -173,7 +169,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
       # every job here hands the production Fly credential to whatever that
@@ -201,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup credentials
         run: |
@@ -238,7 +234,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
       # every job here hands the production Fly credential to whatever that
@@ -393,7 +389,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Pinned to a SHA, not @master: FLY_API_TOKEN is set at workflow level, so
       # every job here hands the production Fly credential to whatever that
