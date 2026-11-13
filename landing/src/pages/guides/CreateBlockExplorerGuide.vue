@@ -20,7 +20,7 @@
                     <div class="cbe-path">
                         <v-icon size="22" style="color: #5DAAE0;">mdi-docker</v-icon>
                         <h3>Self-host open source</h3>
-                        <p>Run Ethernal's MIT-licensed code on your own server with Docker Compose. You own the infrastructure and the data. The self-hosted version is in beta.</p>
+                        <p>Run Ethernal's MIT-licensed code on your own server with Docker Compose. You own the infrastructure and the data.</p>
                         <router-link to="/guides/self-host-block-explorer" class="cbe-link">Follow the self-hosting guide</router-link>
                     </div>
                     <div class="cbe-path">
@@ -99,11 +99,11 @@ const guide = {
         },
         {
             q: 'Is Ethernal open source?',
-            a: 'Yes, it is MIT licensed and the source is on GitHub. That means you can move from hosted to self-hosted later, although the self-hosted version is still in beta.'
+            a: 'Yes, it is MIT licensed and the source is on GitHub. That means you can move from hosted to self-hosted later.'
         }
     ],
     related: [
-        { to: '/guides/self-host-block-explorer', icon: 'mdi-docker', title: 'Self-Host a Block Explorer with Docker', desc: 'Run Ethernal on your own server (beta)' },
+        { to: '/guides/self-host-block-explorer', icon: 'mdi-docker', title: 'Self-Host a Block Explorer with Docker', desc: 'Run Ethernal on your own server' },
         { to: '/guides/op-stack-block-explorer', icon: 'mdi-layers-outline', title: 'Block Explorer for an OP Stack Chain', desc: 'Add deposit, withdrawal and batch tracking' },
         { to: '/guides/arbitrum-orbit-block-explorer', icon: 'mdi-orbit-variant', title: 'Block Explorer for an Arbitrum Orbit Chain', desc: 'Add bridge and withdrawal tracking' },
         { to: '/pricing', icon: 'mdi-tag-outline', title: 'Pricing', desc: 'Starter (free), Team ($150/mo), App Chain ($500/mo), Enterprise' },

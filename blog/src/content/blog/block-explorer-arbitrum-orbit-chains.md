@@ -124,7 +124,7 @@ Pricing for Orbit teams:
 - $500/mo App Chain: full white-label. Custom domain, logo, colors, status page, total supply display, 5M transactions included. For app chains that need their own brand.
 - Enterprise: custom pricing for high transaction volume or custom requirements.
 
-Limitations: EVM-only. No support for non-EVM chains. The self-hosted version is in beta; see the [GitHub repository](https://github.com/tryethernal/ethernal) for current status. Smaller ecosystem than Blockscout by several years of head start.
+Limitations: EVM-only. No support for non-EVM chains. Smaller ecosystem than Blockscout by several years of head start.
 
 Best for: Orbit app chains that need white-label branding and built-in bridge/batch UI, teams that want the fastest path from RPC URL to production explorer, and teams that want MIT-licensed code they can fork for custom Orbit features.
 

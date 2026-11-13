@@ -45,7 +45,7 @@ import LandingLayout from '@/components/LandingLayout.vue';
 
 const guides = [
     { to: '/guides/create-block-explorer', icon: 'mdi-compass-outline', title: 'How to Create a Block Explorer for an EVM Chain', desc: 'Build, self-host or use hosted Ethernal, then set up a hosted explorer from an RPC URL.' },
-    { to: '/guides/self-host-block-explorer', icon: 'mdi-docker', title: 'How to Self-Host a Block Explorer with Docker', desc: 'Run Ethernal on your own server with Docker Compose. The self-hosted version is in beta.' },
+    { to: '/guides/self-host-block-explorer', icon: 'mdi-docker', title: 'How to Self-Host a Block Explorer with Docker', desc: 'Run Ethernal on your own server with Docker Compose.' },
     { to: '/guides/op-stack-block-explorer', icon: 'mdi-layers-outline', title: 'How to Set Up a Block Explorer for an OP Stack Chain', desc: 'Connect the OptimismPortal and Batch Inbox contracts to track deposits, withdrawals and batches.' },
     { to: '/guides/arbitrum-orbit-block-explorer', icon: 'mdi-orbit-variant', title: 'How to Set Up a Block Explorer for an Arbitrum Orbit Chain', desc: 'Connect the rollup, bridge and gateway contracts to track Orbit batches and withdrawals.' }
 ];
