@@ -56,7 +56,7 @@ to the page (verify every fact against the page/pricing component).
 | `/` | Open-Source EVM Block Explorer, Live in 5 Minutes \| Ethernal | Run a block explorer for any EVM chain from an RPC URL. Hosted for you or self-hosted under MIT. Verified contracts, tracing, tokens. Free plan. |
 | `/launch-block-explorer` | Block Explorer Hosting: Launch a Custom EVM Explorer | Hosted block explorer for your EVM chain or rollup. Paste an RPC URL, get a branded explorer with verification and APIs. Free to start. |
 | `/etherscan-alternative` | Etherscan Alternatives for Your Own Chain (2026) | Etherscan doesn't offer self-serve explorers for new chains. Compare Ethernal, Blockscout, Routescan and building in-house on price, setup and features. |
-| `/blockscout-alternative` | Blockscout Alternative: Hosted EVM Explorer, No DevOps | Self-hosting Blockscout means running Postgres, an indexer and a frontend. Compare setup, pricing and features with Ethernal, and see when Blockscout wins. |
+| `/blockscout-alternative` | Blockscout Alternative: Hosted EVM Explorer, No DevOps | Self-hosting Blockscout means running Postgres, an indexer and a UI. Compare setup, pricing and features with Ethernal, and see when Blockscout wins. |
 | `/pricing` | Block Explorer Pricing: Free, $150 and $500 Plans \| Ethernal | Starter is free. Team is $150/mo with a custom domain. App Chain is $500/mo with full whitelabel. Compare limits and features of every plan. |
 
 De-cannibalization: the homepage keeps "open-source EVM block explorer" intent; the homepage hero/feature copy gets one
