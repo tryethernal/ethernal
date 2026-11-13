@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.1] - 2026-11-13
+### Fixed
+- Live updates (websockets) work again on all explorers
+- SSL certificates are only issued for the main domain, direct subdomains and registered custom domains
+- The OP Stack "Challenge Period" setting is now saved
+- The Arbitrum Orbit page lists every field the Orbit setup needs
+### Changed
+- Landing pages use the maintained @unhead/vue head manager
+- CI actions upgraded off deprecated Node runtimes
+
 ## [5.19.0] - 2026-11-13
 ### Added
 - Block explorer guides: create a block explorer, self-host with Docker, OP Stack and Arbitrum Orbit setup

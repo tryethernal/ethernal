@@ -179,7 +179,7 @@
 
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="config.challengePeriodSeconds"
+                                v-model="config.finalizationPeriodSeconds"
                                 label="Challenge Period (seconds)"
                                 type="number"
                                 :disabled="loading"
@@ -376,6 +376,21 @@ function loadConfig() {
         .finally(() => loading.value = false);
 }
 
+const DEFAULT_FINALIZATION_PERIOD_SECONDS = 604800;
+
+/**
+ * Normalizes the Challenge Period form value for the API. The column is a non-null
+ * integer, so a cleared or non-numeric field must not be sent as an empty string.
+ * @param {string|number|null|undefined} value - Raw form value
+ * @returns {number} The value as a non-negative integer, or the 7-day default if blank/invalid
+ */
+function normalizeFinalizationPeriod(value) {
+    if (value === null || value === undefined || String(value).trim() === '')
+        return DEFAULT_FINALIZATION_PERIOD_SECONDS;
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed >= 0 ? parsed : DEFAULT_FINALIZATION_PERIOD_SECONDS;
+}
+
 function saveOrUpdateConfig() {
     if (config.value.id) {
         updateConfig();
@@ -390,7 +405,10 @@ async function createConfig() {
     successMessage.value = '';
 
     try {
-        let configPayload = { ...config.value };
+        let configPayload = {
+            ...config.value,
+            finalizationPeriodSeconds: normalizeFinalizationPeriod(config.value.finalizationPeriodSeconds)
+        };
 
         // Handle L1 parent selection
         if (selectedL1Type.value === 'custom-new') {
@@ -437,7 +455,10 @@ function updateConfig() {
     successMessage.value = '';
 
     // Don't send parent chain fields on updates - they can't be changed
-    const updatePayload = { ...config.value };
+    const updatePayload = {
+        ...config.value,
+        finalizationPeriodSeconds: normalizeFinalizationPeriod(config.value.finalizationPeriodSeconds)
+    };
     delete updatePayload.networkId;
     delete updatePayload.parentWorkspaceId;
     delete updatePayload.parentChainId;
