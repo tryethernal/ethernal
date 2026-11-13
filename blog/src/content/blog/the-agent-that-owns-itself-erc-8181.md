@@ -12,6 +12,7 @@ image: "/blog/images/the-agent-that-owns-itself-erc-8181.png"
 ogImage: "/blog/images/the-agent-that-owns-itself-erc-8181-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 Your agent goes rogue. It starts burning tokens from its own wallet. You need to revoke access. But who do you call? The NFT owner? The TEE operator? The deployer? With most agent setups, access control is a side-channel conversation. You find the key, kill the process, hope nothing else was exposed.

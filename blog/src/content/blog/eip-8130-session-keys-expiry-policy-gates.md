@@ -13,6 +13,7 @@ image: "/blog/images/eip-8130-session-keys-expiry-policy-gates.png"
 ogImage: "/blog/images/eip-8130-session-keys-expiry-policy-gates-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 A DeFi automation account authorizes a session key Monday morning. The key signs 200 rebalancing transactions through the week. Friday at midnight, it stops working: not because it was revoked, not because a contract rejected it, but because the protocol read `block.timestamp > expiry` from a storage slot and returned false. No transaction. No contract call. No gas spent.

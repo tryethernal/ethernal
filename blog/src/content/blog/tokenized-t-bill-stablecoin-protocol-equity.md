@@ -13,6 +13,7 @@ image: "/blog/images/tokenized-t-bill-stablecoin-protocol-equity.png"
 ogImage: "/blog/images/tokenized-t-bill-stablecoin-protocol-equity-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Co-minting a stablecoin (STABLE) and an equity token (EQUITY) simultaneously into a protocol-seeded Uniswap v4 pool, with zero external capital, is the core mechanism in a February 2026 ethresear.ch proposal.<sup>[1](#fn-1)</sup> No treasury seed, no controlling private key, and no external liquidity required. Real user demand and T-bill collateral deposits fill in legitimacy afterward. The problem it addresses: if protocol revenue flows to a DAO multisig or founding team, you've recreated the centralization problem; if you issue a governance token separately and seed a pool manually, you need capital you don't have.

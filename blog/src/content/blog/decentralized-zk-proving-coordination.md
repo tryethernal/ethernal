@@ -12,6 +12,7 @@ image: "/blog/images/decentralized-zk-proving-coordination.png"
 ogImage: "/blog/images/decentralized-zk-proving-coordination-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You've deployed a Groth16 verifier contract. Two provers generate valid proofs concurrently against the same Merkle root. One submits at block N. The other's transaction lands in the same block and reverts. The proof was cryptographically valid. The transaction was not. You burn 33,000 gas on the failure and your protocol appears healthy if you only look at successful submissions. The reverts are invisible unless you're actively watching.

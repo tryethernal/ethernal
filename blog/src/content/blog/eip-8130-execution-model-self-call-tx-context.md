@@ -13,6 +13,7 @@ image: "/blog/images/eip-8130-execution-model-self-call-tx-context.png"
 ogImage: "/blog/images/eip-8130-execution-model-self-call-tx-context-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 EIP-8130 restores `msg.sender` to the user's actual address, solving ERC-4337's EntryPoint problem. But contract authors need three new mental models: who pays gas (TX\_CONTEXT), which phase just ran (phase atomicity), and which key signed (actorId). Here's what each one means in practice.

@@ -12,6 +12,7 @@ image: "/blog/images/shared-sequencer-standard-erc-8166.png"
 ogImage: "/blog/images/shared-sequencer-standard-erc-8166-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 An autonomous agent submits a payout transaction at 3am, no human watching. It is settling an [ERC-8183](https://eips.ethereum.org/EIPS/eip-8183) job payment, and the transaction routes through a shared sequencer rather than direct to an L2's own mempool. The sequencer accepts it and returns a status. That status shape is specific to whichever sequencer happens to be in the path that day.

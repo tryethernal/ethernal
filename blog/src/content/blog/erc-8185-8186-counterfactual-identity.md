@@ -12,6 +12,7 @@ image: "/blog/images/erc-8185-8186-counterfactual-identity.png"
 ogImage: "/blog/images/erc-8185-8186-counterfactual-identity-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 An AI agent allocating grant funds sends 2 ETH to the `github:protocolkit/optics` identifier. The GitHub repo has never deployed a contract. No Ethereum address was registered anywhere. Yet the ETH lands at a specific address, deterministically derived and unique to that identifier. Eighteen months later, the maintainer claims it with one transaction. The balance transfers. This is not a wallet trick. It is a new protocol primitive: addresses that exist before anyone materialises them.

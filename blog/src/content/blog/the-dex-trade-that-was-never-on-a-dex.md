@@ -13,6 +13,7 @@ image: "/blog/images/the-dex-trade-that-was-never-on-a-dex.png"
 ogImage: "/blog/images/the-dex-trade-that-was-never-on-a-dex-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You swap 50 ETH for USDC on a mainstream DEX aggregator. The quote shows zero slippage. The trade fills in under a second. You assume it routed through a Uniswap or Curve pool, the way DEX trades have worked since 2020.

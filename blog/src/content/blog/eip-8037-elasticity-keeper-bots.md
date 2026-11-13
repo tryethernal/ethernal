@@ -14,6 +14,7 @@ image: "/blog/images/eip-8037-elasticity-keeper-bots.png"
 ogImage: "/blog/images/eip-8037-elasticity-keeper-bots-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 Gas-limit increases don't make liquidation keepers or other automated bots cheaper to run, even when the limit jumps several multiples higher. A lending protocol's ops team saw this firsthand the week Glamsterdam activated on a public testnet: the gas limit floor moved to 200M, nominally more than three times what mainnet ran a year earlier, and they expected their liquidation keeper, the bot that watches collateral ratios and fires off `liquidate()` calls the moment a position goes underwater, to get cheaper to run. It didn't. Six months of data later, the keeper's per-call cost is flat. Meanwhile, the protocol's "open a new vault" flow, the one that writes a fresh set of storage slots for every new user, got more expensive, not less.

@@ -12,6 +12,7 @@ image: "/blog/images/rlnc-bandwidth-security-tradeoff-ethereum.png"
 ogImage: "/blog/images/rlnc-bandwidth-security-tradeoff-ethereum-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 A 110KB Ethereum block takes roughly 6 to 7 gossip hops to cross the network today, and most of the bandwidth spent getting it there is waste: peers rebroadcasting data that other peers already have.<sup>[1](#fn-1)</sup> A January 2025 proposal from researcher potuz fixes that with random linear network coding (RLNC), cutting propagation to 3 to 4 hops and bandwidth overhead to roughly 5% of what Gossipsub uses today.<sup>[1](#fn-1)</sup> A February 2026 follow-up goes further, proposing five ways to shrink the coding overhead even more.<sup>[2](#fn-2)</sup>

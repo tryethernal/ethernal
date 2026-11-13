@@ -13,6 +13,7 @@ image: "/blog/images/eip-7870-ethereum-node-hardware-requirements.png"
 ogImage: "/blog/images/eip-7870-ethereum-node-hardware-requirements-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You buy a Crucial P3 4TB. 3,500 MB/s sequential read. Well-reviewed. Under $200. You install Nethermind. State sync starts, then stalls on the same block range for eight hours. Nothing in the logs suggests a network problem or a software bug. You run a storage benchmark: sequential read 3,400 MB/s, sequential write 3,000 MB/s. The drive is performing exactly as advertised.

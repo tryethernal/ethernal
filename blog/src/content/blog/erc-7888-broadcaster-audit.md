@@ -13,6 +13,7 @@ image: "/blog/images/erc-7888-broadcaster-audit.png"
 ogImage: "/blog/images/erc-7888-broadcaster-audit-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 A solver fills a cross-chain intent: a user wants USDC on Base, holds ETH on Arbitrum. The solver executes the fill on Base, then needs to prove that fill happened, on Arbitrum, without a bridge or an oracle sitting in the middle. That proof mechanism is what [ERC-7888](https://eips.ethereum.org/EIPS/eip-7888)'s Broadcaster exists to provide.<sup>[1](#fn-1)</sup>

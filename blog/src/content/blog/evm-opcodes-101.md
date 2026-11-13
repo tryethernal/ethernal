@@ -11,6 +11,7 @@ tags:
 date: 2026-03-12
 status: published
 readingTime: 8
+noindex: true
 ---
 
 A developer ships a token swap function. Works perfectly in testing. On mainnet, it burns $47 in gas for what should be a $3 operation. The culprit? An `SSTORE` inside a loop, writing to cold storage on every iteration instead of caching in memory first. Fifteen lines of Solidity, and the most expensive one is invisible unless you know where to look. Understanding opcodes turns that mystery into arithmetic.

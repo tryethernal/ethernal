@@ -12,6 +12,7 @@ image: "/blog/images/eip-8042-nft-ownership-history.png"
 ogImage: "/blog/images/eip-8042-nft-ownership-history-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You're building a DAO governance contract. Founding members get double voting weight, but you want to lock it to wallets that actually held the founding NFT since genesis, not people who bought in last week after the floor pumped from $80K to $200K. The logic is simple: call `ownerOf(tokenId)`, check if it matches, done.

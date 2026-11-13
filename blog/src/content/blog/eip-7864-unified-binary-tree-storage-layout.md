@@ -14,6 +14,7 @@ image: "/blog/images/eip-7864-unified-binary-tree-storage-layout.png"
 ogImage: "/blog/images/eip-7864-unified-binary-tree-storage-layout-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 [EIP-7864](https://eips.ethereum.org/EIPS/eip-7864), authored by Vitalik Buterin, Guillaume Ballet, Dankrad Feist, and seven other core contributors, replaces Ethereum's hexary trie with a single unified binary tree.<sup>[1](#fn-1)</sup> Buried in the spec is a mechanism that gives a small, fixed number of low-numbered storage slots and bytecode chunks a shorter, cheaper Merkle proof than everything else an account owns. That's a new incentive for how you order your Solidity state variables, and it collides directly with an existing storage convention that does the opposite on purpose.

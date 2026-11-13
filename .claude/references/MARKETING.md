@@ -2,6 +2,13 @@
 
 Complete reference for the automated marketing pipeline: blog content, Twitter, drip emails, and tracking.
 
+> **Status (2026-11-13): the blog draft pipeline, weekly trend scan and tweet pipeline are wound down.**
+> Over ~8 months, ~78 automated posts earned ~35 Google clicks and no attributable signups, and the
+> draft pipeline failed ~70% of runs from August on. The GitHub Actions schedules were removed (manual
+> `workflow_dispatch` still works); the tweet pipeline last posted on 2026-05-13. Posts that never earned
+> search impressions carry `noindex: true` in frontmatter (robots noindex + excluded from the sitemap).
+> The sections below describe the pipeline as it was built.
+
 ## Architecture Overview
 
 ```

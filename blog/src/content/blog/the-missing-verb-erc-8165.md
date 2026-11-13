@@ -12,6 +12,7 @@ image: "/blog/images/the-missing-verb-erc-8165.png"
 ogImage: "/blog/images/the-missing-verb-erc-8165-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 An AI agent inside a DeFi treasury management system needs to swap 10,000 USDC for ETH to fund an [ERC-8183](https://eips.ethereum.org/EIPS/eip-8183) job. The naive approach: give the agent a private key with permission to call `swap()` on Uniswap. The immediate problems multiply fast. Which pool has the best price right now? How much slippage is acceptable? Should the order split across multiple DEXes? What gas price is reasonable given current mempool congestion? Every parameter is a decision point the agent must get right, and every decision point is a potential exploit or a source of value leak.

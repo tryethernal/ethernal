@@ -12,6 +12,7 @@ image: "/blog/images/erc-8117-anti-poisoning-address-display.png"
 ogImage: "/blog/images/erc-8117-anti-poisoning-address-display-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 The attacker didn't exploit a smart contract. They didn't phish a private key. They mined an address.

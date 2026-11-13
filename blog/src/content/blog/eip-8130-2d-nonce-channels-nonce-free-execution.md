@@ -12,6 +12,7 @@ image: "/blog/images/eip-8130-2d-nonce-channels-nonce-free-execution.png"
 ogImage: "/blog/images/eip-8130-2d-nonce-channels-nonce-free-execution-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 EIP-8130 replaces Ethereum's single nonce counter with independent parallel channels (`nonce_key`) and a nonce-free expiry mode (`replay_id`), eliminating the coordination bottleneck where one failed transaction stalls every subsequent operation from the same account.

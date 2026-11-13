@@ -1,9 +1,7 @@
 name: Blog Trend Scan
 
+# Schedule removed 2026-11-13 along with the blog draft pipeline's.
 on:
-  schedule:
-    # Every Monday at 6am UTC
-    - cron: '0 6 * * 1'
   workflow_dispatch: # Manual trigger
 
 permissions:
