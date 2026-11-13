@@ -51,7 +51,7 @@
                     compact
                     icon="mdi-cog-outline"
                     title="Native Orbit Bridge Monitoring"
-                description="Ethernal understands the Nitro architecture natively. Configure your Rollup and Inbox contract addresses, and it monitors assertion postings, tracks retryable tickets for L1-to-L2 messaging, and detects challenges. Works with any Orbit chain: L2 settling on Ethereum or L3 settling on another Arbitrum chain."
+                description="Ethernal understands the Nitro architecture natively. Choose the L1 parent chain, add an L1 RPC for withdrawal claims, and enter your Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses plus the L1 and L2 gateway addresses. Ethernal then monitors assertion postings, tracks retryable tickets for L1-to-L2 messaging, and detects challenges. Works with any Orbit chain: L2 settling on Ethereum or L3 settling on another Arbitrum chain."
             >
                 <template #visual>
                     <div class="browser-preview">
@@ -251,11 +251,11 @@
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">How do I launch an Orbit chain with a block explorer?</h3>
-                        <p class="faq-a">After deploying your Orbit chain using the Arbitrum SDK or Orbit Portal, create a workspace on Ethernal, paste your chain's RPC, and configure the Rollup and Inbox contract addresses. Your explorer is live in under 5 minutes with transaction decoding, contract verification, and bridge monitoring.</p>
+                        <p class="faq-a">After deploying your Orbit chain using the Arbitrum SDK or Orbit Portal, create a workspace on Ethernal, paste your chain's RPC, and configure the Orbit settings: the L1 parent chain, an L1 RPC for withdrawal claims, the Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses, and the L1 and L2 gateway addresses. Your explorer is live in under 5 minutes with transaction decoding, contract verification, and bridge monitoring.</p>
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">Does Ethernal support L3 Orbit chains?</h3>
-                        <p class="faq-a">Yes. Ethernal works with Orbit chains at any layer. L3 chains that settle on Arbitrum One or Nova are configured the same way: provide the RPC endpoint and the parent chain's Rollup/Inbox addresses.</p>
+                        <p class="faq-a">Yes. Ethernal works with Orbit chains at any layer. L3 chains that settle on Arbitrum One or Nova are configured the same way: provide the RPC endpoint, an RPC for the parent chain, and the parent chain's contract addresses (Rollup, Bridge, Inbox, Sequencer Inbox, Outbox and the gateways).</p>
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">What is the difference between AnyTrust and Rollup mode?</h3>
@@ -321,7 +321,7 @@
 </template>
 
 <script setup>
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
@@ -368,7 +368,7 @@ useHead({
                 "step": [
                     { "@type": "HowToStep", "name": "Create a workspace", "text": "Sign up at app.tryethernal.com and create a Public Explorer workspace." },
                     { "@type": "HowToStep", "name": "Connect your chain's RPC", "text": "Paste the RPC endpoint for your Orbit chain." },
-                    { "@type": "HowToStep", "name": "Configure Orbit bridge", "text": "Enter your Rollup and Inbox contract addresses for bridge monitoring." },
+                    { "@type": "HowToStep", "name": "Configure Orbit bridge", "text": "Choose the L1 parent chain, add an L1 RPC for withdrawal claims, and enter your Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses plus the L1 and L2 gateway addresses for bridge monitoring." },
                     { "@type": "HowToStep", "name": "Go live", "text": "Point your custom domain to your Ethernal workspace." }
                 ]
             })
@@ -391,11 +391,11 @@ useHead({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [
-                    { "@type": "Question", "name": "What is Arbitrum Orbit?", "acceptedAnswer": { "@type": "Answer", "text": "Arbitrum Orbit is a framework by Offchain Labs for launching custom L2 and L3 chains using the Nitro tech stack. Teams choose between Rollup (data on Ethereum) or AnyTrust (data via committee) modes." } },
-                    { "@type": "Question", "name": "What is the difference between Orbit and OP Stack?", "acceptedAnswer": { "@type": "Answer", "text": "Orbit uses Nitro with BOLD fraud proofs and offers AnyTrust mode. OP Stack uses op-geth with fault proofs and forms the Superchain. Ethernal supports both." } },
-                    { "@type": "Question", "name": "How do I launch an Orbit chain with a block explorer?", "acceptedAnswer": { "@type": "Answer", "text": "After deploying your Orbit chain, create a workspace on Ethernal, paste your RPC, and configure Rollup/Inbox addresses. Live in under 5 minutes." } },
-                    { "@type": "Question", "name": "Does Ethernal support L3 Orbit chains?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with Orbit chains at any layer, including L3s settling on Arbitrum One or Nova." } },
-                    { "@type": "Question", "name": "What is the difference between AnyTrust and Rollup mode?", "acceptedAnswer": { "@type": "Answer", "text": "Rollup posts all data to Ethereum (max security, higher cost). AnyTrust uses a Data Availability Committee (lower cost, different trust). Ethernal supports both." } }
+                    { "@type": "Question", "name": "What is Arbitrum Orbit?", "acceptedAnswer": { "@type": "Answer", "text": "Arbitrum Orbit is a framework by Offchain Labs for launching custom L2 and L3 chains using the Nitro tech stack. Teams can choose between Rollup mode (data on Ethereum) or AnyTrust mode (data via committee) depending on their cost and security requirements. Orbit chains can settle on Ethereum (L2) or on another Arbitrum chain (L3)." } },
+                    { "@type": "Question", "name": "What is the difference between Arbitrum Orbit and OP Stack?", "acceptedAnswer": { "@type": "Answer", "text": "Both are frameworks for launching L2 rollups. Orbit uses the Nitro engine with BOLD fraud proofs and offers AnyTrust (committee-based data availability) as an alternative to full rollup. OP Stack uses op-geth with fault proofs and a 7-day challenge window, and chains form the Superchain. Ethernal supports both frameworks with native bridge monitoring." } },
+                    { "@type": "Question", "name": "How do I launch an Orbit chain with a block explorer?", "acceptedAnswer": { "@type": "Answer", "text": "After deploying your Orbit chain using the Arbitrum SDK or Orbit Portal, create a workspace on Ethernal, paste your chain's RPC, and configure the Orbit settings: the L1 parent chain, an L1 RPC for withdrawal claims, the Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses, and the L1 and L2 gateway addresses. Your explorer is live in under 5 minutes with transaction decoding, contract verification, and bridge monitoring." } },
+                    { "@type": "Question", "name": "Does Ethernal support L3 Orbit chains?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with Orbit chains at any layer. L3 chains that settle on Arbitrum One or Nova are configured the same way: provide the RPC endpoint, an RPC for the parent chain, and the parent chain's contract addresses (Rollup, Bridge, Inbox, Sequencer Inbox, Outbox and the gateways)." } },
+                    { "@type": "Question", "name": "What is the difference between AnyTrust and Rollup mode?", "acceptedAnswer": { "@type": "Answer", "text": "In Rollup mode, all transaction data is posted to Ethereum L1 (maximum security, higher costs). In AnyTrust mode, data is held by a Data Availability Committee (lower costs, different trust assumptions). Arbitrum One uses Rollup mode; Nova, Xai, and most gaming chains use AnyTrust. Ethernal supports both modes." } }
                 ]
             })
         }

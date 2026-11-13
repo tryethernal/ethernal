@@ -20,7 +20,7 @@
  * @component ApiDocsPage
  */
 import { defineAsyncComponent } from 'vue';
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 
 const ApiReferenceViewer = defineAsyncComponent(() => import('@/components/ApiReferenceViewer.vue'));

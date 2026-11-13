@@ -207,7 +207,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 import ToolsSidebar from '@/components/ToolsSidebar.vue';
