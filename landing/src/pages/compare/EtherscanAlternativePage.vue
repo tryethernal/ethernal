@@ -88,7 +88,7 @@
                     </table>
                 </div>
                 <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; max-width: 640px; margin-top: 14px;">
-                    Want to run Ethernal yourself? Follow the <router-link to="/guides/self-host-block-explorer" class="inline-link">self-hosting guide</router-link> (the self-hosted version is in beta).
+                    Want to run Ethernal yourself? Follow the <router-link to="/guides/self-host-block-explorer" class="inline-link">self-hosting guide</router-link>.
                 </p>
             </section>
 
@@ -392,7 +392,7 @@
                         <v-icon size="18" style="color: #5DAAE0;">mdi-docker</v-icon>
                         <div>
                             <span class="related-title">Guide: Self-Host a Block Explorer with Docker</span>
-                            <span class="related-desc">Run Ethernal on your own server with Docker Compose (beta)</span>
+                            <span class="related-desc">Run Ethernal on your own server with Docker Compose</span>
                         </div>
                     </router-link>
                     <router-link to="/features" class="related-link">
