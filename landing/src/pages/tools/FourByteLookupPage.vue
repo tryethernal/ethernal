@@ -346,7 +346,7 @@ useHead({
         { name: 'twitter:card', content: 'summary_large_image' }
     ],
     link: [{ rel: 'canonical', href: 'https://tryethernal.com/tools/4byte-lookup' }],
-    script: structuredData.map(d => ({ type: 'application/ld+json', children: JSON.stringify(d) }))
+    script: structuredData.map(d => ({ type: 'application/ld+json', innerHTML: JSON.stringify(d) }))
 });
 </script>
 

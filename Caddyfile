@@ -13,6 +13,11 @@ blog.tryethernal.com {
 }
 
 (common) {
+    # www is a duplicate of the apex landing site (Google picked it as canonical
+    # for some pages). Send everything to the apex.
+    @wwwHost host www.tryethernal.com
+    redir @wwwHost https://tryethernal.com{uri} permanent
+
     header {
         Apx-Incoming-Host "{host}"
     }
@@ -84,7 +89,11 @@ blog.tryethernal.com {
         reverse_proxy ethernal.internal:8080
     }
 
-    handle /app* {
+    # Soketi websocket. Exactly /app and /app/*, NOT /app*: the latter also
+    # matched landing pages such as /app-chains (502). Keep `handle`, not
+    # `handle_path`: the /app prefix must reach Soketi (see CLAUDE.md).
+    @soketi path /app /app/*
+    handle @soketi {
         reverse_proxy ethernal-soketi:6001 {
             header_up Upgrade "websocket"
             header_up Connection "Upgrade"
@@ -183,7 +192,7 @@ blog.tryethernal.com {
 
         handle_path /blog/* {
             root * /srv/blog
-            try_files {path} {path}.html {path}/index.html /index.html
+            try_files {path} {path}.html {path}/index.html
             file_server
         }
         handle /blog {
@@ -193,7 +202,7 @@ blog.tryethernal.com {
         }
         handle {
             root * /srv/landing
-            try_files {path} {path}.html {path}/index.html /index.html
+            try_files {path} {path}.html {path}/index.html
             file_server
         }
     }
@@ -202,6 +211,38 @@ blog.tryethernal.com {
         root * /srv/app
         try_files {path} /index.html
         file_server
+    }
+
+    # Real 404s for the apex landing + blog (no SPA fallback there, which used to
+    # return 200 + homepage for every unknown URL). Restricted to the apex hosts:
+    # explorer subdomains, custom domains and app. keep their SPA fallback and
+    # their default error behaviour. The landing 404 is emitted by vite-ssg as
+    # /404.html or /404/index.html, the blog one as /404.html.
+    handle_errors {
+        @blogNotFound {
+            expression {err.status_code} == 404
+            host tryethernal.com www.tryethernal.com
+            path /blog /blog/*
+        }
+        handle @blogNotFound {
+            root * /srv/blog
+            rewrite * /404.html
+            file_server {
+                status 404
+            }
+        }
+
+        @landingNotFound {
+            expression {err.status_code} == 404
+            host tryethernal.com www.tryethernal.com
+        }
+        handle @landingNotFound {
+            root * /srv/landing
+            try_files /404.html /404/index.html
+            file_server {
+                status 404
+            }
+        }
     }
 
     encode gzip
@@ -224,7 +265,7 @@ app.tryethernal.com {
         redir https://tryethernal.com{uri} permanent
     }
 
-    @landingPathPrefixes path /blog* /chains/* /tools/*
+    @landingPathPrefixes path /blog* /chains/* /tools/* /guides*
     handle @landingPathPrefixes {
         redir https://tryethernal.com{uri} permanent
     }
