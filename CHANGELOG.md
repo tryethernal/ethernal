@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.7] - 2026-11-13
+### Fixed
+- chore(blog): wind down automated blog pipeline, noindex posts without search traction (#1409)
+- ci: retry Fly deploys in release_back on transient API errors (#1408)
+
+
 ## [5.18.6] - 2026-11-12
 ### Fixed
 - ci: build arm64 release images on a native arm64 runner (#1407)
