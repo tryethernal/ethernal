@@ -198,7 +198,7 @@
                         <div class="step-number">3</div>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Configure Orbit bridge monitoring</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">Enter your Rollup and Inbox contract addresses. Ethernal starts monitoring assertions, retryable tickets, and cross-chain messages automatically.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">Choose the L1 parent chain, add an L1 RPC for withdrawal claims, and enter your Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses plus the L1 and L2 gateway addresses. Ethernal starts monitoring assertions, retryable tickets, and cross-chain messages automatically.</p>
                         </div>
                     </div>
                     <div class="setup-step">
@@ -210,7 +210,7 @@
                     </div>
                 </div>
                 <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-top: 20px;">
-                    The Orbit configuration form asks for more than the Rollup and Inbox addresses. The <router-link to="/guides/arbitrum-orbit-block-explorer" class="guide-link">step-by-step guide to setting up an Arbitrum Orbit block explorer</router-link> lists every required field.
+                    Need every required field? Read the <router-link to="/guides/arbitrum-orbit-block-explorer" class="guide-link">step-by-step guide to setting up an Arbitrum Orbit block explorer</router-link>.
                 </p>
             </section>
 
@@ -344,7 +344,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "Product",
                 "name": "Ethernal Block Explorer for Arbitrum Orbit Chains",
@@ -360,7 +360,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "HowTo",
                 "name": "How to set up a block explorer for an Arbitrum Orbit chain",
@@ -375,7 +375,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
@@ -387,7 +387,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [

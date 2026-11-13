@@ -160,22 +160,22 @@ useHead({
     ],
     link: [{ rel: 'canonical', href: 'https://tryethernal.com/chains/cyber' }],
     script: [
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": "Ethernal Block Explorer for Cyber", "description": "Hosted block explorer for Cyber with social graph tracking, CYBER token monitoring, and OP Stack bridge support.", "brand": { "@type": "Organization", "name": "Ethernal" }, "url": "https://tryethernal.com/chains/cyber", "offers": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": "Ethernal Block Explorer for Cyber", "description": "Hosted block explorer for Cyber with social graph tracking, CYBER token monitoring, and OP Stack bridge support.", "brand": { "@type": "Organization", "name": "Ethernal" }, "url": "https://tryethernal.com/chains/cyber", "offers": [
             { "@type": "Offer", "name": "Starter", "price": "0", "priceCurrency": "USD", "description": "Ad-supported, contract verification, token tracking, unlimited transactions" },
             { "@type": "Offer", "name": "Team", "price": "150", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }, "description": "Custom domain, native token, L1 explorer, 100k tx included" },
             { "@type": "Offer", "name": "App Chain", "price": "500", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }, "description": "Full whitelabel, custom branding, status page, 5M tx included" }
         ] }) },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "HowTo", "name": "How to set up a block explorer for Cyber", "description": "Deploy a hosted block explorer for Cyber in under 5 minutes.", "step": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "HowTo", "name": "How to set up a block explorer for Cyber", "description": "Deploy a hosted block explorer for Cyber in under 5 minutes.", "step": [
             { "@type": "HowToStep", "name": "Create a workspace", "text": "Sign up at app.tryethernal.com and create a Public Explorer workspace." },
             { "@type": "HowToStep", "name": "Connect Cyber RPC", "text": "Paste the Cyber RPC endpoint (https://cyber.alt.technology)." },
             { "@type": "HowToStep", "name": "Configure OP Stack bridge", "text": "Enter OptimismPortal and Batch Inbox addresses." },
             { "@type": "HowToStep", "name": "Go live", "text": "Point your custom domain to your Ethernal workspace." }
         ] }) },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
                     { "@type": "ListItem", "position": 2, "name": "Cyber", "item": "https://tryethernal.com/chains/cyber" }
         ] }) },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Cyber?", "acceptedAnswer": { "@type": "Answer", "text": "A social-focused OP Stack L2 by CyberConnect for decentralized social apps and on-chain identity." } },
             { "@type": "Question", "name": "How do I set up a Cyber explorer?", "acceptedAnswer": { "@type": "Answer", "text": "Create a workspace, paste the RPC, configure OP Stack bridge, and point your domain. Under 5 minutes." } },
             { "@type": "Question", "name": "What is the CYBER token?", "acceptedAnswer": { "@type": "Answer", "text": "The native governance and utility token used for gas, voting, CyberID registration, and staking." } },

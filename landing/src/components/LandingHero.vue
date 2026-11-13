@@ -11,7 +11,7 @@
                     <p class="hero-subtitle mb-8">
                         Deploy a fully-featured block explorer in 5 minutes. Just paste your RPC URL.
                         Open source, self-hostable, works with any EVM chain.
-                        Prefer <router-link to="/launch-block-explorer" class="hero-inline-link">block explorer hosting</router-link>? We run it for you.
+                        Need it on your own domain? See <router-link to="/launch-block-explorer" class="hero-inline-link">block explorer hosting</router-link> plans.
                     </p>
 
                     <DemoExplorerForm />

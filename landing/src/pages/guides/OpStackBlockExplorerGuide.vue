@@ -81,10 +81,6 @@ const guide = {
         {
             q: 'I get "Our servers can\'t query this RPC". What should I do?',
             a: 'Ethernal validates RPC URLs from its own servers, so the endpoint has to be reachable from the internet. Check for typos and make sure it is not on a private network or a localhost address.'
-        },
-        {
-            q: 'Is OP Stack tracking available on the free plan?',
-            a: 'The plan cards list L2 bridge support under the Team plan ($150/month) and the plans above it, and do not list it for Starter. Check the pricing page for the current plan details.'
         }
     ],
     related: [
