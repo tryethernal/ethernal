@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the PostHog plugin: analytics only initialise with a key, a host
+ * and (when VITE_POSTHOG_ALLOWED_HOSTS is set) an allowed hostname.
+ */
 import { vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 
@@ -8,10 +12,18 @@ vi.mock('posthog-js', () => ({
 import posthog from 'posthog-js';
 import posthogPlugin, { isPostHogHostAllowed } from '@/plugins/posthog';
 
+/**
+ * Stubs window.location.hostname for a test.
+ * @param {string} hostname - Hostname to report
+ */
 const mockHostname = (hostname) => {
     vi.stubGlobal('location', { hostname });
 };
 
+/**
+ * Installs the plugin on a fake app.
+ * @returns {object} The fake app the plugin was installed on
+ */
 const installPlugin = () => {
     setActivePinia(createPinia());
     const app = { config: { globalProperties: {} }, provide: vi.fn() };
