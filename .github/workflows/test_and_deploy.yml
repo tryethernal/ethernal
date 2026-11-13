@@ -402,11 +402,37 @@ jobs:
           flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal
           flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal-pm2
 
+      # Each deploy is retried (3 attempts, 60s apart): transient Machines API errors ("concurrent update
+      # in progress", "context canceled") failed v5.18.5 and v5.18.6 mid-rollout, which skipped the
+      # PM2 deploy and left it a version behind the backend. Re-running a deploy with the same image is
+      # idempotent: machines already on that image are left as is.
       - name: Release backend
-        run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ needs.create_release.outputs.current_version }}
+        env:
+          VERSION: ${{ needs.create_release.outputs.current_version }}
+        run: |
+          for attempt in 1 2 3; do
+            flyctl deploy -c fly.toml -i "registry.fly.io/ethernal:$VERSION" && exit 0
+            echo "::warning::Backend deploy attempt $attempt failed"
+            [ "$attempt" -lt 3 ] && sleep 60
+          done
+          exit 1
 
       - name: Release PM2 server
-        run: flyctl deploy -c fly.pm2.toml -i registry.fly.io/ethernal-pm2:${{ needs.create_release.outputs.current_version }}
+        env:
+          VERSION: ${{ needs.create_release.outputs.current_version }}
+        run: |
+          for attempt in 1 2 3; do
+            flyctl deploy -c fly.pm2.toml -i "registry.fly.io/ethernal-pm2:$VERSION" && exit 0
+            echo "::warning::PM2 deploy attempt $attempt failed"
+            [ "$attempt" -lt 3 ] && sleep 60
+          done
+          exit 1
 
       - name: Release Soketi server
-        run: flyctl deploy -c fly.soketi.toml
+        run: |
+          for attempt in 1 2 3; do
+            flyctl deploy -c fly.soketi.toml && exit 0
+            echo "::warning::Soketi deploy attempt $attempt failed"
+            [ "$attempt" -lt 3 ] && sleep 60
+          done
+          exit 1
