@@ -133,7 +133,7 @@
 </template>
 
 <script setup>
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import { ref } from 'vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

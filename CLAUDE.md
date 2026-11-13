@@ -18,10 +18,10 @@
 | Auto-remediation | `.github/workflows/infra-auto-remediation.yml`, `run/jobs/infraHealthCheck.js` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
-| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-trend-scan.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Blog pipeline (paused) | `blog/pipeline/`, `.github/workflows/blog-trend-scan.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js`, `run/emails/drip-base.html` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
-| Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
+| Twitter pipeline (paused) | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init), `src/plugins/posthog.js` (app init), `src/stores/user.js` (identify bridge), `run/lib/analytics.js` (backend) | [MARKETING.md § PostHog](.claude/references/MARKETING.md#posthog-tracking) — covers identity bridging, UTM convention, events, project filters. PostHog personal API key in `.credentials.local` |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Worker watchdog | `scripts/watchdog.sh`, `scripts/watchdog-diagnose.md`, `run/lib/heartbeat.js` | |
@@ -64,14 +64,14 @@ All traffic goes through Caddy (`ethernal-caddy` app, `fly.caddy.toml`):
 | `/ingest/*` | `us.i.posthog.com` (PostHog analytics proxy) |
 | `/api/2/*`, `/api/3/*` | `sentry.tryethernal.com` (Sentry) |
 | `/api*` | `ethernal.internal:8080` (backend) |
-| `/app*` | `ethernal-soketi.internal:6001` (websocket via 6PN) |
+| `/app`, `/app/*` | `ethernal-soketi.internal:6001` (websocket via 6PN) |
 | `/bull*` | `ethernal.internal:8080` (queue UI) |
 | `tryethernal.com` | `/srv/landing` (landing site) |
 | Everything else | `/srv/app` (app frontend) |
 
 Key files: `Caddyfile`, `Dockerfile.caddyfile`, `fly.caddy.toml`
 
-**WebSocket path — DO NOT CHANGE:** Caddy uses `handle /app*` (NOT `handle_path`) to preserve the `/app` prefix. The frontend Pusher client (`src/plugins/pusher.js`) must NOT set `wsPath` — pusher-js already generates `/app/{key}` by default. Setting `wsPath: '/app'` causes a double prefix (`/app/app/{key}`) resulting in 404s.
+**WebSocket path — DO NOT CHANGE:** Caddy matches exactly `/app` and `/app/*` with `handle` (NOT `handle_path`) to preserve the `/app` prefix. Do not widen it back to `/app*`: that swallowed landing pages such as `/app-chains` (502). The frontend Pusher client (`src/plugins/pusher.js`) must NOT set `wsPath` — pusher-js already generates `/app/{key}` by default. Setting `wsPath: '/app'` causes a double prefix (`/app/app/{key}`) resulting in 404s.
 
 ### Request Flow
 
@@ -352,7 +352,9 @@ Migrations run automatically in CI. Must be backwards-compatible (additive only)
 
 When user says "merge and deploy": `gh pr merge --squash --admin` first, then deploy.
 
-**Blog/landing/frontend changes auto-deploy on push to `develop`** via GitHub Actions CI. Do NOT manually run `/deploy` for blog-only or landing-only changes (images, articles, static content). Just push to `develop` and CI handles the rest.
+**Blog, landing, app frontend and the Caddyfile do NOT deploy on push to `develop`.** They ship only with a release tag (`v*`): the `deploy_caddy` job in `.github/workflows/test_and_deploy.yml` builds and deploys them on tag pushes only. Merging to `develop` is not enough; a release must be cut (via `/deploy`, or wait for the batch deploy below).
+
+`.github/workflows/sentry-batch-deploy.yml` cuts patch releases automatically: it runs hourly (cron `0 * * * *`, also manually dispatchable) and, if `develop` has commits since the last tag (ignoring changelog/version/merge commits), updates the changelog, bumps the patch version, pushes the tag and syncs `master`.
 
 ### Karma Project Updates
 
@@ -364,6 +366,8 @@ Ethernal is registered on [Karma](https://gap.karmahq.xyz/project/ethernal) (Opt
 
 ### K8s Cluster Deployment (ArgoCD GitOps)
 
+> **Deprecated:** the k3s cluster was deleted on 2026-07-31; production runs on Fly.io (Postgres included). Kept for history only.
+
 The k3s cluster lives on Hetzner (managed by Terraform in the [k8s-iac repo](https://github.com/tryethernal/k8s-iac), backend: azurerm). **All cluster changes flow through ArgoCD GitOps** — there is no `kubectl apply` workflow.
 
 - **App workloads, Helm charts, ConfigMaps, ExternalSecrets**: push to `master` in `k8s-iac` → ArgoCD auto-syncs within 20s. ArgoCD itself runs on the cluster's single worker node alongside everything else.
@@ -372,6 +376,8 @@ The k3s cluster lives on Hetzner (managed by Terraform in the [k8s-iac repo](htt
 - **ArgoCD UI**: `https://argo.tryethernal.com`. Use it to inspect sync status, force-sync, or roll back to a previous git revision.
 
 ### K8s Secrets (ExternalSecrets + Azure Key Vault)
+
+> **Deprecated:** the k3s cluster was deleted on 2026-07-31; production runs on Fly.io (Postgres included). Kept for history only.
 
 K8s secrets in `ethernal-prod` are managed by **ExternalSecrets** syncing from **Azure Key Vault** (`ethernalkeyvault.vault.azure.net`), reconciled by **ArgoCD**. Direct `kubectl patch secret` will be reverted on the next sync cycle. To rotate a secret:
 

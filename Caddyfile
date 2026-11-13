@@ -13,6 +13,24 @@ blog.tryethernal.com {
 }
 
 (common) {
+    # Hosts two or more labels below tryethernal.com (a.b.tryethernal.com, ...)
+    # are never legitimate: tenants and app/www are exactly one label deep.
+    # They were being used for phishing-style hostnames, since on-demand TLS used
+    # to approve anything under the app domain. Close the connection without
+    # answering. This is a top-level `handle` placed FIRST: `handle` blocks are
+    # mutually exclusive and run in order of appearance, so no later handle
+    # (API, landing, SPA fallback) can serve these hosts. (`redir`/`header` run
+    # earlier in Caddy's directive order but cannot match or are harmless here:
+    # the www redirect only matches www, and the header is never sent on abort.)
+    # `(?i)` because Host is not guaranteed lowercase; the optional trailing dot
+    # and :port cover `a.b.tryethernal.com.` and `a.b.tryethernal.com:443`.
+    # Certificates already issued for such hosts stay valid until they expire;
+    # this only stops them being served.
+    @deepHosts header_regexp Host (?i)^[^.]+\.[^.]+.*\.tryethernal\.com\.?(:[0-9]+)?$
+    handle @deepHosts {
+        abort
+    }
+
     # www is a duplicate of the apex landing site (Google picked it as canonical
     # for some pages). Send everything to the apex.
     @wwwHost host www.tryethernal.com
@@ -89,12 +107,15 @@ blog.tryethernal.com {
         reverse_proxy ethernal.internal:8080
     }
 
-    # Soketi websocket. Exactly /app and /app/*, NOT /app*: the latter also
+    # Soketi websocket. Upstream must be the Fly private DNS name
+    # (ethernal-soketi.internal): the bare `ethernal-soketi` does not resolve on
+    # Fly (NXDOMAIN), which made every websocket handshake return 502.
+    # Exactly /app and /app/*, NOT /app*: the latter also
     # matched landing pages such as /app-chains (502). Keep `handle`, not
     # `handle_path`: the /app prefix must reach Soketi (see CLAUDE.md).
     @soketi path /app /app/*
     handle @soketi {
-        reverse_proxy ethernal-soketi:6001 {
+        reverse_proxy ethernal-soketi.internal:6001 {
             header_up Upgrade "websocket"
             header_up Connection "Upgrade"
         }

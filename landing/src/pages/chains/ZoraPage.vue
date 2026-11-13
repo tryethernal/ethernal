@@ -324,7 +324,7 @@
 </template>
 
 <script setup>
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
