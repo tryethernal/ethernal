@@ -31,6 +31,67 @@
                 </p>
             </section>
 
+            <!-- Alternatives at a glance -->
+            <section class="my-16">
+                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Etherscan Alternatives at a Glance
+                </h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px; margin-bottom: 16px;">
+                    If you want an explorer for your own chain, these are the realistic options. Each name links to a detailed comparison.
+                </p>
+                <div class="alt-table-wrap">
+                    <table class="alt-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Option</th>
+                                <th scope="col">Hosted option</th>
+                                <th scope="col">Self-host</th>
+                                <th scope="col">Setup time</th>
+                                <th scope="col">Starting price</th>
+                                <th scope="col">Best for</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><router-link to="/pricing">Ethernal</router-link></th>
+                                <td>Yes (Starter plan, free and ad-supported)</td>
+                                <td>Yes (MIT, Docker)</td>
+                                <td>Under 5 minutes</td>
+                                <td>$0</td>
+                                <td>Teams launching a custom EVM chain who need an explorer now</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><router-link to="/blockscout-alternative">Blockscout</router-link></th>
+                                <td>Yes (Autoscout, EaaS)</td>
+                                <td>Yes (more involved: Elixir, PostgreSQL)</td>
+                                <td>Hours to days self-hosted, minutes with Autoscout</td>
+                                <td>Custom / contact</td>
+                                <td>The largest open-source ecosystem (1000+ chains) and Elixir teams</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><router-link to="/routescan-alternative">Routescan</router-link></th>
+                                <td>Yes (managed service only)</td>
+                                <td>No</td>
+                                <td>About 48 hours (managed)</td>
+                                <td>Contact sales</td>
+                                <td>Avalanche-native explorers, or teams that want zero infrastructure</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><router-link to="/build-vs-buy-block-explorer">Build in-house</router-link></th>
+                                <td>Not applicable</td>
+                                <td>You own the code</td>
+                                <td>3-6 months</td>
+                                <td>$150K+/yr</td>
+                                <td>Teams where the explorer itself is the core product</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; max-width: 640px; margin-top: 14px;">
+                    Want to run Ethernal yourself? Follow the <router-link to="/guides/self-host-block-explorer" class="inline-link">self-hosting guide</router-link> (the self-hosted version is in beta).
+                </p>
+            </section>
+
             <!-- Why teams look for alternatives -->
             <section class="my-16">
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
@@ -327,6 +388,13 @@
                             <span class="related-desc">Open-source, self-hostable alternative to Routescan's managed explorer</span>
                         </div>
                     </router-link>
+                    <router-link to="/guides/self-host-block-explorer" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-docker</v-icon>
+                        <div>
+                            <span class="related-title">Guide: Self-Host a Block Explorer with Docker</span>
+                            <span class="related-desc">Run Ethernal on your own server with Docker Compose (beta)</span>
+                        </div>
+                    </router-link>
                     <router-link to="/features" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-view-grid-outline</v-icon>
                         <div>
@@ -362,14 +430,16 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Etherscan Alternative: Self-Host Your Explorer for $0',
+    title: 'Etherscan Alternatives for Your Own Chain (2026)',
     meta: [
-        { name: 'description', content: 'Etherscan has no public self-host and quotes enterprise pricing. Ethernal is open-source, runs on your own chain in 5 minutes, and starts free. See the comparison.' },
+        { name: 'description', content: "Etherscan doesn't offer self-serve explorers for new chains. Compare Ethernal, Blockscout, Routescan and building in-house on price, setup and features." },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Etherscan Alternative: Self-Host Your Explorer for $0' },
-        { property: 'og:description', content: 'Etherscan has no public self-host and quotes enterprise pricing. Ethernal is open-source, runs on your own chain in 5 minutes, and starts free. See the comparison.' },
+        { property: 'og:title', content: 'Etherscan Alternatives for Your Own Chain (2026)' },
+        { property: 'og:description', content: "Etherscan doesn't offer self-serve explorers for new chains. Compare Ethernal, Blockscout, Routescan and building in-house on price, setup and features." },
         { property: 'og:url', content: 'https://tryethernal.com/etherscan-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Etherscan Alternatives for Your Own Chain (2026)' },
+        { name: 'twitter:description', content: "Etherscan doesn't offer self-serve explorers for new chains. Compare Ethernal, Blockscout, Routescan and building in-house on price, setup and features." },
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/etherscan-alternative' }
@@ -445,6 +515,18 @@ useHead({
 .alt-reasons-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
 .alt-reasons-list li { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; padding-left: 20px; position: relative; }
 .alt-reasons-list li::before { content: '\2022'; position: absolute; left: 4px; color: #5DAAE0; font-weight: 700; }
+
+/* Alternatives table */
+.alt-table-wrap { overflow-x: auto; border: 1px solid var(--drawer-divider); border-radius: 12px; }
+.alt-table { width: 100%; min-width: 860px; border-collapse: collapse; font-size: 13px; }
+.alt-table th, .alt-table td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--drawer-divider); line-height: 1.5; }
+.alt-table thead th { background: var(--bg-surface); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+.alt-table tbody tr:last-child th, .alt-table tbody tr:last-child td { border-bottom: none; }
+.alt-table tbody th { font-weight: 600; white-space: nowrap; }
+.alt-table tbody th a { color: #5DAAE0; text-decoration: none; }
+.alt-table tbody th a:hover { text-decoration: underline; }
+.alt-table td { color: var(--text-secondary); }
+.inline-link { color: #5DAAE0; text-decoration: underline; text-underline-offset: 3px; }
 
 /* Comparison prose sections */
 .comparison-prose p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 16px; max-width: 720px; }

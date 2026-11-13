@@ -1,12 +1,12 @@
 # Ethernal
 
-> Ethernal is an open-source, MIT-licensed block explorer for EVM-based chains. Connect any EVM RPC and get a fully working hosted explorer in under 5 minutes — with transaction decoding and tracing, contract verification, token and NFT tracking, and L2-native features for OP Stack and Arbitrum Orbit. Used by L2s, appchains, and private networks in production.
+> Ethernal is an open-source, MIT-licensed block explorer for EVM-based chains. Connect any EVM RPC and get a fully working hosted explorer in under 5 minutes, with transaction decoding and tracing, contract verification, token and NFT tracking, and L2-native features for OP Stack and Arbitrum Orbit. Used by L2s, appchains, and private networks in production.
 
 ## Quick facts
 
 - Open source, MIT licensed: https://github.com/tryethernal/ethernal
 - Public pricing: Starter (free, ad-supported), Team ($150/mo, custom domain), App Chain ($500/mo, full whitelabel), Enterprise (custom)
-- Setup time: under 5 minutes — paste an RPC URL, get an explorer
+- Setup time: under 5 minutes: paste an RPC URL, get an explorer
 - Works with any EVM chain: Ethereum, all major L2s, OP Stack, Arbitrum Orbit, Polygon CDK, custom appchains, private networks, local devchains (Hardhat, Anvil, Ganache)
 - Self-hostable or hosted by Ethernal
 - Common alternatives: Etherscan (closed source, per-chain), Blockscout (open source, self-host only), Routescan (closed source, vendor-locked)
@@ -56,6 +56,14 @@
 - [Redstone](https://tryethernal.com/chains/redstone): Redstone explorer
 - [Cyber](https://tryethernal.com/chains/cyber): Cyber explorer
 - [Mint](https://tryethernal.com/chains/mint): Mint explorer
+
+## Guides
+
+- [Block Explorer Guides](https://tryethernal.com/guides): Step-by-step guides to create, self-host and configure an EVM block explorer with Ethernal
+- [How to Create a Block Explorer for an EVM Chain](https://tryethernal.com/guides/create-block-explorer): Build in-house, self-host, or use hosted Ethernal, with the hosted setup steps from an RPC URL
+- [How to Self-Host a Block Explorer with Docker](https://tryethernal.com/guides/self-host-block-explorer): Run Ethernal on your own server with Docker Compose (self-hosted version is in beta)
+- [How to Set Up a Block Explorer for an OP Stack Chain](https://tryethernal.com/guides/op-stack-block-explorer): Configure the OptimismPortal and Batch Inbox addresses to track deposits, withdrawals, and batches
+- [How to Set Up a Block Explorer for an Arbitrum Orbit Chain](https://tryethernal.com/guides/arbitrum-orbit-block-explorer): Configure the rollup, bridge, and gateway contracts to track Orbit batches and withdrawals
 
 ## Comparisons
 

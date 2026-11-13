@@ -241,6 +241,9 @@
                         </div>
                     </div>
                 </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-top: 20px;">
+                    Want every field explained? Read the <router-link to="/guides/op-stack-block-explorer" class="guide-link">step-by-step guide to setting up an OP Stack block explorer</router-link>.
+                </p>
             </section>
 
             <!-- Pricing -->
@@ -313,6 +316,13 @@
                             <span class="related-desc">Testnet explorer for Base with OP Stack features and built-in faucet</span>
                         </div>
                     </router-link>
+                    <router-link to="/guides/op-stack-block-explorer" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-book-open-variant</v-icon>
+                        <div>
+                            <span class="related-title">Guide: OP Stack Block Explorer Setup</span>
+                            <span class="related-desc">Field-by-field walkthrough of the OP Stack configuration</span>
+                        </div>
+                    </router-link>
                     <router-link to="/op-stack" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-layers-outline</v-icon>
                         <div>
@@ -350,11 +360,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for OP Stack Chains — Ethernal',
+    title: 'Block Explorer for OP Stack Chains | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for any OP Stack chain. Withdrawal tracking, EIP-4844 blob monitoring, contract verification, and transaction decoding for the Superchain.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for OP Stack Chains — Ethernal' },
+        { property: 'og:title', content: 'Block Explorer for OP Stack Chains | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for any OP Stack chain. Withdrawal tracking, EIP-4844 blob monitoring, contract verification, and transaction decoding for the Superchain.' },
         { property: 'og:url', content: 'https://tryethernal.com/op-stack' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-op-stack.png' },
@@ -510,4 +520,6 @@ useHead({
     .arch-cards { grid-template-columns: 1fr; }
     .chain-grid { grid-template-columns: 1fr 1fr; }
 }
+.guide-link { color: #5DAAE0; text-decoration: underline; text-underline-offset: 3px; }
+.guide-link:hover { color: #8BC4E8; }
 </style>

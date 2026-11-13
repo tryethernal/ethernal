@@ -20,6 +20,13 @@ export const routes = [
     { path: '/launch-block-explorer', name: 'launch-block-explorer', component: () => import('./pages/LaunchBlockExplorerPage.vue') },
     { path: '/docs/api', name: 'docs-api', component: () => import('./pages/ApiDocsPage.vue') },
 
+    // Guides
+    { path: '/guides', name: 'guides', component: () => import('./pages/guides/GuidesIndexPage.vue') },
+    { path: '/guides/create-block-explorer', name: 'guides-create-block-explorer', component: () => import('./pages/guides/CreateBlockExplorerGuide.vue') },
+    { path: '/guides/self-host-block-explorer', name: 'guides-self-host-block-explorer', component: () => import('./pages/guides/SelfHostBlockExplorerGuide.vue') },
+    { path: '/guides/op-stack-block-explorer', name: 'guides-op-stack-block-explorer', component: () => import('./pages/guides/OpStackBlockExplorerGuide.vue') },
+    { path: '/guides/arbitrum-orbit-block-explorer', name: 'guides-arbitrum-orbit-block-explorer', component: () => import('./pages/guides/ArbitrumOrbitBlockExplorerGuide.vue') },
+
     // Competitor comparison pages
     { path: '/blockscout-alternative', name: 'blockscout-alternative', component: () => import('./pages/compare/BlockscoutAlternativePage.vue') },
     { path: '/routescan-alternative', name: 'routescan-alternative', component: () => import('./pages/compare/RoutescanAlternativePage.vue') },
@@ -52,7 +59,10 @@ export const routes = [
     { path: '/chains/mint', name: 'chains-mint', component: () => import('./pages/chains/MintPage.vue') },
     { path: '/chains/ethereum', name: 'chains-ethereum', component: () => import('./pages/chains/EthereumPage.vue') },
     { path: '/chains/polygon-pos', name: 'chains-polygon-pos', component: () => import('./pages/chains/PolygonPosPage.vue') },
-    { path: '/chains/bnb-chain', name: 'chains-bnb-chain', component: () => import('./pages/chains/BnbChainPage.vue') }
+    { path: '/chains/bnb-chain', name: 'chains-bnb-chain', component: () => import('./pages/chains/BnbChainPage.vue') },
+
+    // Prerendered as the 404 page (served with HTTP 404 by Caddy); excluded from the sitemap
+    { path: '/404', name: 'not-found', component: () => import('./pages/NotFoundPage.vue') }
 ];
 
 export const scrollBehavior = () => ({ top: 0 });

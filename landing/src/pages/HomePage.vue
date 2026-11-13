@@ -22,15 +22,17 @@ import LandingPricing from '@/components/LandingPricing.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Open-Source Block Explorer for EVM Chains | Ethernal',
+    title: 'Open-Source EVM Block Explorer, Live in 5 Minutes | Ethernal',
     meta: [
-        { name: 'description', content: 'Deploy a block explorer for any EVM chain in 5 minutes. Open source, self-hostable, works with any RPC. Free tier, transparent pricing, MIT-licensed.' },
+        { name: 'description', content: 'Run a block explorer for any EVM chain from an RPC URL. Hosted for you or self-hosted under MIT. Verified contracts, tracing, tokens. Free plan.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Open-Source Block Explorer for EVM Chains | Ethernal' },
-        { property: 'og:description', content: 'Deploy a block explorer for any EVM chain in 5 minutes. Open source, self-hostable, works with any RPC. Free tier, transparent pricing, MIT-licensed.' },
+        { property: 'og:title', content: 'Open-Source EVM Block Explorer, Live in 5 Minutes | Ethernal' },
+        { property: 'og:description', content: 'Run a block explorer for any EVM chain from an RPC URL. Hosted for you or self-hosted under MIT. Verified contracts, tracing, tokens. Free plan.' },
         { property: 'og:url', content: 'https://tryethernal.com/' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Open-Source EVM Block Explorer, Live in 5 Minutes | Ethernal' },
+        { name: 'twitter:description', content: 'Run a block explorer for any EVM chain from an RPC URL. Hosted for you or self-hosted under MIT. Verified contracts, tracing, tokens. Free plan.' },
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/' }
