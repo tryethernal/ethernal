@@ -13,6 +13,7 @@ image: "/blog/images/the-callability-gap-decefi.png"
 ogImage: "/blog/images/the-callability-gap-decefi-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Your lending protocol just detected something. The largest collateral position on the platform was topped up: 10,000 ETH in a single transaction. TVL spikes. Directional risk spikes with it. The risk management system wants to hedge: short ETH perps until the position normalizes.

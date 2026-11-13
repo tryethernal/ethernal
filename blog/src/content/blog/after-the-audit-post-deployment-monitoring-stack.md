@@ -11,6 +11,7 @@ image: "/blog/images/after-the-audit-post-deployment-monitoring-stack.png"
 ogImage: "/blog/images/after-the-audit-post-deployment-monitoring-stack-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Team Finance had passed an external audit. On November 18, 2022, an attacker deployed an exploit contract targeting it. Forta's ML detection model flagged that contract one hour before the first malicious transaction landed. Nobody at Team Finance was subscribed to those alerts. $15.8 million drained before the block cleared.<sup>[2](#fn-2)</sup>

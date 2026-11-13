@@ -14,6 +14,7 @@ image: "/blog/images/aucil-sybil-attack-inclusion-lists.png"
 ogImage: "/blog/images/aucil-sybil-attack-inclusion-lists-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 On July 12, 2026, a researcher posted two dry-sounding questions to ethresear.ch: where can Sybil attacks enter AUCIL, and what would a Sybil-proof version look like.<sup>[1](#fn-1)</sup> Ten months earlier, AUCIL had been introduced with a specific selling point: it removes the trusted party that Ethereum's other inclusion-list design depends on. No aggregator, no single point of failure, a formally proved lower bound on the cost to censor a transaction. The post shows that the fix for one single point of failure introduced a different one. That's not a knock on the authors. It's a reminder that closing one trust hole in a mechanism design doesn't guarantee you didn't open another one you weren't looking for.

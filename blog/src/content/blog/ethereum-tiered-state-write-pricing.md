@@ -13,6 +13,7 @@ image: "/blog/images/ethereum-tiered-state-write-pricing.png"
 ogImage: "/blog/images/ethereum-tiered-state-write-pricing-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Your AMM has 40,000 liquidity positions from 2023. Users opened them, collected fees for a few months, then stopped. The positions are dormant: last written two years ago, sitting in Ethereum's state trie, consuming disk I/O on every node in the network. Under today's gas schedule, closing those positions costs exactly the same as writing to a slot touched in the current block. A new EIP draft proposes to change that.

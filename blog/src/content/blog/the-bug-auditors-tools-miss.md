@@ -11,6 +11,7 @@ image: "/blog/images/the-bug-auditors-tools-miss.png"
 ogImage: "/blog/images/the-bug-auditors-tools-miss-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 The SYFI protocol rebase executed flawlessly. Every line of code ran exactly as written. Slither found nothing. Mythril found nothing. The contract passed an external audit. Then the tokenomics unraveled, and the protocol lost funds.

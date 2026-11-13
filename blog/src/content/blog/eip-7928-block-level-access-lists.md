@@ -13,6 +13,7 @@ image: "/blog/images/eip-7928-block-level-access-lists.png"
 ogImage: "/blog/images/eip-7928-block-level-access-lists-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You're running an L2 node. You check sync status. "Healing: 94% complete." You come back two days later. "Healing: 91% complete."

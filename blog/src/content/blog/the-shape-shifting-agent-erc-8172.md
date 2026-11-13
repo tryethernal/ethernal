@@ -13,6 +13,7 @@ image: "/blog/images/the-shape-shifting-agent-erc-8172.png"
 ogImage: "/blog/images/the-shape-shifting-agent-erc-8172-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 Your team uses [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004)<sup>[1](#fn-1)</sup> to vet AI agents before admitting them to an automated audit pipeline. Agent `0xDEAD...` has a reputation score of 800, passed your intake checks, earns $2,000 per audit. Three weeks in, the agent owner swaps the model endpoint to a cheaper, less capable model. The score still reads 800. Your pipeline still trusts it. You don't notice until a critical audit misses a reentrancy bug.

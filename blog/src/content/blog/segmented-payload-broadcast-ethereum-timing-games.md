@@ -14,6 +14,7 @@ image: "/blog/images/segmented-payload-broadcast-ethereum-timing-games.png"
 ogImage: "/blog/images/segmented-payload-broadcast-ethereum-timing-games-og.png"
 status: published
 readingTime: 8
+noindex: true
 ---
 
 A devnet benchmark this cycle measured how long it takes a 1 MiB execution payload to reach the network under Ethereum's enshrined proposer-builder separation (ePBS) design. Median completion: 4.89 seconds. The budget researchers were targeting: roughly 3.<sup>[2](#fn-2)</sup>

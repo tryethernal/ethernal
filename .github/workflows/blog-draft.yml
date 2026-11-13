@@ -23,12 +23,10 @@ name: Blog Draft Pipeline
 #
 # Proven end to end on 2026-07-29 (run 30469887209): published
 # "PeerDAS Has Been Live for 8 Months", covers included and correctly sized.
+# Schedule removed 2026-11-13: the automated pipeline was wound down after ~8
+# months and ~78 automated posts brought ~35 Google clicks and no attributable signups
+# (see the PR that removed this). Manual runs still work.
 on:
-  schedule:
-    # 08:00 UTC on odd days of the month, matching the systemd timer it replaces
-    # (OnCalendar=*-*-1/2 08:00:00). Both drift by a day across month boundaries;
-    # keeping the drift identical means the publishing cadence does not change.
-    - cron: '0 8 1-31/2 * *'
   workflow_dispatch:
 
 permissions:

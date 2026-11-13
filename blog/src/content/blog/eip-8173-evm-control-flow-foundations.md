@@ -13,6 +13,7 @@ image: "/blog/images/eip-8173-evm-control-flow-foundations.png"
 ogImage: "/blog/images/eip-8173-evm-control-flow-foundations-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 In 1946, Alan Turing designed the Automatic Computing Engine and wrote down how subroutines should work:

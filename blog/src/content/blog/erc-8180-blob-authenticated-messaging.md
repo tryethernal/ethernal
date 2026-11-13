@@ -12,6 +12,7 @@ image: "/blog/images/erc-8180-blob-authenticated-messaging.png"
 ogImage: "/blog/images/erc-8180-blob-authenticated-messaging-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 You're running a sequencer for an L2. You need to broadcast a signed attestation to another rollup: maybe to trigger a fast-finality settlement, maybe to aggregate validator acknowledgments for a quorum. Your options today: deploy a bridge contract and pay calldata costs, route through a centralized relayer, or build a custom protocol with its own trust model.

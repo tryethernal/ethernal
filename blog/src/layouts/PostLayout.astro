@@ -18,12 +18,13 @@ interface Props {
       image?: string;
       ogImage?: string;
       readingTime?: number;
+      noindex?: boolean;
     };
   };
 }
 
 const { post } = Astro.props;
-const { title, date, updatedDate, description, tags, keywords, image, ogImage, readingTime } = post.data;
+const { title, date, updatedDate, description, tags, keywords, image, ogImage, readingTime, noindex } = post.data;
 // JSON-LD keywords: prefer the dedicated SEO `keywords` field (populated by the
 // enrichment pipeline); fall back to reader-facing `tags` for posts without it.
 const jsonLdKeywords = (Array.isArray(keywords) && keywords.length > 0 ? keywords : tags).join(", ");
@@ -100,7 +101,7 @@ if (has('Comparison') || /alternative|vs |best/i.test(title)) {
 }
 ---
 
-<BaseLayout title={title} description={description} image={image} ogImage={ogImage} plainBg ogType="article">
+<BaseLayout title={title} description={description} image={image} ogImage={ogImage} plainBg ogType="article" noindex={noindex}>
   <!-- Structured Data: BlogPosting -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",

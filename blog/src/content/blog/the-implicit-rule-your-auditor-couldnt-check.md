@@ -12,6 +12,7 @@ image: "/blog/images/the-implicit-rule-your-auditor-couldnt-check.png"
 ogImage: "/blog/images/the-implicit-rule-your-auditor-couldnt-check-og.png"
 status: published
 readingTime: 6
+noindex: true
 ---
 
 March 13, 2023. A function called `donateToReserves` on Euler Finance let users contribute their own collateral to the protocol's reserves. The code was correct. The audit was complete. Slither found nothing. Human auditors found nothing. Three weeks after deployment, an attacker used a flash loan to donate borrowed collateral, rendering their own position insolvent, then self-liquidated it from a second wallet to claim a liquidation bonus larger than the donation cost. The attack played out in a single block. The loss was $197M.<sup>[1](#fn-1)</sup>

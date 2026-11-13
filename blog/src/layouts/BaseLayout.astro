@@ -5,6 +5,7 @@
  * @prop {string} title - Page title
  * @prop {string} [description] - Meta description
  * @prop {string} [image] - OG image URL
+ * @prop {boolean} [noindex] - Emit a robots noindex meta tag
  */
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -17,9 +18,10 @@ interface Props {
   ogImage?: string;
   plainBg?: boolean;
   ogType?: 'website' | 'article';
+  noindex?: boolean;
 }
 
-const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image, ogImage: ogImageProp, plainBg = false, ogType = 'website' } = Astro.props;
+const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image, ogImage: ogImageProp, plainBg = false, ogType = 'website', noindex = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const socialImage = ogImageProp || image;
 const ogImageUrl = socialImage?.startsWith('http') ? socialImage : socialImage ? `https://tryethernal.com${socialImage}` : undefined;
@@ -32,6 +34,7 @@ const ogImageUrl = socialImage?.startsWith('http') ? socialImage : socialImage ?
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalURL} />
+  {noindex && <meta name="robots" content="noindex, follow" />}
 
   <!-- Open Graph -->
   <meta property="og:type" content={ogType} />

@@ -14,6 +14,7 @@ image: "/blog/images/ethereum-blobpool-bandwidth-eip-8070.png"
 ogImage: "/blog/images/ethereum-blobpool-bandwidth-eip-8070-og.png"
 status: published
 readingTime: 7
+noindex: true
 ---
 
 Fusaka-Devnet-5. A full node running at BPO2 parameters, 14 blobs per block as target. Network monitoring shows the execution client consuming 4 to 5x more bandwidth than the consensus client, for the same underlying blob data. Not a configuration error. Not a bug. This is how the blobpool was designed.

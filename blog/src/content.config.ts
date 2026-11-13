@@ -21,6 +21,10 @@ const blog = defineCollection({
     ogImage: z.string().optional(),
     readingTime: z.number().optional(),
     status: z.enum(['published']).default('published'),
+    // Keeps the post live for readers and internal links but asks search engines
+    // not to index it, and drops it from the sitemap. Used to prune automated
+    // posts that never earned search impressions.
+    noindex: z.boolean().default(false),
   }),
 });
 

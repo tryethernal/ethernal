@@ -185,7 +185,9 @@ Use RenderKit to render specs, reports, or any structured content as hosted HTML
 
 See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog pipeline, Twitter pipeline, drip emails, enrichment, PostHog tracking, server setup, all env vars).
 
-**Quick summary:** Trend scan (weekly, GH Actions) → GitHub Projects board → Blog auto-publish (every 2 days, Hetzner server, 3-phase Claude, no manual review) → Tweet pipeline (5x/day, Hetzner server, 3-phase Claude) → Drip emails (6-step Mailjet sequence on demo creation) → PostHog tracking flywheel.
+**Blog and tweet pipelines are wound down (2026-11-13)** — see the status note in MARKETING.md. Drip emails and PostHog tracking are unaffected.
+
+**Quick summary (as built):** Trend scan (weekly, GH Actions) → GitHub Projects board → Blog auto-publish (every 2 days, Hetzner server, 3-phase Claude, no manual review) → Tweet pipeline (5x/day, Hetzner server, 3-phase Claude) → Drip emails (6-step Mailjet sequence on demo creation) → PostHog tracking flywheel.
 
 **Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 
