@@ -179,7 +179,7 @@
 
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="config.challengePeriodSeconds"
+                                v-model="config.finalizationPeriodSeconds"
                                 label="Challenge Period (seconds)"
                                 type="number"
                                 :disabled="loading"
