@@ -198,7 +198,7 @@
                         <div class="step-number">3</div>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Configure Orbit bridge monitoring</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">Enter your Rollup and Inbox contract addresses. Ethernal starts monitoring assertions, retryable tickets, and cross-chain messages automatically.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">Choose the L1 parent chain, add an L1 RPC for withdrawal claims, and enter your Rollup, Bridge, Inbox, Sequencer Inbox and Outbox addresses plus the L1 and L2 gateway addresses. Ethernal starts monitoring assertions, retryable tickets, and cross-chain messages automatically.</p>
                         </div>
                     </div>
                     <div class="setup-step">
@@ -209,6 +209,9 @@
                         </div>
                     </div>
                 </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-top: 20px;">
+                    Need every required field? Read the <router-link to="/guides/arbitrum-orbit-block-explorer" class="guide-link">step-by-step guide to setting up an Arbitrum Orbit block explorer</router-link>.
+                </p>
             </section>
 
             <!-- Pricing -->
@@ -281,6 +284,13 @@
                             <span class="related-desc">Testnet explorer for Arbitrum with Orbit features and built-in faucet</span>
                         </div>
                     </router-link>
+                    <router-link to="/guides/arbitrum-orbit-block-explorer" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-book-open-variant</v-icon>
+                        <div>
+                            <span class="related-title">Guide: Arbitrum Orbit Block Explorer Setup</span>
+                            <span class="related-desc">Field-by-field walkthrough of the Orbit configuration</span>
+                        </div>
+                    </router-link>
                     <router-link to="/arbitrum-orbit" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-orbit-variant</v-icon>
                         <div>
@@ -318,11 +328,11 @@ import ChainFeatureGrid from '@/components/ChainFeatureGrid.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Block Explorer for Arbitrum Orbit Chains — Ethernal',
+    title: 'Block Explorer for Arbitrum Orbit Chains | Ethernal',
     meta: [
         { name: 'description', content: 'Hosted block explorer for any Arbitrum Orbit chain. Retryable ticket tracing, bridge monitoring, contract verification, and transaction decoding for Nitro-based L2/L3 chains.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Block Explorer for Arbitrum Orbit Chains — Ethernal' },
+        { property: 'og:title', content: 'Block Explorer for Arbitrum Orbit Chains | Ethernal' },
         { property: 'og:description', content: 'Hosted block explorer for any Arbitrum Orbit chain. Retryable ticket tracing, bridge monitoring, contract verification, and transaction decoding for Nitro-based L2/L3 chains.' },
         { property: 'og:url', content: 'https://tryethernal.com/arbitrum-orbit' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-chains-arbitrum-orbit.png' },
@@ -334,7 +344,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "Product",
                 "name": "Ethernal Block Explorer for Arbitrum Orbit Chains",
@@ -350,7 +360,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "HowTo",
                 "name": "How to set up a block explorer for an Arbitrum Orbit chain",
@@ -365,7 +375,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
@@ -377,7 +387,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [
@@ -477,4 +487,6 @@ useHead({
     .arch-cards { grid-template-columns: 1fr; }
     .chain-grid { grid-template-columns: 1fr 1fr; }
 }
+.guide-link { color: #5DAAE0; text-decoration: underline; text-underline-offset: 3px; }
+.guide-link:hover { color: #8BC4E8; }
 </style>

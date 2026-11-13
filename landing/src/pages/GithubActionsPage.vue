@@ -117,7 +117,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "HowTo",
                 "name": "Integrate Ethernal with GitHub Actions",
@@ -131,7 +131,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [

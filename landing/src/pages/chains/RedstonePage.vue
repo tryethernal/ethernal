@@ -325,7 +325,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org", "@type": "Product",
                 "name": "Ethernal Block Explorer for Redstone",
                 "description": "Hosted block explorer for Redstone with MUD framework decoding, autonomous world visibility, and OP Stack bridge monitoring.",
@@ -338,17 +338,17 @@ useHead({
                 ]
             })
         },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "HowTo", "name": "How to set up a block explorer for Redstone", "description": "Deploy a hosted block explorer for Redstone in under 5 minutes with Ethernal.", "step": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "HowTo", "name": "How to set up a block explorer for Redstone", "description": "Deploy a hosted block explorer for Redstone in under 5 minutes with Ethernal.", "step": [
             { "@type": "HowToStep", "name": "Create a workspace", "text": "Sign up at app.tryethernal.com and create a Public Explorer workspace." },
             { "@type": "HowToStep", "name": "Connect Redstone RPC", "text": "Paste the Redstone RPC endpoint (https://rpc.redstonechain.com)." },
             { "@type": "HowToStep", "name": "Configure OP Stack bridge", "text": "Enter the OptimismPortal and Batch Inbox addresses." },
             { "@type": "HowToStep", "name": "Go live", "text": "Point your custom domain to your Ethernal workspace." }
         ] }) },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
                     { "@type": "ListItem", "position": 2, "name": "Redstone", "item": "https://tryethernal.com/chains/redstone" }
         ] }) },
-        { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        { type: 'application/ld+json', innerHTML: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Redstone?", "acceptedAnswer": { "@type": "Answer", "text": "An OP Stack L2 by Lattice designed for on-chain games and autonomous worlds using the MUD framework." } },
             { "@type": "Question", "name": "What is the MUD framework?", "acceptedAnswer": { "@type": "Answer", "text": "An open-source framework for building on-chain applications using Entity Component System architecture with on-chain state storage." } },
             { "@type": "Question", "name": "How do I set up a Redstone explorer?", "acceptedAnswer": { "@type": "Answer", "text": "Create a workspace, paste the RPC endpoint, configure OP Stack bridge addresses, and point your domain. Under 5 minutes." } },

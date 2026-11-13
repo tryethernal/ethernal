@@ -17,6 +17,7 @@ export const useEnvStore = defineStore('env', {
         soketiKey: import.meta.env.VITE_SOKETI_KEY || 'app-key',
         postHogApiKey: import.meta.env.VITE_POSTHOG_API_KEY,
         postHogApiHost: import.meta.env.VITE_POSTHOG_API_HOST,
+        postHogAllowedHosts: import.meta.env.VITE_POSTHOG_ALLOWED_HOSTS,
         hasAnalyticsEnabled: !!import.meta.env.VITE_POSTHOG_API_KEY && !!import.meta.env.VITE_POSTHOG_API_HOST,
         mainDomain: '',
         apiRoot: '',

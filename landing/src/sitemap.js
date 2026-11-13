@@ -23,7 +23,7 @@ const DEFAULT_PRIORITY = { priority: '0.6', changefreq: 'monthly' };
 
 export function generateSitemap(routes, outDir) {
     const urls = routes
-        .filter(r => !['/404'].includes(r))
+        .filter(r => r !== '/404' && !r.includes(':'))
         .map(route => {
             const { priority, changefreq } = PRIORITY_MAP[route] || DEFAULT_PRIORITY;
             return `  <url>\n    <loc>${BASE_URL}${route}</loc>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;

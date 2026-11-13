@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.0] - 2026-11-13
+### Added
+- Block explorer guides: create a block explorer, self-host with Docker, OP Stack and Arbitrum Orbit setup
+### Changed
+- Clearer search titles and descriptions on the homepage, launch, pricing and comparison pages
+- Signup attribution: the dashboard now reports analytics again (only on app.tryethernal.com)
+### Fixed
+- Unknown pages on tryethernal.com return a real 404 page instead of the homepage
+- www.tryethernal.com redirects to tryethernal.com
+- The App Chains page no longer returns an error
+- Structured data (FAQ, pricing, breadcrumbs) is now included in landing pages
+
 ## [5.18.7] - 2026-11-13
 ### Fixed
 - chore(blog): wind down automated blog pipeline, noindex posts without search traction (#1409)

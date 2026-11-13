@@ -367,14 +367,16 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Blockscout Alternative: Deploy in 5 Min, No DevOps',
+    title: 'Blockscout Alternative: Hosted EVM Explorer, No DevOps',
     meta: [
-        { name: 'description', content: 'Blockscout needs a Postgres, indexer, and frontend to self-host. Ethernal is one Docker command and live in 5 minutes. See the full Ethernal vs Blockscout comparison.' },
+        { name: 'description', content: 'Self-hosting Blockscout means running Postgres, an indexer and a UI. Compare setup, pricing and features with Ethernal, and see when Blockscout wins.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Blockscout Alternative: Deploy in 5 Min, No DevOps' },
-        { property: 'og:description', content: 'Blockscout needs a Postgres, indexer, and frontend to self-host. Ethernal is one Docker command and live in 5 minutes. See the full Ethernal vs Blockscout comparison.' },
+        { property: 'og:title', content: 'Blockscout Alternative: Hosted EVM Explorer, No DevOps' },
+        { property: 'og:description', content: 'Self-hosting Blockscout means running Postgres, an indexer and a UI. Compare setup, pricing and features with Ethernal, and see when Blockscout wins.' },
         { property: 'og:url', content: 'https://tryethernal.com/blockscout-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Blockscout Alternative: Hosted EVM Explorer, No DevOps' },
+        { name: 'twitter:description', content: 'Self-hosting Blockscout means running Postgres, an indexer and a UI. Compare setup, pricing and features with Ethernal, and see when Blockscout wins.' },
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/blockscout-alternative' }
@@ -382,7 +384,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "Product",
                 "name": "Ethernal - Blockscout Alternative",
@@ -399,7 +401,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
@@ -410,7 +412,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [

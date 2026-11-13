@@ -190,7 +190,10 @@ jobs:
             --build-arg VITE_SENTRY_PROJECT=${{ secrets.VITE_SENTRY_PROJECT }} \
             --build-arg VITE_SENTRY_URL=${{ secrets.VITE_SENTRY_URL }} \
             --build-arg VITE_SENTRY_ENABLED=${{ secrets.VITE_SENTRY_ENABLED }} \
-            --build-arg VITE_SOKETI_KEY=${{ secrets.SOKETI_DEFAULT_APP_KEY }}
+            --build-arg VITE_SOKETI_KEY=${{ secrets.SOKETI_DEFAULT_APP_KEY }} \
+            --build-arg VITE_POSTHOG_API_KEY=phc_W1H8OCkSPHM7iP8fxwINcnV5CkVpLj6i6yzwQfsCAtC \
+            --build-arg VITE_POSTHOG_API_HOST=/ingest \
+            --build-arg VITE_POSTHOG_ALLOWED_HOSTS=app.tryethernal.com
 
   deploy_back_amd64:
     if: startsWith(github.ref, 'refs/tags/v')

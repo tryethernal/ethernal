@@ -379,6 +379,13 @@ Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 
 ### Identity & attribution
 
+### App build args & host allowlist
+
+- **The app only sends events if its build has PostHog env vars.** `Dockerfile.caddyfile` (app-build stage) takes `VITE_POSTHOG_API_KEY`, `VITE_POSTHOG_API_HOST` and `VITE_POSTHOG_ALLOWED_HOSTS`; the `deploy_caddy` job in `.github/workflows/test_and_deploy.yml` passes them as literal build args (`phc_...` project key = public, write-only; host `/ingest`, the Caddy proxy; allowlist `app.tryethernal.com`).
+- **Host allowlist.** The same SPA bundle is served on every public explorer subdomain and custom domain, which must never send events. `src/plugins/posthog.js` initialises only if key + host are set AND (`VITE_POSTHOG_ALLOWED_HOSTS` is unset OR `window.location.hostname` is in that comma-separated list, trimmed, case-insensitive). Otherwise `$posthog` is a no-op stub and `window.posthog` stays undefined. Self-hosted builds (`Dockerfile.frontend`) set none of these and stay analytics-free.
+- **No cookie domain is set on purpose:** posthog-js's default cross-subdomain cookie on `.tryethernal.com` is what joins the landing/blog anonymous id to the app session, and `identify(String(user.id))` then merges it with the backend's `auth:user_signup` person.
+- **History:** the app sent no PostHog events from 2026-03-04 (#4f58125 moved the app build from Netlify to `Dockerfile.caddyfile`, dropping the env vars) until this fix shipped, so no landing/blog visit could be joined to a signup in that window.
+
 - **Frontend distinct_id is anonymous on first load.** It only gets bridged to the backend user id once `posthog.identify(String(user.id), {email, plan})` runs.
 - **Bridge lives in `src/stores/user.js` `updateUser()`** — fires on signin, signup, and any user refresh. `posthog.reset()` runs on logout. `window.posthog` is set in `src/plugins/posthog.js` so all the `window.posthog.capture(...)` calls in onboarding components find a real client.
 - **Without `identify()`, no funnel from a marketing surface to `auth:user_signup` / `workspace:workspace_create` / `explorer:subscription_create` will work** — those backend events use the numeric user id as `distinctId` and live in a different namespace from the anonymous landing cookie.

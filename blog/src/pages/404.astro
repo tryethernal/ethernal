@@ -1,0 +1,23 @@
+---
+/**
+ * @fileoverview Blog 404 page. Emitted as dist/404.html and served by Caddy with an HTTP 404 status
+ * for unknown /blog paths on tryethernal.com. Noindex so it never competes in search results.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found" description="This blog page does not exist." noindex>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 pt-20 pb-24">
+    <span class="text-sm font-medium text-primary uppercase tracking-wider">Error 404</span>
+    <h1 class="font-heading text-4xl sm:text-5xl font-bold text-text-primary mt-2 mb-3">Page not found</h1>
+    <p class="text-lg text-text-secondary mb-8">
+      This blog page does not exist or has moved. Try one of these instead.
+    </p>
+    <ul class="space-y-3 text-text-secondary">
+      <li><a href="/blog" class="text-primary hover:underline">All blog articles</a></li>
+      <li><a href="/" class="text-primary hover:underline">Ethernal home</a></li>
+      <li><a href="/guides" class="text-primary hover:underline">Block explorer guides</a></li>
+      <li><a href="/pricing" class="text-primary hover:underline">Pricing</a></li>
+    </ul>
+  </div>
+</BaseLayout>

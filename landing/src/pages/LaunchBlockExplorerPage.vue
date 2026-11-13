@@ -162,6 +162,10 @@
                 </template>
             </FeatureSection>
 
+            <p class="lbe-guide-note">
+                New to this? Follow the <router-link to="/guides/create-block-explorer" class="lbe-guide-link">step-by-step guide to creating a block explorer</router-link>.
+            </p>
+
             <!-- FAQ (visible content mirrors the FAQPage JSON-LD below) -->
             <div class="my-16" style="max-width: 760px; margin-left: auto; margin-right: auto;">
                 <h2 class="font-heading mb-6" style="font-size: 1.6rem; color: var(--text-primary);">
@@ -207,15 +211,17 @@ const faqs = [
 ];
 
 useHead({
-    title: 'Launch a Custom EVM Block Explorer | Explorer Hosting',
+    title: 'Block Explorer Hosting: Launch a Custom EVM Explorer',
     meta: [
-        { name: 'description', content: 'Launch a custom EVM block explorer in 5 minutes. Point Ethernal at any RPC URL for hosted block explorer hosting, or self-host the MIT-licensed EVM scan yourself.' },
+        { name: 'description', content: 'Hosted block explorer for your EVM chain or rollup. Paste an RPC URL, get an explorer with verification and APIs. Free to start, white-label when ready.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Launch a Custom EVM Block Explorer | Explorer Hosting' },
-        { property: 'og:description', content: 'Launch a custom EVM block explorer in 5 minutes. Point Ethernal at any RPC URL for hosted block explorer hosting, or self-host the MIT-licensed EVM scan yourself.' },
+        { property: 'og:title', content: 'Block Explorer Hosting: Launch a Custom EVM Explorer' },
+        { property: 'og:description', content: 'Hosted block explorer for your EVM chain or rollup. Paste an RPC URL, get an explorer with verification and APIs. Free to start, white-label when ready.' },
         { property: 'og:url', content: 'https://tryethernal.com/launch-block-explorer' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Block Explorer Hosting: Launch a Custom EVM Explorer' },
+        { name: 'twitter:description', content: 'Hosted block explorer for your EVM chain or rollup. Paste an RPC URL, get an explorer with verification and APIs. Free to start, white-label when ready.' },
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/launch-block-explorer' }
@@ -223,7 +229,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "HowTo",
                 "name": "Launch a custom EVM block explorer with Ethernal",
@@ -237,7 +243,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": faqs.map(f => ({
@@ -249,7 +255,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
@@ -319,6 +325,11 @@ useHead({
 .trace-method { color: #CBD5E1; font-size: 11px; }
 .status-chip { padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 .status-chip.ok { background: rgba(34, 197, 94, 0.1); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.2); }
+
+/* Guide link */
+.lbe-guide-note { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; text-align: center; margin: 24px 0 0; }
+.lbe-guide-link { color: #5DAAE0; text-decoration: underline; text-underline-offset: 3px; }
+.lbe-guide-link:hover { color: #8BC4E8; }
 
 /* FAQ */
 .lbe-faq-list { display: flex; flex-direction: column; gap: 12px; }

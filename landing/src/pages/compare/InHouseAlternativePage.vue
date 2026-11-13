@@ -357,6 +357,13 @@
                             <span class="related-desc">How Ethernal compares to Blockscout on setup, L2 support, and runtime</span>
                         </div>
                     </router-link>
+                    <router-link to="/guides/self-host-block-explorer" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-docker</v-icon>
+                        <div>
+                            <span class="related-title">Guide: Self-Host a Block Explorer with Docker</span>
+                            <span class="related-desc">Run Ethernal on your own server with Docker Compose (beta)</span>
+                        </div>
+                    </router-link>
                     <router-link to="/features" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-view-grid-outline</v-icon>
                         <div>
@@ -407,7 +414,7 @@ useHead({
     script: [
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
@@ -418,7 +425,7 @@ useHead({
         },
         {
             type: 'application/ld+json',
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [
