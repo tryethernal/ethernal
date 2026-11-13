@@ -3,13 +3,20 @@ import vue from '@astrojs/vue';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import { readdirSync, readFileSync } from 'node:fs';
+import yaml from 'js-yaml';
 
-// Posts marked `noindex: true` in frontmatter stay out of the sitemap.
+// Posts marked `noindex: true` in frontmatter stay out of the sitemap. Parsed
+// with js-yaml, the same parser Astro uses for frontmatter, so the sitemap and
+// the robots meta tag always agree.
 const contentDir = new URL('./src/content/blog/', import.meta.url);
+const frontmatter = (file) => {
+  const match = readFileSync(new URL(file, contentDir), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  return match ? yaml.load(match[1]) || {} : {};
+};
 const noindexSlugs = new Set(
   readdirSync(contentDir)
     .filter((f) => /\.mdx?$/.test(f))
-    .filter((f) => /^noindex:\s*true\s*$/m.test(readFileSync(new URL(f, contentDir), 'utf8').split(/^---\s*$/m)[1] || ''))
+    .filter((f) => frontmatter(f).noindex === true)
     .map((f) => f.replace(/\.mdx?$/, ''))
 );
 
