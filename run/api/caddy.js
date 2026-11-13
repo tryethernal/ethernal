@@ -24,6 +24,10 @@ const isAppDomainOrDirectSubdomain = (domain, appDomain) => {
     if (!appDomain || typeof domain !== 'string')
         return false;
 
+    /**
+     * @param {string} host - Hostname to normalize
+     * @returns {string} Trimmed, lowercased hostname without a trailing dot
+     */
     const normalize = (host) => host.trim().toLowerCase().replace(/\.$/, '');
     const host = normalize(domain);
     const root = normalize(appDomain);
