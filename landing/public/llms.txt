@@ -61,7 +61,7 @@
 
 - [Block Explorer Guides](https://tryethernal.com/guides): Step-by-step guides to create, self-host and configure an EVM block explorer with Ethernal
 - [How to Create a Block Explorer for an EVM Chain](https://tryethernal.com/guides/create-block-explorer): Build in-house, self-host, or use hosted Ethernal, with the hosted setup steps from an RPC URL
-- [How to Self-Host a Block Explorer with Docker](https://tryethernal.com/guides/self-host-block-explorer): Run Ethernal on your own server with Docker Compose (self-hosted version is in beta)
+- [How to Self-Host a Block Explorer with Docker](https://tryethernal.com/guides/self-host-block-explorer): Run Ethernal on your own server with Docker Compose
 - [How to Set Up a Block Explorer for an OP Stack Chain](https://tryethernal.com/guides/op-stack-block-explorer): Configure the OptimismPortal and Batch Inbox addresses to track deposits, withdrawals, and batches
 - [How to Set Up a Block Explorer for an Arbitrum Orbit Chain](https://tryethernal.com/guides/arbitrum-orbit-block-explorer): Configure the rollup, bridge, and gateway contracts to track Orbit batches and withdrawals
 

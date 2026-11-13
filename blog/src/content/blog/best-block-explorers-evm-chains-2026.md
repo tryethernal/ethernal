@@ -116,7 +116,6 @@ Open-source (MIT licensed) block explorer built for fast deployment on any EVM c
 
 - EVM-only. Does not support non-EVM chains like Solana, Bitcoin, or Cosmos.
 - Smaller ecosystem than Blockscout. We're getting there, but Blockscout has a multi-year head start.
-- Self-hosted version is in beta, as noted in the [GitHub repository](https://github.com/tryethernal/ethernal).
 
 **Best for:** Teams shipping L2s, app chains, or testnets that need a working explorer fast, with full control over data and no vendor lock-in. Particularly strong for solo developers on Hardhat/Anvil who need a local chain explorer, and for startups that need white-label branding without enterprise pricing.
 

@@ -101,7 +101,7 @@ When the Content Type is "Comparison Listicle":
 - Comparison table: put criteria as rows, products as columns. This is the primary AI extraction target.
 - Decision framework: include a "Why" column explaining the recommendation, not just "Use Case" and "Recommended"
 - Position Ethernal honestly (not #1 unless warranted). Credibility with skeptical readers beats self-promotion.
-- Be transparent about Ethernal's limitations (EVM-only, beta self-hosted, smaller ecosystem)
+- Be transparent about Ethernal's limitations (EVM-only, smaller ecosystem)
 - Include a hands-on walkthrough section with real CLI commands if applicable. No competitor does this.
 
 ## Output

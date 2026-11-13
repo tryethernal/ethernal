@@ -19,7 +19,6 @@ const guide = {
     kicker: 'Self-Host a Block Explorer',
     h1: 'How to Self-Host a Block Explorer with Docker',
     intro: 'Ethernal is MIT licensed and runs on your own server with Docker Compose. Clone the repository, run make start, then open the setup page to create an admin user and your first explorer. Everything, including the database, runs in containers.',
-    notice: 'The self-hosted version of Ethernal is in beta. Some features may not work as expected or may be incomplete. If you hit a problem, open an issue on GitHub.',
     needs: [
         'Docker and Docker Compose.',
         'OpenSSL, which the setup script uses to generate secrets.',
@@ -75,7 +74,7 @@ const guide = {
     faqs: [
         {
             q: 'Is the self-hosted version ready for production?',
-            a: 'It is in beta. The README warns that some features may not work as expected or may be incomplete, and asks you to open a GitHub issue if you find a problem. Hosted Ethernal is the better fit if you need a managed service.'
+            a: 'Yes. It runs the same code as hosted Ethernal. You operate the servers, updates and backups yourself, so hosted Ethernal is the better fit if you want a managed service. If you hit a problem, open an issue on GitHub.'
         },
         {
             q: 'Do I need to install a database?',

@@ -361,7 +361,7 @@
                         <v-icon size="18" style="color: #5DAAE0;">mdi-docker</v-icon>
                         <div>
                             <span class="related-title">Guide: Self-Host a Block Explorer with Docker</span>
-                            <span class="related-desc">Run Ethernal on your own server with Docker Compose (beta)</span>
+                            <span class="related-desc">Run Ethernal on your own server with Docker Compose</span>
                         </div>
                     </router-link>
                     <router-link to="/features" class="related-link">
