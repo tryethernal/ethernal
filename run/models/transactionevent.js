@@ -27,6 +27,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    /**
+     * Deletes this event only.
+     * `timestamp` is the sole Sequelize primary key, so the default instance destroy would delete the
+     * events of every workspace sharing the same second. Scope the delete to the workspace and parent transaction.
+     * @param {Object} [options] - Destroy options (`transaction` is forwarded)
+     * @returns {Promise<number>} Number of deleted rows
+     */
+    destroy(options = {}) {
+      return this.constructor.destroy({
+        where: { workspaceId: this.workspaceId, transactionId: this.transactionId, timestamp: this.timestamp },
+        transaction: options.transaction
+      });
+    }
   }
   TransactionEvent.init({
     workspaceId: DataTypes.INTEGER,

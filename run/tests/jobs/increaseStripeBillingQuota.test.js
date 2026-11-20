@@ -246,4 +246,59 @@ describe('increaseStripeBillingQuota', () => {
                 done();
             });
     });
+
+    describe('default (demo) plan', () => {
+        afterEach(() => { delete process.env.DEFAULT_PLAN_SLUG; });
+
+        /**
+         * Runs the job for a one-transaction block on a subscription whose plan has the given slug.
+         * @param {string} slug - Slug of the subscription's plan
+         * @returns {Promise<{ res: *, increment: jest.Mock }>} Job result and the increment spy
+         */
+        const run = async slug => {
+            const increment = jest.fn().mockResolvedValue();
+            jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ id: 1, isReady: true, transactionsCount: 1, workspaceId: 1 });
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ id: 1 });
+            jest.spyOn(StripeSubscription, 'findOne').mockResolvedValueOnce({
+                id: 1,
+                stripeId: null,
+                transactionQuota: 100,
+                stripePlanId: 1,
+                increment
+            });
+            const findPlan = jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({
+                slug,
+                capabilities: { billing: 'flat' }
+            });
+            const res = await increaseStripeBillingQuota({ data: { blockId: 1 }});
+            expect(findPlan).toHaveBeenCalledWith(1, { attributes: ['slug', 'capabilities'] });
+            return { res, increment };
+        };
+
+        it('Should not increment the quota again, blockSync already counted it', async () => {
+            process.env.DEFAULT_PLAN_SLUG = 'demo';
+
+            const { res, increment } = await run('demo');
+
+            expect(res).toEqual('Quota already counted at sync time');
+            expect(increment).not.toHaveBeenCalled();
+            expect(mockCreateUsageRecord).not.toHaveBeenCalled();
+        });
+
+        it('Should keep incrementing for any other plan', async () => {
+            process.env.DEFAULT_PLAN_SLUG = 'demo';
+
+            const { res, increment } = await run('explorer-150');
+
+            expect(res).toEqual(true);
+            expect(increment).toHaveBeenCalledWith('transactionQuota', { by: 1 });
+        });
+
+        it('Should keep incrementing when no default plan slug is configured', async () => {
+            const { res, increment } = await run(undefined);
+
+            expect(res).toEqual(true);
+            expect(increment).toHaveBeenCalledWith('transactionQuota', { by: 1 });
+        });
+    });
 });

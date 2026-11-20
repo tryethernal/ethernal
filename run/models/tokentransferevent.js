@@ -26,6 +26,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
     }
+
+    /**
+     * Deletes this event only.
+     * `timestamp` is the sole Sequelize primary key, so the default instance destroy would delete the
+     * events of every workspace sharing the same second. Scope the delete to the workspace and parent token transfer.
+     * @param {Object} [options] - Destroy options (`transaction` is forwarded)
+     * @returns {Promise<number>} Number of deleted rows
+     */
+    destroy(options = {}) {
+      return this.constructor.destroy({
+        where: { workspaceId: this.workspaceId, tokenTransferId: this.tokenTransferId, timestamp: this.timestamp },
+        transaction: options.transaction
+      });
+    }
   }
   TokenTransferEvent.init({
     workspaceId: DataTypes.INTEGER,

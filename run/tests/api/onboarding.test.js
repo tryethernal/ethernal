@@ -11,12 +11,14 @@ require('../mocks/lib/crypto');
 require('../mocks/lib/utils');
 require('../mocks/lib/env');
 require('../mocks/lib/firebase');
+require('../mocks/lib/chains');
 
 const db = require('../../lib/firebase');
 const { enqueue } = require('../../lib/queue');
 const { ProviderConnector } = require('../../lib/rpc');
 const crypto = require('../../lib/crypto');
 const flags = require('../../lib/flags');
+const chains = require('../../lib/chains');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -108,6 +110,29 @@ describe(`POST ${BASE_URL}/setup`, () => {
             });
     });
 
+    it('Should return 400 and create nothing if public path and the network id is forbidden', (done) => {
+        jest.spyOn(db, 'getUserByEmail').mockResolvedValueOnce(null);
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(56)
+        }));
+        jest.spyOn(chains, 'isChainAllowed').mockResolvedValueOnce(false);
+        const createUser = jest.spyOn(db, 'createUser');
+        const createExplorerFromOptions = jest.spyOn(db, 'createExplorerFromOptions');
+
+        request.post(`${BASE_URL}/setup`)
+            .send({ email: 'test@test.com', password: 'pass123', path: 'public', rpcServer: 'http://rpc.test', explorerName: 'My Explorer' })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You can't create a demo with this network id (56). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+                expect(chains.isChainAllowed).toHaveBeenCalledWith(56);
+                expect(createUser).not.toHaveBeenCalled();
+                expect(createExplorerFromOptions).not.toHaveBeenCalled();
+                expect(mockCustomerCreate).not.toHaveBeenCalled();
+                expect(enqueue).not.toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should return 200 for private path: creates user + workspace, enqueues processUser', (done) => {
         jest.spyOn(flags, 'isFirebaseAuthEnabled').mockReturnValueOnce(false);
         jest.spyOn(db, 'getUserByEmail').mockResolvedValueOnce(null);
@@ -165,6 +190,7 @@ describe(`POST ${BASE_URL}/setup`, () => {
             })
             .expect(200)
             .then(({ body }) => {
+                expect(chains.isChainAllowed).toHaveBeenCalledWith(123);
                 expect(db.createUser).toHaveBeenCalled();
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(
                     1,

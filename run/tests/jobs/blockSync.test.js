@@ -4,11 +4,15 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
-const { Workspace, OrbitChainConfig, OpChainConfig } = require('../mocks/models');
+require('../mocks/lib/flags');
+require('../mocks/lib/env');
+const { Workspace, Explorer, StripeSubscription, OrbitChainConfig, OpChainConfig } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const { ProviderConnector } = require('../../lib/rpc');
+const { isSelfHosted } = require('../../lib/flags');
+const { getDefaultPlanSlug } = require('../../lib/env');
 
 const blockSync = require('../../jobs/blockSync');
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
@@ -78,6 +82,7 @@ describe('blockSync', () => {
                 isReachable: true
             },
             explorer: {
+                hasReachedTransactionQuota,
                 stripeSubscription: {},
                 shouldSync: true
             },
@@ -132,6 +137,7 @@ describe('blockSync', () => {
                     isReachable: true
                 },
                 explorer: {
+                    hasReachedTransactionQuota,
                     stripeSubscription: {},
                     shouldSync: true
                 },
@@ -219,7 +225,9 @@ describe('blockSync', () => {
             });
     });
 
-    it.skip('Should return if transaction quota reached', (done) => {
+    it('Should return if transaction quota reached', (done) => {
+        const reached = jest.fn().mockResolvedValue(true);
+        mockSafeCreatePartialBlock.mockClear();
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
@@ -227,14 +235,18 @@ describe('blockSync', () => {
                 isReachable: true
             },
             explorer: {
-                hasReachedTransactionQuota: jest.fn().mockResolvedValue(true),
+                hasReachedTransactionQuota: reached,
                 stripeSubscription: {},
                 shouldSync: true
-            }
+            },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
         blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Transaction quota reached');
+                expect(reached).toHaveBeenCalledTimes(1);
+                expect(ProviderConnector).not.toHaveBeenCalled();
+                expect(mockSafeCreatePartialBlock).not.toHaveBeenCalled();
                 done();
             });
     });
@@ -340,7 +352,7 @@ describe('blockSync', () => {
                         { hash: '0x456' },
                         { hash: '0x789' }
                     ]
-                });
+                }, { quotaSubscriptionId: null });
                 done();
             });
     });
@@ -402,7 +414,7 @@ describe('blockSync', () => {
                         { hash: '0x456', to: '0x0987654321098765432109876543210987654321' }
                     ],
                     transactionsCount: 2
-                });
+                }, { quotaSubscriptionId: null });
                 done();
             });
     });
@@ -464,7 +476,7 @@ describe('blockSync', () => {
                         { hash: '0x456', to: '0x0987654321098765432109876543210987654321' }
                     ],
                     transactionsCount: 2
-                });
+                }, { quotaSubscriptionId: null });
                 done();
             });
     });
@@ -550,7 +562,7 @@ describe('blockSync', () => {
             .mockResolvedValueOnce({
                 id: 1,
                 rpcServer: 'http://localhost:8545',
-                explorer: { shouldSync: true, stripeSubscription: {} },
+                explorer: { hasReachedTransactionQuota, shouldSync: true, stripeSubscription: {} },
                 safeCreatePartialBlock: mockSafeCreatePartialBlock
             })
             .mockResolvedValueOnce(mockL2Configs);
@@ -598,7 +610,7 @@ describe('blockSync', () => {
         const mockWorkspace = {
             id: 1,
             rpcServer: 'http://localhost:8545',
-            explorer: { shouldSync: true, stripeSubscription: {} },
+            explorer: { hasReachedTransactionQuota, shouldSync: true, stripeSubscription: {} },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         };
 
@@ -739,6 +751,157 @@ describe('blockSync', () => {
 
             expect(error.message).toEqual('Timed out after 10000ms');
             expect(error.name).not.toEqual('UnrecoverableError');
+        });
+    });
+});
+
+describe('blockSync transaction quota', () => {
+    const mockSafeCreatePartialBlock = jest.fn();
+    const cachedWorkspace = {
+        rpcServer: 'http://localhost:8545',
+        public: true,
+        hasL2Configs: false,
+        explorer: { id: 7, shouldSync: true, stripeSubscription: { id: 42 } },
+        rpcHealthCheck: null
+    };
+    const jobData = { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true };
+
+    /**
+     * Builds an explorer as the single quota query returns it.
+     * @param {Object} options
+     * @param {boolean} options.reached - Whether the transaction quota is reached
+     * @param {string} [options.planSlug] - Slug of the explorer's plan
+     * @returns {Object} Explorer-like object
+     */
+    const quotaExplorer = ({ reached, planSlug }) => ({
+        hasReachedTransactionQuota: jest.fn().mockResolvedValue(reached),
+        stripeSubscription: { id: 42, stripePlan: { slug: planSlug } }
+    });
+
+    beforeEach(() => {
+        mockSafeCreatePartialBlock.mockReset().mockResolvedValue({ transactions: [] });
+        Workspace.build = jest.fn(attributes => ({ ...attributes, safeCreatePartialBlock: mockSafeCreatePartialBlock }));
+        Explorer.build = jest.fn(attributes => attributes);
+        StripeSubscription.build = jest.fn(attributes => attributes);
+        isSelfHosted.mockReturnValue(false);
+        getDefaultPlanSlug.mockReturnValue('demo');
+        ProviderConnector.mockImplementation(() => ({
+            fetchRawBlockWithTransactions: jest.fn(() => ({ number: '0x1', transactions: [{ hash: '0x123' }, { hash: '0x456' }] }))
+        }));
+    });
+
+    afterAll(() => {
+        isSelfHosted.mockReturnValue(true);
+        getDefaultPlanSlug.mockReturnValue('selfhosted');
+    });
+
+    describe('cached workspace path', () => {
+        it('Should refuse to sync with a single live query when the quota is reached', async () => {
+            const findOne = jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(quotaExplorer({ reached: true, planSlug: 'demo' }));
+
+            const res = await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace }});
+
+            expect(res).toEqual('Transaction quota reached');
+            expect(findOne).toHaveBeenCalledTimes(1);
+            expect(findOne).toHaveBeenCalledWith(expect.objectContaining({ where: { workspaceId: 1 } }));
+            expect(ProviderConnector).not.toHaveBeenCalled();
+            expect(mockSafeCreatePartialBlock).not.toHaveBeenCalled();
+        });
+
+        it('Should count the block at storage time for an explorer on the default plan', async () => {
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(quotaExplorer({ reached: false, planSlug: 'demo' }));
+
+            const res = await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace }});
+
+            expect(res).toEqual('Block synced');
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: 42 });
+        });
+
+        it('Should not count at storage time for a paying plan', async () => {
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(quotaExplorer({ reached: false, planSlug: 'explorer-150' }));
+
+            await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace }});
+
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: null });
+        });
+
+        it('Should not count at storage time when self-hosted', async () => {
+            isSelfHosted.mockReturnValue(true);
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(quotaExplorer({ reached: false, planSlug: 'demo' }));
+
+            await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace }});
+
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: null });
+        });
+
+        it('Should not count at storage time for a private workspace', async () => {
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(quotaExplorer({ reached: false, planSlug: 'demo' }));
+
+            await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace: { ...cachedWorkspace, public: false }}});
+
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: null });
+        });
+    });
+
+    describe('database path', () => {
+        /**
+         * Builds the workspace the eager-loaded query returns.
+         * @param {Object} explorer - Explorer to attach
+         * @param {Object} [overrides] - Workspace attribute overrides
+         * @returns {Object} Workspace-like object
+         */
+        const workspaceWith = (explorer, overrides = {}) => ({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            public: true,
+            rpcHealthCheck: { isReachable: true },
+            explorer: { shouldSync: true, ...explorer },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock,
+            ...overrides
+        });
+
+        it('Should load the quota data with the existing workspace query, without extra queries', async () => {
+            const findByPk = jest.spyOn(Workspace, 'findByPk')
+                .mockResolvedValueOnce(workspaceWith(quotaExplorer({ reached: true, planSlug: 'demo' })));
+            const findOne = jest.spyOn(Explorer, 'findOne');
+            findOne.mockClear();
+
+            const res = await blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1 }});
+
+            expect(res).toEqual('Transaction quota reached');
+            expect(findByPk).toHaveBeenCalledTimes(1);
+            expect(findOne).not.toHaveBeenCalled();
+            const explorerInclude = findByPk.mock.calls[findByPk.mock.calls.length - 1][1].include.find(i => i.as === 'explorer');
+            expect(explorerInclude.attributes).toContain('shouldEnforceQuota');
+            expect(explorerInclude.include.as).toEqual('stripeSubscription');
+            expect(explorerInclude.include.attributes).toContain('transactionQuota');
+            expect(explorerInclude.include.include.map(i => i.as)).toEqual(['stripePlan', 'stripeQuotaExtension']);
+        });
+
+        it('Should count the block at storage time for an explorer on the default plan', async () => {
+            jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(workspaceWith(quotaExplorer({ reached: false, planSlug: 'demo' })));
+
+            const res = await blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1 }});
+
+            expect(res).toEqual('Block synced');
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: 42 });
+        });
+
+        it('Should not count at storage time for a paying plan', async () => {
+            jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(workspaceWith(quotaExplorer({ reached: false, planSlug: 'explorer-500' })));
+
+            await blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1 }});
+
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: null });
+        });
+
+        it('Should not count at storage time when no default plan slug is configured', async () => {
+            getDefaultPlanSlug.mockReturnValue(undefined);
+            jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(workspaceWith(quotaExplorer({ reached: false, planSlug: undefined })));
+
+            await blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1 }});
+
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: null });
         });
     });
 });
