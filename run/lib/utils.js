@@ -100,6 +100,49 @@ const eToNumber = (num) => {
 const getEnv = () => process.env.NODE_ENV;
 
 /**
+ * Checks whether a token URI is an RFC 2397 `data:` URI (fully on-chain metadata).
+ * axios cannot fetch these, so callers must decode them locally with `decodeJsonDataUri`.
+ *
+ * @param {*} uri - Token URI
+ * @returns {boolean} True if the URI starts with the `data:` scheme (case-insensitive)
+ */
+const isDataUri = (uri) => typeof uri === 'string' && /^data:/i.test(uri);
+
+/**
+ * Decodes a `data:application/json[;charset=...][;base64],<payload>` URI into a JSON object.
+ * Supports base64 (itself optionally percent-encoded) and percent-encoded payloads, and tolerates extra media type parameters.
+ * Never throws.
+ *
+ * @param {string} uri - The data URI
+ * @returns {Object|null} Parsed JSON object, or null if the URI is malformed, is not application/json,
+ * or does not contain a JSON object
+ */
+const decodeJsonDataUri = (uri) => {
+    if (!isDataUri(uri))
+        return null;
+
+    const comma = uri.indexOf(',');
+    if (comma < 0)
+        return null;
+
+    const params = uri.slice(5, comma).split(';').map(param => param.trim().toLowerCase());
+    if (params[0] !== 'application/json')
+        return null;
+
+    const payload = uri.slice(comma + 1);
+    try {
+        const decodedPayload = decodeURIComponent(payload);
+        const text = params.includes('base64') ?
+            Buffer.from(decodedPayload, 'base64').toString('utf8') :
+            decodedPayload;
+        const parsed = JSON.parse(text);
+        return parsed && typeof parsed == 'object' && !Array.isArray(parsed) ? parsed : null;
+    } catch(_) {
+        return null;
+    }
+};
+
+/**
  * Formats ERC721 NFT metadata into a structured object with categorized attributes.
  * Converts IPFS URLs to HTTP gateway URLs and organizes attributes by type.
  *
@@ -539,6 +582,8 @@ module.exports = {
     stringify,
     processRawRpcObject,
     formatErc721Metadata,
+    isDataUri,
+    decodeJsonDataUri,
     validateBNString,
     sleep,
     avg,

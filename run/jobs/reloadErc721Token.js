@@ -7,7 +7,7 @@
 const axios = require('axios');
 const db = require('../lib/firebase');
 const { ERC721Connector } = require('../lib/rpc');
-const { sanitize, withTimeout } = require('../lib/utils');
+const { sanitize, withTimeout, isDataUri, decodeJsonDataUri } = require('../lib/utils');
 
 module.exports = async job => {
     const data = job.data;
@@ -32,7 +32,9 @@ module.exports = async job => {
 
     const URI = await erc721Connector.tokenURI(data.tokenId);
     let metadata = {};
-    if (URI) {
+    if (isDataUri(URI))
+        metadata = decodeJsonDataUri(URI) || {};
+    else if (URI) {
         const axiosableURI = URI.startsWith('ipfs://') ? `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
 
         try {
