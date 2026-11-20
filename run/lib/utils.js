@@ -508,7 +508,26 @@ const sanitizePagination = (page, itemsPerPage, order, options = {}) => {
     };
 };
 
+/**
+ * Runs `fn` once the outermost transaction commits, or right away when there is no transaction.
+ *
+ * Sequelize runs `findOrCreate` inside a nested (savepoint) transaction when called with an outer
+ * transaction, and never commits that nested one itself: its `afterCommit` callbacks would never
+ * fire. Callbacks are therefore registered on the root transaction.
+ *
+ * @param {Object} [transaction] - Sequelize transaction (possibly nested), or a falsy value
+ * @param {Function} fn - Callback to run after commit
+ * @returns {*} Whatever `afterCommit` or `fn` returns
+ */
+const afterRootCommit = (transaction, fn) => {
+    let root = transaction || null;
+    while (root && root.parent)
+        root = root.parent;
+    return root ? root.afterCommit(fn) : fn();
+};
+
 module.exports = {
+    afterRootCommit,
     sanitize: _sanitize,
     toInt32OrNull: _toInt32OrNull,
     preserveUnstorableInts: _preserveUnstorableInts,

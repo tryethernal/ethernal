@@ -7,7 +7,8 @@ const {
     validateBNString,
     avg,
     toInt32OrNull,
-    preserveUnstorableInts
+    preserveUnstorableInts,
+    afterRootCommit
 } = require('../../lib/utils');
 
 describe('toInt32OrNull', () => {
@@ -246,5 +247,39 @@ describe('isJson', () => {
 
     it('Should return false for an non parsable json string', () => {
         expect(isJson('not a json')).toBe(false);
+    });
+});
+
+describe('afterRootCommit', () => {
+    it('Should run the callback right away without a transaction', () => {
+        const fn = jest.fn().mockReturnValue('done');
+
+        expect(afterRootCommit(undefined, fn)).toEqual('done');
+        expect(afterRootCommit(null, fn)).toEqual('done');
+        expect(fn).toHaveBeenCalledTimes(2);
+    });
+
+    it('Should register on a root transaction', () => {
+        const transaction = { afterCommit: jest.fn() };
+        const fn = jest.fn();
+
+        afterRootCommit(transaction, fn);
+
+        expect(transaction.afterCommit).toHaveBeenCalledWith(fn);
+        expect(fn).not.toHaveBeenCalled();
+    });
+
+    it('Should register on the outermost transaction when nested', () => {
+        const root = { afterCommit: jest.fn() };
+        const middle = { parent: root, afterCommit: jest.fn() };
+        const leaf = { parent: middle, afterCommit: jest.fn() };
+        const fn = jest.fn();
+
+        afterRootCommit(leaf, fn);
+
+        expect(root.afterCommit).toHaveBeenCalledWith(fn);
+        expect(middle.afterCommit).not.toHaveBeenCalled();
+        expect(leaf.afterCommit).not.toHaveBeenCalled();
+        expect(fn).not.toHaveBeenCalled();
     });
 });
