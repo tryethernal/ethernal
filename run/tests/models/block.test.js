@@ -14,6 +14,10 @@ const blockFactory = require('../../models/block');
 const WORKSPACE_ID = 7;
 const BLOCK_ID = 42;
 
+/**
+ * Builds an unconnected Sequelize instance with the models Block#safeDestroy touches.
+ * @returns {{ sequelize: Object, Block: Object }}
+ */
 const buildSequelize = () => {
     const sequelize = new Sequelize('postgres://user:password@localhost:5432/database', { logging: false });
     const Block = blockFactory(sequelize, DataTypes);
@@ -171,6 +175,14 @@ describe('Block#safeDestroy quota', () => {
     const originalSelfHosted = process.env.SELF_HOSTED;
     const originalPlanSlug = process.env.DEFAULT_PLAN_SLUG;
 
+    /**
+     * Builds an explorer stub as returned by the quota lookup in Block#safeDestroy.
+     * @param {Object} [options]
+     * @param {string} [options.planSlug='demo'] - Plan slug
+     * @param {boolean} [options.isPublic=true] - Whether the workspace is public
+     * @param {boolean} [options.subscription=true] - Whether the explorer has a subscription
+     * @returns {Object} Explorer stub
+     */
     const explorerOn = ({ planSlug = 'demo', isPublic = true, subscription = true } = {}) => ({
         id: 1,
         workspace: { id: WORKSPACE_ID, public: isPublic },

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Tests for the storage-time transaction quota rules (lib/quota).
+ */
+
 require('../mocks/lib/flags');
 require('../mocks/lib/env');
 
@@ -5,6 +9,11 @@ const { isSelfHosted } = require('../../lib/flags');
 const { getDefaultPlanSlug } = require('../../lib/env');
 const { canCountAtStorage, getQuotaSubscriptionId } = require('../../lib/quota');
 
+/**
+ * Builds an explorer stub with a subscription on the given plan.
+ * @param {string} [slug='demo'] - Plan slug
+ * @returns {Object} Explorer stub
+ */
 const explorer = (slug = 'demo') => ({ stripeSubscription: { id: 42, stripePlan: { slug } } });
 
 beforeEach(() => {
