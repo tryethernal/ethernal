@@ -14,6 +14,7 @@ const { ProviderConnector } = require('../../lib/rpc');
 const { isSelfHosted } = require('../../lib/flags');
 const { getDefaultPlanSlug } = require('../../lib/env');
 
+const quota = require('../../lib/quota');
 const blockSync = require('../../jobs/blockSync');
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
@@ -815,6 +816,18 @@ describe('blockSync transaction quota', () => {
 
             expect(res).toEqual('Block synced');
             expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: 42 });
+        });
+
+        it('Should take the quota decision from the shared lib/quota helper', async () => {
+            const explorer = quotaExplorer({ reached: false, planSlug: 'demo' });
+            jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(explorer);
+            const helper = jest.spyOn(quota, 'getQuotaSubscriptionId').mockReturnValueOnce(1234);
+
+            await blockSync({ opts: { priority: 1 }, data: { ...jobData, cachedWorkspace }});
+
+            expect(helper).toHaveBeenCalledWith(expect.objectContaining({ public: true }), explorer);
+            expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith(expect.anything(), { quotaSubscriptionId: 1234 });
+            helper.mockRestore();
         });
 
         it('Should not count at storage time for a paying plan', async () => {

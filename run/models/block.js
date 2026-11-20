@@ -31,6 +31,7 @@ const { trigger } = require('../lib/pusher');
 // loads while lib/queue is still mid-init. Resolve at hook-call time instead — by then
 // require cache is populated. See issue #1318 for the failure mode + stack trace.
 const { getNodeEnv } = require('../lib/env');
+const quota = require('../lib/quota');
 
 const Op = Sequelize.Op;
 
@@ -58,7 +59,8 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * Safely destroys the block along with everything that depends on it, using one set-based
      * delete per table (no per-row loops), in foreign-key safe order, inside the given transaction.
-     * Every statement is scoped to the block's workspace.
+     * Every statement is scoped to the block's workspace. When the explorer's transactions are counted
+     * at storage time (see lib/quota), the deleted transactions are also given back to its quota.
      * @param {Object} transaction - Sequelize transaction
      * @returns {Promise<void>}
      * @throws {Error} If the block has no valid workspaceId
@@ -76,8 +78,28 @@ module.exports = (sequelize, DataTypes) => {
         transaction
       });
       const transactionIds = transactions.map(t => parseInt(t.id, 10));
+      let quotaSubscriptionId = null;
+      let deletedTransactionCount = 0;
 
       if (transactionIds.length) {
+        if (quota.canCountAtStorage()) {
+          const explorer = await models.Explorer.findOne({
+            where: { workspaceId },
+            attributes: ['id'],
+            include: [
+              { model: models.Workspace, as: 'workspace', attributes: ['id', 'public'] },
+              {
+                model: models.StripeSubscription,
+                as: 'stripeSubscription',
+                attributes: ['id'],
+                include: [{ model: models.StripePlan, as: 'stripePlan', attributes: ['id', 'slug'] }]
+              }
+            ],
+            transaction
+          });
+          quotaSubscriptionId = quota.getQuotaSubscriptionId(explorer && explorer.workspace, explorer);
+        }
+
         const ids = transactionIds.join(',');
         const receiptIds = `SELECT id FROM transaction_receipts WHERE "workspaceId" = ${workspaceId} AND "transactionId" IN (${ids})`;
         const logIds = `SELECT id FROM transaction_logs WHERE "workspaceId" = ${workspaceId} AND "transactionReceiptId" IN (${receiptIds})`;
@@ -132,7 +154,7 @@ module.exports = (sequelize, DataTypes) => {
           { transactionId: null },
           { where: { workspaceId, transactionId: transactionIds }, transaction }
         );
-        await models.Transaction.destroy({
+        deletedTransactionCount = await models.Transaction.destroy({
           where: { workspaceId, blockId: this.id },
           transaction
         });
@@ -143,7 +165,17 @@ module.exports = (sequelize, DataTypes) => {
         transaction
       });
 
-      return this.destroy({ transaction });
+      const destroyed = await this.destroy({ transaction });
+
+      // Last statement: the subscription row is shared by every block of the explorer, so keep its lock short
+      if (quotaSubscriptionId && deletedTransactionCount > 0) {
+        await models.StripeSubscription.update(
+          { transactionQuota: Sequelize.literal(`GREATEST("transactionQuota" - ${parseInt(deletedTransactionCount, 10)}, 0)`) },
+          { where: { id: quotaSubscriptionId }, transaction }
+        );
+      }
+
+      return destroyed;
     }
 
     /**
@@ -187,56 +219,48 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Reverts the block if it's only partially synced, optionally giving young blocks time to finish syncing.
-     * A block with `syncing` transactions younger than `syncingGraceMs` is left untouched (its receipts are
-     * probably just queued); the transaction count mismatch check is never deferred.
+     * A transaction count mismatch is always reverted immediately. A block with `syncing` transactions
+     * (and the expected transaction count) younger than `syncingGraceMs` is left untouched, since its
+     * receipts are probably just queued.
      * @param {Object} [options]
      * @param {number} [options.syncingGraceMs=0] - Minimum block age (ms) before `syncing` transactions trigger a revert
      * @returns {Promise<string>} 'reverted', 'deferred' (still syncing, within the grace period) or 'complete'
      */
     async checkPartial({ syncingGraceMs = 0 } = {}) {
-        // Check for syncing transactions first
-        // Include workspaceId for efficient TimescaleDB hypertable querying
-        const syncingTransactionCount = await sequelize.models.Transaction.count({
+        // One query for both counts. Include workspaceId for efficient TimescaleDB hypertable querying
+        const [counts] = await sequelize.models.Transaction.findAll({
+            attributes: [
+                [Sequelize.literal('COUNT(*)'), 'total'],
+                [Sequelize.literal(`COUNT(*) FILTER (WHERE "state" = 'syncing')`), 'syncing']
+            ],
             where: {
                 blockId: this.id,
-                workspaceId: this.workspaceId,
-                state: 'syncing'
-            }
+                workspaceId: this.workspaceId
+            },
+            raw: true
         });
+        const totalTransactionCount = parseInt(counts.total, 10);
+        const syncingTransactionCount = parseInt(counts.syncing, 10);
 
-        // Short-circuit if we already know we need to revert
-        if (syncingTransactionCount > 0) {
+        const hasExpectedCount = this.transactionsCount === null
+            || this.transactionsCount === undefined
+            || totalTransactionCount === this.transactionsCount;
+
+        if (hasExpectedCount) {
+            if (syncingTransactionCount == 0)
+                return 'complete';
+
             // A missing/invalid createdAt gives NaN, which is never "young": we revert as before
             const age = Date.now() - new Date(this.createdAt).getTime();
             if (syncingGraceMs > 0 && age < syncingGraceMs)
                 return 'deferred';
-
-            await sequelize.transaction(
-                { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-                async transaction => this.safeDestroy(transaction)
-            );
-            return 'reverted';
         }
 
-        // Only check transaction count if transactionsCount is available and no transactions are syncing
-        if (this.transactionsCount !== null && this.transactionsCount !== undefined) {
-            const currentTransactionCount = await sequelize.models.Transaction.count({
-                where: {
-                    blockId: this.id,
-                    workspaceId: this.workspaceId
-                }
-            });
-
-            if (currentTransactionCount !== this.transactionsCount) {
-                await sequelize.transaction(
-                    { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-                    async transaction => this.safeDestroy(transaction)
-                );
-                return 'reverted';
-            }
-        }
-
-        return 'complete';
+        await sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => this.safeDestroy(transaction)
+        );
+        return 'reverted';
     }
 
     /**

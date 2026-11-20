@@ -34,6 +34,10 @@ const buildSequelize = () => {
     stand('TransactionReceipt', 'transaction_receipts', { transactionId: DataTypes.INTEGER });
     stand('Contract', 'contracts', { transactionId: DataTypes.INTEGER });
     stand('BlockEvent', 'block_events', { blockId: DataTypes.INTEGER });
+    stand('Explorer', 'explorers');
+    stand('Workspace', 'workspaces');
+    stand('StripePlan', 'stripe_plans');
+    stand('StripeSubscription', 'stripe_subscriptions', { transactionQuota: DataTypes.INTEGER });
 
     return { sequelize, Block };
 };
@@ -159,13 +163,124 @@ describe('Block#safeDestroy', () => {
     });
 });
 
+
+describe('Block#safeDestroy quota', () => {
+    let sequelize, Block, query, block, findExplorer;
+    const dbTransaction = { id: 'fake-transaction' };
+    const SUBSCRIPTION_ID = 99;
+    const originalSelfHosted = process.env.SELF_HOSTED;
+    const originalPlanSlug = process.env.DEFAULT_PLAN_SLUG;
+
+    const explorerOn = ({ planSlug = 'demo', isPublic = true, subscription = true } = {}) => ({
+        id: 1,
+        workspace: { id: WORKSPACE_ID, public: isPublic },
+        stripeSubscription: subscription ? { id: SUBSCRIPTION_ID, stripePlan: { id: 3, slug: planSlug } } : null
+    });
+    const quotaUpdates = () => query.mock.calls
+        .map(c => (typeof c[0] === 'string' ? c[0] : c[0].query))
+        .filter(sql => sql.startsWith('UPDATE "stripe_subscriptions"'));
+
+    beforeEach(() => {
+        delete process.env.SELF_HOSTED;
+        process.env.DEFAULT_PLAN_SLUG = 'demo';
+        ({ sequelize, Block } = buildSequelize());
+        query = jest.spyOn(sequelize, 'query').mockImplementation(async (sql, options = {}) => {
+            if (options.type === 'SELECT')
+                return [{ id: 100 }, { id: 101 }, { id: 102 }];
+            // Sequelize reports the number of rows removed by the transactions delete
+            return typeof sql === 'string' && sql.startsWith('DELETE FROM "transactions"') ? 3 : 0;
+        });
+        findExplorer = jest.spyOn(sequelize.models.Explorer, 'findOne').mockResolvedValue(explorerOn());
+        block = Block.build({ id: BLOCK_ID, workspaceId: WORKSPACE_ID }, { isNewRecord: false });
+    });
+
+    afterAll(() => {
+        if (originalSelfHosted === undefined) delete process.env.SELF_HOSTED; else process.env.SELF_HOSTED = originalSelfHosted;
+        if (originalPlanSlug === undefined) delete process.env.DEFAULT_PLAN_SLUG; else process.env.DEFAULT_PLAN_SLUG = originalPlanSlug;
+    });
+
+    it('Should give the deleted transactions back to a demo-plan public explorer, floored at 0, in one statement', async () => {
+        await block.safeDestroy(dbTransaction);
+
+        expect(findExplorer).toHaveBeenCalledTimes(1);
+        expect(findExplorer.mock.calls[0][0].transaction).toBe(dbTransaction);
+        const updates = quotaUpdates();
+        expect(updates).toHaveLength(1);
+        expect(updates[0]).toContain('GREATEST("transactionQuota" - 3, 0)');
+        const call = query.mock.calls.find(c => (typeof c[0] === 'string' ? c[0] : c[0].query) === updates[0]);
+        const bind = typeof call[0] === 'string' ? call[1].bind : call[0].bind;
+        expect(updates[0]).toContain('WHERE "id" = $1');
+        expect(bind).toEqual([SUBSCRIPTION_ID]);
+    });
+
+    it('Should run the decrement last, after the block is deleted', async () => {
+        await block.safeDestroy(dbTransaction);
+
+        const sqls = query.mock.calls.map(c => (typeof c[0] === 'string' ? c[0] : c[0].query));
+        expect(sqls[sqls.length - 1]).toContain('UPDATE "stripe_subscriptions"');
+        expect(sqls[sqls.length - 2]).toContain('DELETE FROM "blocks"');
+    });
+
+    it('Should not touch the quota of a paying plan', async () => {
+        findExplorer.mockResolvedValue(explorerOn({ planSlug: 'explorer-150' }));
+
+        await block.safeDestroy(dbTransaction);
+
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+
+    it('Should not touch the quota of a private workspace', async () => {
+        findExplorer.mockResolvedValue(explorerOn({ isPublic: false }));
+
+        await block.safeDestroy(dbTransaction);
+
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+
+    it('Should not touch the quota when there is no explorer or subscription', async () => {
+        findExplorer.mockResolvedValue(null);
+        await block.safeDestroy(dbTransaction);
+        findExplorer.mockResolvedValue(explorerOn({ subscription: false }));
+        await block.safeDestroy(dbTransaction);
+
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+
+    it('Should not touch the quota on self-hosted instances, nor even load the explorer', async () => {
+        process.env.SELF_HOSTED = 'true';
+
+        await block.safeDestroy(dbTransaction);
+
+        expect(findExplorer).not.toHaveBeenCalled();
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+
+    it('Should not load the explorer when no default plan is configured', async () => {
+        delete process.env.DEFAULT_PLAN_SLUG;
+
+        await block.safeDestroy(dbTransaction);
+
+        expect(findExplorer).not.toHaveBeenCalled();
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+
+    it('Should not load the explorer nor update anything for a block without transactions', async () => {
+        query.mockImplementation(async (sql, options = {}) => options.type === 'SELECT' ? [] : 0);
+
+        await block.safeDestroy(dbTransaction);
+
+        expect(findExplorer).not.toHaveBeenCalled();
+        expect(quotaUpdates()).toHaveLength(0);
+    });
+});
+
 describe('Block#checkPartial', () => {
-    let sequelize, Block, block, count, safeDestroy;
+    let sequelize, Block, block, findAll, safeDestroy;
     const GRACE = 60 * 60 * 1000;
 
     beforeEach(() => {
         ({ sequelize, Block } = buildSequelize());
-        count = jest.spyOn(sequelize.models.Transaction, 'count');
+        findAll = jest.spyOn(sequelize.models.Transaction, 'findAll');
         jest.spyOn(sequelize, 'transaction').mockImplementation(async (options, cb) => cb('db-transaction'));
         safeDestroy = jest.spyOn(Block.prototype, 'safeDestroy').mockResolvedValue();
         block = Block.build({ id: BLOCK_ID, workspaceId: WORKSPACE_ID, transactionsCount: 2, createdAt: new Date() }, { isNewRecord: false, raw: true });
@@ -174,9 +289,21 @@ describe('Block#checkPartial', () => {
     afterEach(() => jest.restoreAllMocks());
 
     const oldDate = () => new Date(Date.now() - GRACE - 1000);
+    // COUNT() comes back from PostgreSQL as strings
+    const counts = (total, syncing) => findAll.mockResolvedValueOnce([{ total: String(total), syncing: String(syncing) }]);
+
+    it('Should count total and syncing transactions in a single query scoped to the block and workspace', async () => {
+        counts(2, 0);
+
+        await block.checkPartial({ syncingGraceMs: GRACE });
+
+        expect(findAll).toHaveBeenCalledTimes(1);
+        expect(findAll.mock.calls[0][0].where).toEqual({ blockId: BLOCK_ID, workspaceId: WORKSPACE_ID });
+        expect(findAll.mock.calls[0][0].raw).toEqual(true);
+    });
 
     it('Should defer a young block that still has syncing transactions', async () => {
-        count.mockResolvedValueOnce(3);
+        counts(2, 2);
 
         expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('deferred');
         expect(safeDestroy).not.toHaveBeenCalled();
@@ -184,7 +311,7 @@ describe('Block#checkPartial', () => {
 
     it('Should revert a block with syncing transactions once it is older than the grace period', async () => {
         block.setDataValue('createdAt', oldDate());
-        count.mockResolvedValueOnce(3);
+        counts(2, 2);
 
         expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('reverted');
         expect(safeDestroy).toHaveBeenCalledWith('db-transaction');
@@ -192,20 +319,35 @@ describe('Block#checkPartial', () => {
 
     it('Should revert a block with syncing transactions when createdAt is unknown', async () => {
         block.setDataValue('createdAt', undefined);
-        count.mockResolvedValueOnce(3);
+        counts(2, 2);
 
         expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('reverted');
     });
 
     it('Should revert a transaction count mismatch immediately, even when young', async () => {
-        count.mockResolvedValueOnce(0).mockResolvedValueOnce(1);
+        counts(1, 0);
 
         expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('reverted');
         expect(safeDestroy).toHaveBeenCalled();
     });
 
+    it('Should revert a transaction count mismatch immediately even when transactions are also syncing', async () => {
+        counts(1, 1);
+
+        expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('reverted');
+        expect(safeDestroy).toHaveBeenCalledWith('db-transaction');
+    });
+
+    it('Should not check the transaction count when the block does not know it', async () => {
+        block.setDataValue('transactionsCount', null);
+        counts(5, 0);
+
+        expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('complete');
+        expect(safeDestroy).not.toHaveBeenCalled();
+    });
+
     it('Should report a complete block', async () => {
-        count.mockResolvedValueOnce(0).mockResolvedValueOnce(2);
+        counts(2, 0);
 
         expect(await block.checkPartial({ syncingGraceMs: GRACE })).toEqual('complete');
         expect(safeDestroy).not.toHaveBeenCalled();
@@ -213,14 +355,20 @@ describe('Block#checkPartial', () => {
 
     describe('revertIfPartial', () => {
         it('Should keep reverting a young block with syncing transactions', async () => {
-            count.mockResolvedValueOnce(3);
+            counts(2, 2);
 
             expect(await block.revertIfPartial()).toEqual(true);
             expect(safeDestroy).toHaveBeenCalled();
         });
 
+        it('Should revert a transaction count mismatch', async () => {
+            counts(1, 0);
+
+            expect(await block.revertIfPartial()).toEqual(true);
+        });
+
         it('Should return false for a complete block', async () => {
-            count.mockResolvedValueOnce(0).mockResolvedValueOnce(2);
+            counts(2, 0);
 
             expect(await block.revertIfPartial()).toEqual(false);
         });
