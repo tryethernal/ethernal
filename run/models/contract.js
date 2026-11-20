@@ -25,7 +25,7 @@ const {
   QueryTypes
 } = require('sequelize');
 const Op = Sequelize.Op;
-const { sanitize } = require('../lib/utils');
+const { sanitize, afterRootCommit } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const moment = require('moment');
@@ -630,9 +630,7 @@ module.exports = (sequelize, DataTypes) => {
                 }));
                 return bulkEnqueue('processContract', jobs);
             }
-            return options.transaction ?
-                options.transaction.afterCommit(afterBulkCreateFn) :
-                afterBulkCreateFn();
+            return afterRootCommit(options.transaction, afterBulkCreateFn);
         },
         afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
@@ -642,9 +640,7 @@ module.exports = (sequelize, DataTypes) => {
             const afterCreateFn = () => {
                 return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
             }
-            return options.transaction ?
-                options.transaction.afterCommit(afterCreateFn) :
-                afterCreateFn();
+            return afterRootCommit(options.transaction, afterCreateFn);
         },
 
         async afterSave(contract) {
