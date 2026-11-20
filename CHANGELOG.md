@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.4] - 2026-11-20
+### Fixed
+- Block sync no longer slows to a crawl when receipts are queued: blocks still waiting on receipts get time to finish instead of being deleted and re-synced
+- Removing a block no longer deletes analytics data belonging to other explorers that share the same timestamp
+- Reverting a block is much faster and holds database locks far more briefly
+- Demo explorers now stop syncing as soon as they reach their transaction limit
+- Explorer setup now rejects high-volume chains that aren't supported for free explorers
+
 ## [5.19.3] - 2026-11-20
 ### Fixed
 - Self-hosted explorers now process contracts found during block sync, so their tokens and NFTs appear on the Tokens and NFTs pages (#1414)
