@@ -313,6 +313,10 @@ describe('decodeJsonDataUri', () => {
         expect(decodeJsonDataUri(uri)).toEqual(metadata);
     });
 
+    it('Should decode base64 JSON whose payload is also percent-encoded', () => {
+        expect(decodeJsonDataUri('data:application/json;base64,eyJuYW1lIjoiT24tY2hhaW4ifQ%3D%3D')).toEqual({ name: 'On-chain' });
+    });
+
     it('Should decode raw JSON with a comma in the payload', () => {
         expect(decodeJsonDataUri('data:application/json,{"a":[1,2]}')).toEqual({ a: [1, 2] });
     });

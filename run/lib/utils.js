@@ -110,7 +110,7 @@ const isDataUri = (uri) => typeof uri === 'string' && /^data:/i.test(uri);
 
 /**
  * Decodes a `data:application/json[;charset=...][;base64],<payload>` URI into a JSON object.
- * Supports base64 and percent-encoded payloads, and tolerates extra media type parameters.
+ * Supports base64 (itself optionally percent-encoded) and percent-encoded payloads, and tolerates extra media type parameters.
  * Never throws.
  *
  * @param {string} uri - The data URI
@@ -131,9 +131,10 @@ const decodeJsonDataUri = (uri) => {
 
     const payload = uri.slice(comma + 1);
     try {
+        const decodedPayload = decodeURIComponent(payload);
         const text = params.includes('base64') ?
-            Buffer.from(payload, 'base64').toString('utf8') :
-            decodeURIComponent(payload);
+            Buffer.from(decodedPayload, 'base64').toString('utf8') :
+            decodedPayload;
         const parsed = JSON.parse(text);
         return parsed && typeof parsed == 'object' && !Array.isArray(parsed) ? parsed : null;
     } catch(_) {
