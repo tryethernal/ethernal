@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.3] - 2026-11-20
+### Fixed
+- Self-hosted explorers now process contracts found during block sync, so their tokens and NFTs appear on the Tokens and NFTs pages (#1414)
+- NFTs whose metadata is stored fully on chain (data: URIs) now show their name, description and image (#1415)
+
+
 ## [5.19.2] - 2026-11-13
 ### Fixed
 - docs: self-hosted Ethernal is out of beta (#1413)

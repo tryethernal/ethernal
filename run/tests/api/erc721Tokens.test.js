@@ -108,3 +108,62 @@ describe(`GET ${BASE_URL}/:address/tokenIndex/:tokenIndex`, () => {
             });
     });
 });
+
+describe('data: URI metadata', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    const dataUri = `data:application/json;base64,${Buffer.from(JSON.stringify({ name: 'On-chain', description: 'desc' })).toString('base64')}`;
+
+    it('Should decode the URI by token index without calling axios', async () => {
+        ERC721Connector.mockImplementation(() => ({
+            tokenByIndex: jest.fn().mockResolvedValueOnce('1'),
+            ownerOf: jest.fn().mockResolvedValueOnce('0x1234'),
+            tokenURI: jest.fn().mockResolvedValueOnce(dataUri)
+        }));
+
+        const { body } = await request.get(`${BASE_URL}/0x123/tokenIndex/0`).expect(200);
+
+        expect(mockAxiosGet).not.toHaveBeenCalled();
+        expect(body.URI).toEqual(dataUri);
+        expect(body.metadata).toEqual({ name: 'On-chain', description: 'desc' });
+        expect(body.attributes.name).toEqual('On-chain');
+    });
+
+    it('Should decode the URI by token id without calling axios', async () => {
+        ERC721Connector.mockImplementation(() => ({
+            ownerOf: jest.fn().mockResolvedValueOnce('0x1234'),
+            tokenURI: jest.fn().mockResolvedValueOnce(dataUri)
+        }));
+
+        const { body } = await request.get(`${BASE_URL}/0x123/1`).expect(200);
+
+        expect(mockAxiosGet).not.toHaveBeenCalled();
+        expect(body.metadata).toEqual({ name: 'On-chain', description: 'desc' });
+        expect(body.attributes.name).toEqual('On-chain');
+    });
+
+    it('Should return empty metadata for a malformed data URI', async () => {
+        ERC721Connector.mockImplementation(() => ({
+            ownerOf: jest.fn().mockResolvedValueOnce('0x1234'),
+            tokenURI: jest.fn().mockResolvedValueOnce('data:application/json;base64,bm90IGpzb24=')
+        }));
+
+        const { body } = await request.get(`${BASE_URL}/0x123/1`).expect(200);
+
+        expect(mockAxiosGet).not.toHaveBeenCalled();
+        expect(body.metadata).toEqual({});
+    });
+
+    it('Should still fetch http URIs with axios', async () => {
+        ERC721Connector.mockImplementation(() => ({
+            ownerOf: jest.fn().mockResolvedValueOnce('0x1234'),
+            tokenURI: jest.fn().mockResolvedValueOnce('https://tokenlink/1.json')
+        }));
+        mockAxiosGet.mockResolvedValueOnce({ data: { name: 'Remote' }});
+
+        const { body } = await request.get(`${BASE_URL}/0x123/1`).expect(200);
+
+        expect(mockAxiosGet).toHaveBeenCalledWith('https://tokenlink/1.json');
+        expect(body.metadata).toEqual({ name: 'Remote' });
+    });
+});

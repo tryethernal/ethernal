@@ -7,7 +7,10 @@ const {
     validateBNString,
     avg,
     toInt32OrNull,
-    preserveUnstorableInts
+    preserveUnstorableInts,
+    afterRootCommit,
+    isDataUri,
+    decodeJsonDataUri
 } = require('../../lib/utils');
 
 describe('toInt32OrNull', () => {
@@ -246,5 +249,106 @@ describe('isJson', () => {
 
     it('Should return false for an non parsable json string', () => {
         expect(isJson('not a json')).toBe(false);
+    });
+});
+
+describe('afterRootCommit', () => {
+    it('Should run the callback right away without a transaction', () => {
+        const fn = jest.fn().mockReturnValue('done');
+
+        expect(afterRootCommit(undefined, fn)).toEqual('done');
+        expect(afterRootCommit(null, fn)).toEqual('done');
+        expect(fn).toHaveBeenCalledTimes(2);
+    });
+
+    it('Should register on a root transaction', () => {
+        const transaction = { afterCommit: jest.fn() };
+        const fn = jest.fn();
+
+        afterRootCommit(transaction, fn);
+
+        expect(transaction.afterCommit).toHaveBeenCalledWith(fn);
+        expect(fn).not.toHaveBeenCalled();
+    });
+
+    it('Should register on the outermost transaction when nested', () => {
+        const root = { afterCommit: jest.fn() };
+        const middle = { parent: root, afterCommit: jest.fn() };
+        const leaf = { parent: middle, afterCommit: jest.fn() };
+        const fn = jest.fn();
+
+        afterRootCommit(leaf, fn);
+
+        expect(root.afterCommit).toHaveBeenCalledWith(fn);
+        expect(middle.afterCommit).not.toHaveBeenCalled();
+        expect(leaf.afterCommit).not.toHaveBeenCalled();
+        expect(fn).not.toHaveBeenCalled();
+    });
+});
+
+describe('isDataUri', () => {
+    it('Should detect data URIs, case-insensitively', () => {
+        expect(isDataUri('data:application/json;base64,e30=')).toBe(true);
+        expect(isDataUri('DATA:application/json,{}')).toBe(true);
+    });
+
+    it('Should reject other values', () => {
+        expect(isDataUri('https://example.com/1.json')).toBe(false);
+        expect(isDataUri('ipfs://abc')).toBe(false);
+        expect(isDataUri(null)).toBe(false);
+        expect(isDataUri(undefined)).toBe(false);
+    });
+});
+
+describe('decodeJsonDataUri', () => {
+    const metadata = { name: 'Tést ✓', description: 'On-chain', image: 'data:image/svg+xml;base64,PHN2Zy8+' };
+
+    it('Should decode base64 JSON', () => {
+        const uri = `data:application/json;base64,${Buffer.from(JSON.stringify(metadata)).toString('base64')}`;
+        expect(decodeJsonDataUri(uri)).toEqual(metadata);
+    });
+
+    it('Should decode percent-encoded JSON', () => {
+        const uri = `data:application/json,${encodeURIComponent(JSON.stringify(metadata))}`;
+        expect(decodeJsonDataUri(uri)).toEqual(metadata);
+    });
+
+    it('Should decode base64 JSON whose payload is also percent-encoded', () => {
+        expect(decodeJsonDataUri('data:application/json;base64,eyJuYW1lIjoiT24tY2hhaW4ifQ%3D%3D')).toEqual({ name: 'On-chain' });
+    });
+
+    it('Should decode raw JSON with a comma in the payload', () => {
+        expect(decodeJsonDataUri('data:application/json,{"a":[1,2]}')).toEqual({ a: [1, 2] });
+    });
+
+    it('Should tolerate parameters and uppercase media types', () => {
+        const base64 = Buffer.from(JSON.stringify(metadata)).toString('base64');
+        expect(decodeJsonDataUri(`data:application/json;charset=utf-8;base64,${base64}`)).toEqual(metadata);
+        expect(decodeJsonDataUri(`DATA:Application/JSON;Base64,${base64}`)).toEqual(metadata);
+    });
+
+    it('Should return null for malformed URIs', () => {
+        expect(decodeJsonDataUri('data:application/json;base64')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json;base64,bm90IGpzb24=')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json,%E0%A4%A')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json,{"a":')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json,')).toBeNull();
+    });
+
+    it('Should return null for non-JSON media types', () => {
+        expect(decodeJsonDataUri('data:text/plain,{"a":1}')).toBeNull();
+        expect(decodeJsonDataUri('data:image/svg+xml;base64,PHN2Zy8+')).toBeNull();
+        expect(decodeJsonDataUri('data:,{"a":1}')).toBeNull();
+    });
+
+    it('Should return null when the payload is not a JSON object', () => {
+        expect(decodeJsonDataUri('data:application/json,[1,2]')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json,"text"')).toBeNull();
+        expect(decodeJsonDataUri('data:application/json,null')).toBeNull();
+    });
+
+    it('Should return null for non data URIs', () => {
+        expect(decodeJsonDataUri('https://example.com/1.json')).toBeNull();
+        expect(decodeJsonDataUri(null)).toBeNull();
     });
 });
