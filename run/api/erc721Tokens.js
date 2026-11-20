@@ -12,7 +12,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 const db = require('../lib/firebase');
-const { sanitize, formatErc721Metadata } = require('../lib/utils');
+const { sanitize, formatErc721Metadata, isDataUri, decodeJsonDataUri } = require('../lib/utils');
 const { ERC721Connector } = require('../lib/rpc');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { enqueue } = require('../lib/queue');
@@ -79,7 +79,9 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
             URI = null;
         }
 
-        if (URI) {
+        if (isDataUri(URI))
+            metadata = decodeJsonDataUri(URI) || {};
+        else if (URI) {
             const axiosableURI = URI.startsWith('ipfs://') ?
                 `https://gateway.pinata.cloud/ipfs/${URI.slice(7, URI.length)}` : URI;
             try {
@@ -129,7 +131,9 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res, next)
             URI = null;
         }
 
-        if (URI) {
+        if (isDataUri(URI))
+            metadata = decodeJsonDataUri(URI) || {};
+        else if (URI) {
             const axiosableURI = URI.startsWith('ipfs://') ?
             `https://gateway.pinata.cloud/ipfs/${URI.slice(7, URI.length)}` : URI;
             try {
