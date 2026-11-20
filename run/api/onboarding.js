@@ -21,6 +21,7 @@ const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const { managedError, unmanagedError } = require('../lib/errors');
+const { isChainAllowed } = require('../lib/chains');
 
 const setupRateLimit = rateLimit({
     windowMs: 60 * 1000,
@@ -76,6 +77,10 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
 
             if (!networkId)
                 return managedError(new Error("Our servers can't query this RPC. Please use an RPC that is reachable from the internet."), req, res);
+
+            const allowed = await isChainAllowed(networkId);
+            if (!allowed)
+                return managedError(new Error('You can\'t create a demo with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
         }
 
         // Generate API key

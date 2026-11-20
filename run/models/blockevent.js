@@ -31,6 +31,20 @@ module.exports = (sequelize, DataTypes) => {
       BlockEvent.belongsTo(models.Block, { foreignKey: 'blockId', as: 'block' });
     }
 
+    /**
+     * Deletes this event only.
+     * `timestamp` is the sole Sequelize primary key, so the default instance destroy would delete the
+     * events of every workspace sharing the same second. Scope the delete to the workspace and parent block.
+     * @param {Object} [options] - Destroy options (`transaction` is forwarded)
+     * @returns {Promise<number>} Number of deleted rows
+     */
+    destroy(options = {}) {
+      return this.constructor.destroy({
+        where: { workspaceId: this.workspaceId, blockId: this.blockId, timestamp: this.timestamp },
+        transaction: options.transaction
+      });
+    }
+
     afterCreate(options) {
       const afterCreateFn = async () => {
         if (this.baseFeePerGas && this.priorityFeePerGas && this.priorityFeePerGas.length > 0)

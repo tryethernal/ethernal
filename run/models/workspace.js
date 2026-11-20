@@ -2872,7 +2872,16 @@ module.exports = (sequelize, DataTypes) => {
         return contractCount < 10;
     }
 
-    async safeCreatePartialBlock(block) {
+    /**
+     * Stores a block and its transactions in 'syncing' state (receipts are fetched later).
+     * @param {Object} block - Raw block with its transactions
+     * @param {Object} [options]
+     * @param {number} [options.quotaSubscriptionId] - When set, the subscription's transactionQuota is incremented
+     *   by the block's transaction count in the same database transaction as the inserts, so the counter
+     *   moves if and only if the block is stored (an already-stored block is not counted twice).
+     * @returns {Promise<Object|null>} The stored block with its transactions, or null if it already existed
+     */
+    async safeCreatePartialBlock(block, options = {}) {
         return sequelize.transaction(async sequelizeTransaction => {
             try {
                 // Pre-load workspace to prevent N+1 queries in block afterCreate hook
@@ -3031,6 +3040,16 @@ module.exports = (sequelize, DataTypes) => {
                             transaction: sequelizeTransaction
                         });
                     }
+                }
+
+                // Last statement before commit: the subscription row is shared by every block of the
+                // explorer, so the row lock must be held as briefly as possible.
+                if (options.quotaSubscriptionId && transactionsToInsert.length > 0) {
+                    await sequelize.models.StripeSubscription.increment('transactionQuota', {
+                        by: transactionsToInsert.length,
+                        where: { id: options.quotaSubscriptionId },
+                        transaction: sequelizeTransaction
+                    });
                 }
 
                 return { ...createdBlock, transactions: storedTransactions };

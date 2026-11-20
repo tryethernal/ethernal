@@ -6,7 +6,7 @@
  */
 
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OpChainConfig, TransactionReceipt } = require('../models');
+const { Workspace, Explorer, StripeSubscription, StripePlan, StripeQuotaExtension, RpcHealthCheck, IntegrityCheck, Block, OpChainConfig, TransactionReceipt } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -16,11 +16,27 @@ const constants = require('../constants/orbit');
 const { isBatchTransaction } = require('../lib/opBatches');
 const { reportRpcFailure } = require('../lib/syncHelpers');
 const { isPermanentDataError, unrecoverableError } = require('../lib/errors');
+const quota = require('../lib/quota');
 
 // Threshold for inline receipt fetching vs job queueing
 const INLINE_RECEIPT_THRESHOLD = 25;
 // Concurrency limit for parallel receipt storage
 const RECEIPT_STORAGE_CONCURRENCY = 5;
+
+/**
+ * Subscription include that makes Explorer#hasReachedTransactionQuota() and the plan slug
+ * available from a single query, without lazy-loading anything afterwards.
+ * @returns {Object} Sequelize include definition
+ */
+const quotaSubscriptionInclude = () => ({
+    model: StripeSubscription,
+    as: 'stripeSubscription',
+    attributes: ['id', 'transactionQuota'],
+    include: [
+        { model: StripePlan, as: 'stripePlan', attributes: ['id', 'slug', 'capabilities'] },
+        { model: StripeQuotaExtension, as: 'stripeQuotaExtension', attributes: ['id', 'quota'] }
+    ]
+});
 
 module.exports = async job => {
     const data = job.data;
@@ -33,6 +49,7 @@ module.exports = async job => {
         throw new Error('Missing blockNumber');
 
     let workspace;
+    let quotaExplorer = null;
 
     // Use cached workspace data if available (passed from batchBlockSync for faster processing)
     const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer;
@@ -69,6 +86,17 @@ module.exports = async job => {
 
             if (!workspace.explorer.stripeSubscription)
                 return 'No active subscription';
+
+            // The cached explorer is a snapshot taken when the batch was enqueued, possibly thousands of
+            // blocks ago, so the quota is read live. Single query, no per-association lazy loading.
+            quotaExplorer = await Explorer.findOne({
+                where: { workspaceId: data.workspaceId },
+                attributes: ['id', 'shouldEnforceQuota'],
+                include: quotaSubscriptionInclude()
+            });
+
+            if (quotaExplorer && await quotaExplorer.hasReachedTransactionQuota())
+                return 'Transaction quota reached';
         }
 
         // Create Sequelize instance from cached data to avoid N+1 query
@@ -125,12 +153,8 @@ module.exports = async job => {
                 {
                     model: Explorer,
                     as: 'explorer',
-                    attributes: ['id', 'shouldSync'],
-                    include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        attributes: ['id']
-                    }
+                    attributes: ['id', 'shouldSync', 'shouldEnforceQuota'],
+                    include: quotaSubscriptionInclude()
                 },
                 {
                     model: RpcHealthCheck,
@@ -163,8 +187,12 @@ module.exports = async job => {
 
             if (!workspace.explorer.stripeSubscription)
                 return 'No active subscription';
-        }
 
+            if (await workspace.explorer.hasReachedTransactionQuota())
+                return 'Transaction quota reached';
+
+            quotaExplorer = workspace.explorer;
+        }
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
@@ -484,7 +512,9 @@ module.exports = async job => {
 
         let syncedBlock;
         try {
-            syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
+            syncedBlock = await workspace.safeCreatePartialBlock(processedBlock, {
+                quotaSubscriptionId: quota.getQuotaSubscriptionId(workspace, quotaExplorer)
+            });
         } catch(error) {
             // A block carrying data the schema cannot represent will fail
             // identically on every one of its 50 attempts. Fail it now so it
