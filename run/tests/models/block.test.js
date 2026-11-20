@@ -21,6 +21,7 @@ const BLOCK_ID = 42;
 const buildSequelize = () => {
     const sequelize = new Sequelize('postgres://user:password@localhost:5432/database', { logging: false });
     const Block = blockFactory(sequelize, DataTypes);
+    /** Defines a stand-in model. @param {string} name @param {string} tableName @param {Object} [extra] @returns {Object} */
     const stand = (name, tableName, extra = {}) => sequelize.define(name, {
         workspaceId: DataTypes.INTEGER,
         timestamp: { type: DataTypes.DATE, primaryKey: true },
@@ -60,8 +61,11 @@ describe('Block#safeDestroy', () => {
         block = Block.build({ id: BLOCK_ID, workspaceId: WORKSPACE_ID }, { isNewRecord: false });
     });
 
+    /** @returns {string[]} SQL of every query issued */
     const statements = () => query.mock.calls.map(c => (typeof c[0] === 'string' ? c[0] : c[0].query));
+    /** @returns {string[]} SQL of every DELETE issued */
     const deletes = () => statements().filter(sql => sql.startsWith('DELETE'));
+    /** @returns {string[]} Tables deleted from, in order */
     const tablesDeleted = () => deletes().map(sql => sql.match(/DELETE FROM "(\w+)"/)[1]);
 
     it('Should delete each dependent table once, set-based, children first', async () => {
@@ -188,6 +192,7 @@ describe('Block#safeDestroy quota', () => {
         workspace: { id: WORKSPACE_ID, public: isPublic },
         stripeSubscription: subscription ? { id: SUBSCRIPTION_ID, stripePlan: { id: 3, slug: planSlug } } : null
     });
+    /** @returns {Array} Calls that updated the subscription quota */
     const quotaUpdates = () => query.mock.calls
         .map(c => (typeof c[0] === 'string' ? c[0] : c[0].query))
         .filter(sql => sql.startsWith('UPDATE "stripe_subscriptions"'));
@@ -300,8 +305,10 @@ describe('Block#checkPartial', () => {
 
     afterEach(() => jest.restoreAllMocks());
 
+    /** @returns {Date} A createdAt older than the grace period */
     const oldDate = () => new Date(Date.now() - GRACE - 1000);
     // COUNT() comes back from PostgreSQL as strings
+    /** Mocks the next count query. @param {number} total @param {number} syncing @returns {Object} */
     const counts = (total, syncing) => findAll.mockResolvedValueOnce([{ total: String(total), syncing: String(syncing) }]);
 
     it('Should count total and syncing transactions in a single query scoped to the block and workspace', async () => {
