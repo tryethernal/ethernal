@@ -4,7 +4,7 @@
  * @module jobs/increaseStripeBillingQuota
  */
 
-const { getStripeSecretKey } = require('../lib/env');
+const { getStripeSecretKey, getDefaultPlanSlug } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { Block, Workspace, Explorer, StripeSubscription, Transaction, StripePlan } = require('../models');
 
@@ -63,11 +63,16 @@ module.exports = async job => {
 
     // Step 4: Get stripe plan capabilities
     const stripePlan = await StripePlan.findByPk(stripeSubscription.stripePlanId, {
-        attributes: ['capabilities']
+        attributes: ['slug', 'capabilities']
     });
 
     if (!stripePlan)
         return 'No stripe plan found';
+
+    // Explorers on the default (demo) plan are counted by blockSync when the block is stored
+    const defaultPlanSlug = getDefaultPlanSlug();
+    if (defaultPlanSlug && stripePlan.slug === defaultPlanSlug)
+        return 'Quota already counted at sync time';
 
     await stripeSubscription.increment('transactionQuota', { by: transactionCount });
 
