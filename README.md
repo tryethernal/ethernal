@@ -282,6 +282,8 @@ node index.js --pick --dry-run
 
 Found a bug? Please [open an issue](https://github.com/tryethernal/ethernal/issues) in this repo.
 
+Found a security vulnerability? Do not open a public issue. Report it privately as described in [SECURITY.md](SECURITY.md).
+
 ---
 
 ## 💖 Support Us
