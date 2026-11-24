@@ -123,45 +123,95 @@ describe('authMiddleware', () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    it('Should call next if it has a uid and a secret', async () => {
-        const next = jest.fn();
-        process.env.AUTH_SECRET = 'secret';
+    describe('request-supplied uid', () => {
+        const originalSecret = process.env.AUTH_SECRET;
+        beforeEach(() => {
+            res.status.mockClear();
+            send.mockClear();
+        });
+        afterEach(() => {
+            if (originalSecret === undefined)
+                delete process.env.AUTH_SECRET;
+            else
+                process.env.AUTH_SECRET = originalSecret;
+        });
 
-        let req = {
-            headers: {},
-            body: {
-                data: {
-                    uid: '123',
-                    secret: 'secret'
-                }
-            }
-        };
+        it('Should send a 401 if it has a uid and no token (AUTH_SECRET unset)', async () => {
+            const next = jest.fn();
+            delete process.env.AUTH_SECRET;
 
-        await auth(req, res, next);
+            const req = { headers: {}, body: { data: { uid: '123' } }, query: {} };
 
-        expect(req.body.data.uid).toEqual('123');
-        expect(req.body.data.secret).toBe(undefined);
-        expect(next).toHaveBeenCalled();
-    });
+            await auth(req, res, next);
 
-    it('Should send a 401 if secret is invalid', async () => {
-        const next = jest.fn();
-        process.env.AUTH_SECRET = 'secret';
+            expect(res.status).toHaveBeenCalledWith(401);
+            expect(send).toHaveBeenCalledWith('You must be signed in to do this.');
+            expect(next).not.toHaveBeenCalled();
+        });
 
-        let req = {
-            headers: {},
-            body: {
-                data: {
-                    uid: '123',
-                    secret: 'invalid'
-                }
-            }
-        };
+        it('Should send a 401 if it has a uid and no token (AUTH_SECRET set)', async () => {
+            const next = jest.fn();
+            process.env.AUTH_SECRET = 'secret';
 
-        await auth(req, res, next);
+            const req = { headers: {}, body: { data: { uid: '123', secret: 'secret' } }, query: {} };
 
-        expect(res.status).toHaveBeenCalledWith(401);
-        expect(send).toHaveBeenCalledWith('You must be signed in to do this.');
-        expect(next).not.toHaveBeenCalled();
+            await auth(req, res, next);
+
+            expect(res.status).toHaveBeenCalledWith(401);
+            expect(send).toHaveBeenCalledWith('You must be signed in to do this.');
+            expect(next).not.toHaveBeenCalled();
+        });
+
+        it('Should send a 401 if the uid is passed in the query string without a token', async () => {
+            const next = jest.fn();
+            delete process.env.AUTH_SECRET;
+
+            const req = { headers: {}, body: {}, query: { uid: '123' } };
+
+            await auth(req, res, next);
+
+            expect(res.status).toHaveBeenCalledWith(401);
+            expect(next).not.toHaveBeenCalled();
+        });
+
+        it('Should overwrite a request-supplied uid with the authenticated one (api token)', async () => {
+            jest.spyOn(db, 'getUser').mockResolvedValue({ id: 1, apiKey: '123' });
+            decode.mockReturnValue({ apiKey: '456', firebaseUserId: 'abc' });
+            decrypt.mockReturnValue('456');
+            const next = jest.fn();
+
+            const req = { headers: { authorization: 'Bearer jwtToken' }, body: { data: { uid: 'victim', user: { id: 99 } } }, query: {} };
+
+            await auth(req, res, next);
+
+            expect(next).toHaveBeenCalledTimes(1);
+            expect(req.body.data.uid).toEqual('abc');
+            expect(req.body.data.user).toEqual({ id: 1, apiKey: '123' });
+        });
+
+        it('Should overwrite a request-supplied uid with the authenticated one (firebase token)', async () => {
+            jest.spyOn(db, 'getUser').mockResolvedValue({ id: 1, apiKey: '123' });
+            getAuth.mockReturnValueOnce({ verifyIdToken: jest.fn().mockResolvedValue({ user_id: 'abc' }) });
+            const next = jest.fn();
+
+            const req = { headers: {}, body: { data: { uid: 'victim', firebaseAuthToken: 'token' } }, query: {} };
+
+            await auth(req, res, next);
+
+            expect(next).toHaveBeenCalledTimes(1);
+            expect(req.body.data.uid).toEqual('abc');
+        });
+
+        it('Should call next only once and return when req.user is already set', async () => {
+            const next = jest.fn();
+
+            const req = { user: { firebaseUserId: 'abc' }, headers: {}, body: { data: { uid: 'victim' } }, query: {} };
+
+            await auth(req, res, next);
+
+            expect(next).toHaveBeenCalledTimes(1);
+            expect(res.status).not.toHaveBeenCalled();
+            expect(req.body.data.uid).toEqual('abc');
+        });
     });
 });
