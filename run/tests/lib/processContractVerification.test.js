@@ -455,10 +455,11 @@ describe('processContractVerification', () => {
         });
 
         it('Should not strip when the declared metadata length is zero', async () => {
-            mockCompiledBytecode('aa'.repeat(10) + '0000');
-            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + 'aa'.repeat(10) + '0000' });
+            const head = 'aa'.repeat(10);
+            mockCompiledBytecode(head + '0000');
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + head + metadata('22') });
 
-            await expect(processContractVerification(db, baseMessage())).resolves.toEqual({ verificationSucceded: true });
+            await expect(processContractVerification(db, baseMessage())).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
         });
     });
 
