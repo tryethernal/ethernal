@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.5] - 2026-11-24
+### Fixed
+- Security hardening of authentication and contract verification (see GHSA-h95w-84r3-2wmx and GHSA-gcv3-72c3-2jq3). Self-hosted operators should upgrade.
+
 ## [5.19.4] - 2026-11-20
 ### Fixed
 - Block sync no longer slows to a crawl when receipts are queued: blocks still waiting on receipts get time to finish instead of being deleted and re-synced
