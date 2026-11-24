@@ -16,7 +16,15 @@ const identifySentryUser = (user) => {
 };
 
 module.exports = async (req, res, next) => {
-    if (req.user) next();
+    req.body = req.body || {};
+
+    // Set by the passport local strategy from a verified credential, never from request input.
+    if (req.user) {
+        req.body.data = req.body.data || {};
+        req.body.data.user = req.user;
+        req.body.data.uid = req.user.firebaseUserId;
+        return next();
+    }
 
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
     const authorizationHeader = req.headers['authorization'];
@@ -60,10 +68,6 @@ module.exports = async (req, res, next) => {
             req.body.data.user = await db.getUser(firebaseUser.user_id, ['apiKey', 'stripeCustomerId']);
             req.body.data.uid = firebaseUser.user_id;
             identifySentryUser(req.body.data.user);
-            next();
-        }
-        else if (data.uid && data.secret === process.env.AUTH_SECRET) {
-            delete req.body.data.secret;
             next();
         }
         else

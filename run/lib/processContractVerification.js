@@ -38,6 +38,26 @@ const removeMetadata = (bytecode) => {
 };
 
 /**
+ * Strips metadata from bytecode, repeating while the result still ends with a metadata marker.
+ * The number of passes is bounded (one per included bytecode, plus one) and the loop stops as soon as
+ * a pass leaves the bytecode unchanged, so it always terminates.
+ * @param {string} bytecode - The bytecode to strip
+ * @param {Array<Object>} includedBytecodes - Array of nested contract bytecode info
+ * @returns {string} Lowercased bytecode with metadata removed
+ * @private
+ */
+const stripAllBytecodeMetadata = (bytecode, includedBytecodes) => {
+    let stripped = stripBytecodeMetadata(bytecode, includedBytecodes).toLowerCase();
+    for (let i = 0; i < includedBytecodes.length + 1 && stripped.endsWith('0033'); i++) {
+        const next = stripBytecodeMetadata(stripped, includedBytecodes).toLowerCase();
+        if (next === stripped)
+            break;
+        stripped = next;
+    }
+    return stripped;
+};
+
+/**
  * Verifies a smart contract by compiling source code and comparing bytecode.
  * @param {Object} db - Database interface (firebase.js)
  * @param {Object} payload - Verification payload
@@ -66,7 +86,10 @@ module.exports = async function(db, payload) {
     const imports = payload.code.imports || {};
     const compilerVersion = payload.compilerVersion;
     const contractAddress = payload.contractAddress;
-    const constructorArguments = payload.constructorArguments || '';
+    const rawConstructorArguments = payload.constructorArguments || '';
+    if (typeof rawConstructorArguments != 'string' || !/^(0x)?([0-9a-fA-F]{2})*$/.test(rawConstructorArguments))
+        throw new Error('Invalid constructor arguments: they must be an even-length hexadecimal string.');
+    const constructorArguments = rawConstructorArguments.replace(/^0x/, '');
     const publicExplorerParams = payload.publicExplorerParams;
     const contractName = payload.contractName;
     const optimizer = payload.optimizer || false;
@@ -170,17 +193,17 @@ module.exports = async function(db, payload) {
         }
     }
 
-    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes)).toLowerCase();
-    while (compiledRuntimeBytecodeWithoutMetadata.endsWith('0033'))
-        compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(compiledRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
+    let compiledRuntimeBytecodeWithoutMetadata = stripAllBytecodeMetadata(bytecode, includedBytecodes);
 
     const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
     if (!deploymentTx)
         throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
 
-    let deployedRuntimeBytecodeWithoutMetadata = stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes);
-    while (deployedRuntimeBytecodeWithoutMetadata.endsWith('0033'))
-        deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
+    if (constructorArguments.length > deploymentTx.data.length)
+        throw new Error('Invalid constructor arguments: they are longer than the deployment data.');
+
+    // Constructor arguments are removed once, by length, from the deployment data only.
+    let deployedRuntimeBytecodeWithoutMetadata = stripAllBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes);
 
     if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
         deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
