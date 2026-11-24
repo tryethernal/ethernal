@@ -104,7 +104,6 @@ module.exports = {
     getBullboardUsername: () => process.env.BULLBOARD_USERNAME,
     getBullboardPassword: () => process.env.BULLBOARD_PASSWORD,
     getSecret: () => process.env.SECRET,
-    getAuthSecret: () => process.env.AUTH_SECRET,
     getHistoricalBlocksProcessingConcurrency: () => parseInt(process.env.HISTORICAL_BLOCKS_PROCESSING_CONCURRENCY) || 50,
     getFirebaseSignerKey: () => process.env.FIREBASE_SIGNER_KEY,
     getFirebaseSaltSeparator: () => process.env.FIREBASE_SALT_SEPARATOR,

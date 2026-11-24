@@ -8,7 +8,6 @@
 | `REDIS_URL` | Redis connection string | Required |
 | `ENCRYPTION_KEY` | AES-256 encryption key (32 chars) | Required |
 | `SECRET` | General app secret | Required |
-| `AUTH_SECRET` | Authentication secret | Required |
 | `NODE_ENV` | Environment (development, production) | development |
 | `APP_DOMAIN` | Application domain (e.g., ethernal.io) | Required |
 | `APP_URL` | Full application URL (derived from `APP_DOMAIN` if not set) | Optional (cloud) / Required (self-hosted) |
