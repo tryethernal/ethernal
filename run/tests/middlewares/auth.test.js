@@ -125,6 +125,10 @@ describe('authMiddleware', () => {
 
     describe('request-supplied uid', () => {
         const originalSecret = process.env.AUTH_SECRET;
+        beforeEach(() => {
+            res.status.mockClear();
+            send.mockClear();
+        });
         afterEach(() => {
             if (originalSecret === undefined)
                 delete process.env.AUTH_SECRET;
