@@ -24,17 +24,39 @@ const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
 }
 
 /**
+ * Returns the size (in hex characters, including the 2 length bytes) of the CBOR metadata section
+ * at the end of the bytecode, or 0 if the end of the bytecode is not Solidity metadata.
+ * Metadata is only recognized when the length is non-zero, fits in the bytecode and the section starts
+ * with a CBOR map header (0xa1 - 0xa5).
+ * @param {string} bytecode - Contract bytecode (no 0x prefix required, but tolerated by callers)
+ * @returns {number} Number of hex characters to strip, or 0 if there is no valid metadata
+ * @private
+ */
+const getMetadataSectionLength = (bytecode) => {
+    if (bytecode.length < 4)
+        return 0;
+
+    // Last 2 bytes contains metadata length
+    const metadataLength = parseInt(bytecode.slice(bytecode.length - 4), 16) * 2;
+    if (!(metadataLength > 0) || metadataLength + 4 > bytecode.length)
+        return 0;
+
+    const cborHeader = parseInt(bytecode.slice(bytecode.length - 4 - metadataLength, bytecode.length - 4 - metadataLength + 2), 16);
+    if (!(cborHeader >= 0xa1 && cborHeader <= 0xa5))
+        return 0;
+
+    return metadataLength + 4;
+};
+
+/**
  * Removes CBOR-encoded metadata from the end of bytecode.
+ * Bytecode that does not end with valid metadata is returned unchanged.
  * @param {string} bytecode - Contract bytecode
  * @returns {string} Bytecode without metadata section
  * @private
  */
 const removeMetadata = (bytecode) => {
-    // Last 2 bytes contains metadata length
-    const metadataLength = parseInt(bytecode.slice(bytecode.length - 4, bytecode.length), 16) * 2;
-
-    // We strip the metadata + the last 2 bytes
-    return bytecode.slice(0, bytecode.length - 4 - metadataLength);
+    return bytecode.slice(0, bytecode.length - getMetadataSectionLength(bytecode));
 };
 
 /**
@@ -86,7 +108,7 @@ module.exports = async function(db, payload) {
     const imports = payload.code.imports || {};
     const compilerVersion = payload.compilerVersion;
     const contractAddress = payload.contractAddress;
-    const rawConstructorArguments = payload.constructorArguments || '';
+    const rawConstructorArguments = payload.constructorArguments ?? '';
     if (typeof rawConstructorArguments != 'string' || !/^(0x)?([0-9a-fA-F]{2})*$/.test(rawConstructorArguments))
         throw new Error('Invalid constructor arguments: they must be an even-length hexadecimal string.');
     const constructorArguments = rawConstructorArguments.replace(/^0x/, '');
@@ -188,8 +210,7 @@ module.exports = async function(db, payload) {
     for (const [name, data] of Object.entries(parsedCompiledCode.contracts[contractFile])) {
         if (name != contractName && data.evm.bytecode.object.length > 0) {
             const includedBytecode = data.evm.bytecode.object;
-            const metadataLength = parseInt(includedBytecode.slice(includedBytecode.length - 4, includedBytecode.length), 16) * 2 + 4;
-            includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
+            includedBytecodes.push({ data: removeMetadata(includedBytecode), metadataLength: getMetadataSectionLength(includedBytecode) });
         }
     }
 
@@ -199,8 +220,9 @@ module.exports = async function(db, payload) {
     if (!deploymentTx)
         throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
 
-    if (constructorArguments.length > deploymentTx.data.length)
-        throw new Error('Invalid constructor arguments: they are longer than the deployment data.');
+    const deploymentData = deploymentTx.data.toLowerCase().replace(/^0x/, '');
+    if (constructorArguments && !deploymentData.endsWith(constructorArguments.toLowerCase()))
+        throw new Error('Constructor arguments do not match the deployment transaction.');
 
     // Constructor arguments are removed once, by length, from the deployment data only.
     let deployedRuntimeBytecodeWithoutMetadata = stripAllBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes);

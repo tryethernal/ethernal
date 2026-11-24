@@ -341,7 +341,9 @@ describe('processContractVerification', () => {
     it.each([
         ['odd length', '00abc'],
         ['non-hex characters', '00abzz'],
-        ['not a string', { length: 2 }]
+        ['not a string', { length: 2 }],
+        ['false', false],
+        ['zero', 0]
     ])('Should reject constructor arguments that are not even-length hex (%s)', async (_, constructorArguments) => {
         const message = {
             compilerVersion: '1',
@@ -355,7 +357,7 @@ describe('processContractVerification', () => {
         await expect(processContractVerification(db, message)).rejects.toThrow('Invalid constructor arguments');
     });
 
-    it('Should reject constructor arguments longer than the deployment data', async () => {
+    it('Should reject constructor arguments that do not match the deployment transaction (longer than the data)', async () => {
         jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234' });
 
         const message = {
@@ -367,17 +369,18 @@ describe('processContractVerification', () => {
             constructorArguments: 'aa'.repeat(10)
         };
 
-        await expect(processContractVerification(db, message)).rejects.toThrow('Invalid constructor arguments');
+        await expect(processContractVerification(db, message)).rejects.toThrow('Constructor arguments do not match the deployment transaction');
     });
 
     // NOTE: before the fix this call never returned (synchronous infinite loop), so jest's own timeout cannot
     // interrupt it. Run this file under an external timeout when checking for regressions.
     it('Should terminate and not verify a factory contract when the constructor arguments end with a metadata marker', async () => {
-        const metadata = (fill) => fill.repeat(51) + '0033';
+        // 51 bytes of CBOR-shaped metadata (map header 0xa2) + 2 length bytes (0x0033)
+        const metadata = (fill) => 'a2' + fill.repeat(50) + '0033';
         // Runtime code embedding a second metadata blob, followed by its own trailing metadata.
         const compiled = 'cc'.repeat(10) + metadata('dd') + metadata('ee');
         const nested = 'ff'.repeat(8) + metadata('aa');
-        const maliciousArguments = metadata('aa');
+        const maliciousArguments = 'aa'.repeat(51) + '0033';
 
         jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
             cb(null, {
@@ -391,7 +394,7 @@ describe('processContractVerification', () => {
                 }))
             });
         });
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + '99'.repeat(10) + metadata('88') + metadata('77') });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + '99'.repeat(10) + metadata('88') + maliciousArguments });
 
         const message = {
             compilerVersion: '1',
@@ -405,4 +408,91 @@ describe('processContractVerification', () => {
         await expect(processContractVerification(db, message)).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
         expect(db.storeContractVerificationData).not.toHaveBeenCalled();
     }, 5000);
+
+    describe('metadata stripping', () => {
+        // 51 bytes of CBOR-shaped metadata (map header 0xa2) + 2 length bytes (0x0033)
+        const metadata = (fill) => 'a2' + fill.repeat(50) + '0033';
+        const baseMessage = (contractName = 'MyContract') => ({
+            compilerVersion: '1',
+            code: { sources: { source: 'source' } },
+            publicExplorerParams: { userId: 1, workspaceId: 1 },
+            contractAddress: '0x123',
+            contractName
+        });
+        const mockCompiledBytecode = (object) => {
+            jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+                cb(null, {
+                    compile: jest.fn().mockReturnValue(JSON.stringify({
+                        contracts: { source: { MyContract: { abi: [], evm: { bytecode: { object }}}}}
+                    }))
+                });
+            });
+        };
+
+        it('Should strip real metadata so builds differing only by metadata verify', async () => {
+            mockCompiledBytecode('60806040' + metadata('11'));
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x60806040' + metadata('22') });
+
+            await expect(processContractVerification(db, baseMessage())).resolves.toEqual({ verificationSucceded: true });
+        });
+
+        it('Should not strip a tail ending in 0033 that is not CBOR metadata', async () => {
+            // Same first 98 chars, different tail. The tail looks like a 51-byte metadata blob but does not start
+            // with a CBOR map header, so it is real code and must be compared.
+            const head = 'c1'.repeat(49);
+            mockCompiledBytecode(head + 'cc'.repeat(51) + '0033');
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + head + 'dd'.repeat(51) + '0033' });
+
+            await expect(processContractVerification(db, baseMessage())).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
+            expect(db.storeContractVerificationData).not.toHaveBeenCalled();
+        });
+
+        it('Should not strip when the declared metadata length exceeds the bytecode', async () => {
+            mockCompiledBytecode('aa'.repeat(10) + '0033');
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + 'bb'.repeat(10) + '0033' });
+
+            await expect(processContractVerification(db, baseMessage())).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
+        });
+
+        it('Should not strip when the declared metadata length is zero', async () => {
+            mockCompiledBytecode('aa'.repeat(10) + '0000');
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + 'aa'.repeat(10) + '0000' });
+
+            await expect(processContractVerification(db, baseMessage())).resolves.toEqual({ verificationSucceded: true });
+        });
+    });
+
+    describe('constructor arguments', () => {
+        const message = (constructorArguments) => ({
+            compilerVersion: '1',
+            code: { sources: { source: 'source' } },
+            publicExplorerParams: { userId: 1, workspaceId: 1 },
+            contractAddress: '0x123',
+            contractName: 'MyContract',
+            constructorArguments
+        });
+
+        it('Should reject same-length arguments that differ from the deployment data', async () => {
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234123412341234123412341234123400010001111000100abcd' });
+
+            await expect(processContractVerification(db, message('00abce'))).rejects.toThrow('Constructor arguments do not match the deployment transaction');
+            expect(db.storeContractVerificationData).not.toHaveBeenCalled();
+        });
+
+        it('Should match constructor arguments case-insensitively', async () => {
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234123412341234123412341234123400010001111000100ABCD' });
+
+            await processContractVerification(db, message('00abcd'));
+            expect(db.storeContractVerificationData).toHaveBeenCalled();
+        });
+
+        it('Should allow empty and null arguments', async () => {
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValue({ data: '0x12341234123412341234123412341234000100011110001' });
+
+            await processContractVerification(db, message(''));
+            await processContractVerification(db, message(null));
+            await processContractVerification(db, message(undefined));
+            expect(db.storeContractVerificationData).toHaveBeenCalledTimes(3);
+        });
+    });
 });
