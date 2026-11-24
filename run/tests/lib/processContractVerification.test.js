@@ -32,6 +32,17 @@ const processContractVerification = require('../../lib/processContractVerificati
 
 afterEach(() => jest.clearAllMocks()); 
 
+// Builders for the CBOR metadata section solc appends to runtime bytecode (hex strings, no 0x prefix).
+const hexOfText = (text) => Buffer.from(text, 'utf8').toString('hex');
+const ipfsEntry = (fill) => '64' + hexOfText('ipfs') + '5822' + '1220' + fill.repeat(32);
+const bzzr0Entry = (fill) => '65' + hexOfText('bzzr0') + '5820' + fill.repeat(32);
+const bzzr1Entry = (fill) => '65' + hexOfText('bzzr1') + '5820' + fill.repeat(32);
+const solcEntry = '64' + hexOfText('solc') + '43' + '000814';
+// CBOR map body followed by its 2-byte length, like solc emits.
+const withLength = (body) => body + (body.length / 2).toString(16).padStart(4, '0');
+// Real solc >= 0.6 metadata: {"ipfs": <34 bytes>, "solc": <3 bytes>}, 51 bytes + 2 length bytes (0x0033).
+const metadata = (fill) => withLength('a2' + ipfsEntry(fill) + solcEntry);
+
 describe('processContractVerification', () => {
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1, userId: 1, name: 'test' });
     jest.spyOn(db, 'getUserById').mockResolvedValue({ id: 1, firebaseUserId: '123' });
@@ -375,12 +386,10 @@ describe('processContractVerification', () => {
     // NOTE: before the fix this call never returned (synchronous infinite loop), so jest's own timeout cannot
     // interrupt it. Run this file under an external timeout when checking for regressions.
     it('Should terminate and not verify a factory contract when the constructor arguments end with a metadata marker', async () => {
-        // 51 bytes of CBOR-shaped metadata (map header 0xa2) + 2 length bytes (0x0033)
-        const metadata = (fill) => 'a2' + fill.repeat(50) + '0033';
         // Runtime code embedding a second metadata blob, followed by its own trailing metadata.
         const compiled = 'cc'.repeat(10) + metadata('dd') + metadata('ee');
         const nested = 'ff'.repeat(8) + metadata('aa');
-        const maliciousArguments = 'aa'.repeat(51) + '0033';
+        const maliciousArguments = metadata('aa');
 
         jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
             cb(null, {
@@ -410,8 +419,6 @@ describe('processContractVerification', () => {
     }, 5000);
 
     describe('metadata stripping', () => {
-        // 51 bytes of CBOR-shaped metadata (map header 0xa2) + 2 length bytes (0x0033)
-        const metadata = (fill) => 'a2' + fill.repeat(50) + '0033';
         const baseMessage = (contractName = 'MyContract') => ({
             compilerVersion: '1',
             code: { sources: { source: 'source' } },
@@ -434,6 +441,43 @@ describe('processContractVerification', () => {
             jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x60806040' + metadata('22') });
 
             await expect(processContractVerification(db, baseMessage())).resolves.toEqual({ verificationSucceded: true });
+        });
+
+        it.each([
+            ['ipfs + solc', (fill) => 'a2' + ipfsEntry(fill) + solcEntry],
+            ['bzzr1 + solc', (fill) => 'a2' + bzzr1Entry(fill) + '64' + hexOfText('solc') + '43' + '000508'],
+            ['bzzr0 + solc', (fill) => 'a2' + bzzr0Entry(fill) + '64' + hexOfText('solc') + '43' + '000417'],
+            ['ipfs + experimental + solc', (fill) => 'a3' + ipfsEntry(fill) + '6c' + hexOfText('experimental') + 'f5' + solcEntry],
+            ['ipfs + solc as text string', (fill) => 'a2' + ipfsEntry(fill) + '64' + hexOfText('solc') + '69' + hexOfText('0.8.0-dev')]
+        ])('Should strip real solc metadata (%s)', async (name, body) => {
+            mockCompiledBytecode('60806040' + withLength(body('11')));
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x60806040' + withLength(body('22')) });
+
+            await expect(processContractVerification(db, baseMessage())).resolves.toEqual({ verificationSucceded: true });
+        });
+
+        it.each([
+            ['garbage body behind a map header', (fill) => 'a2' + fill.repeat(50)],
+            ['map declaring more entries than present', (fill) => 'a2' + ipfsEntry(fill)],
+            ['truncated byte string', (fill) => 'a1' + '64' + hexOfText('ipfs') + '5822' + '1220' + fill.repeat(10)],
+            ['bytes left over after the map', (fill) => 'a2' + ipfsEntry(fill) + solcEntry + fill.repeat(2)],
+            ['unknown key', (fill) => 'a2' + ipfsEntry(fill) + '63' + hexOfText('foo') + '43' + '000814'],
+            ['ipfs as text string', (fill) => 'a2' + '64' + hexOfText('ipfs') + '62' + fill.repeat(2) + solcEntry],
+            ['experimental that is not a boolean', (fill) => 'a3' + ipfsEntry(fill) + '6c' + hexOfText('experimental') + '01' + solcEntry],
+            ['solc as integer', (fill) => 'a2' + ipfsEntry(fill) + '64' + hexOfText('solc') + '01'],
+            ['duplicate keys', (fill) => 'a2' + '64' + hexOfText('solc') + '43' + fill.repeat(3) + '64' + hexOfText('solc') + '43' + fill.repeat(3)],
+            ['key that is a byte string', (fill) => 'a1' + '44' + hexOfText('ipfs') + '41' + fill],
+            ['nested map as value', (fill) => 'a1' + '64' + hexOfText('solc') + 'a0' + fill.repeat(3)],
+            ['non-minimal length encoding', (fill) => 'a1' + '7804' + hexOfText('solc') + '43' + fill.repeat(3)],
+            ['indefinite-length map', (fill) => 'bf' + ipfsEntry(fill) + solcEntry + 'ff']
+        ])('Should not strip a section with a valid-looking start but invalid CBOR (%s)', async (name, body) => {
+            // Identical code in front, different bodies behind. If the body were stripped the builds would
+            // wrongly verify; it is real code (or garbage) so it must be compared.
+            mockCompiledBytecode('60806040' + withLength(body('11')));
+            jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x60806040' + withLength(body('22')) });
+
+            await expect(processContractVerification(db, baseMessage())).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
+            expect(db.storeContractVerificationData).not.toHaveBeenCalled();
         });
 
         it('Should not strip a tail ending in 0033 that is not CBOR metadata', async () => {
