@@ -275,7 +275,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should append constructor arguments properly', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001000abcd' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234123412341234123412341234123400010001111000100abcd' });
 
         const message = {
             compilerVersion: '1',
@@ -291,7 +291,7 @@ describe('processContractVerification', () => {
             },
             contractAddress: '0x123',
             contractName: 'MyContract',
-            constructorArguments: '000abcd'
+            constructorArguments: '00abcd'
         };
 
         await processContractVerification(db, message);
@@ -303,7 +303,7 @@ describe('processContractVerification', () => {
         );
         expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', {
             compilerVersion: '1',
-            constructorArguments: '000abcd',
+            constructorArguments: '00abcd',
             contractName: 'MyContract',
             evmVersion: 'berlin',
             sources: message.code.sources,
@@ -311,4 +311,98 @@ describe('processContractVerification', () => {
             runs: 200
         });
     });
+
+    it('Should accept 0x-prefixed constructor arguments and store them without the prefix', async () => {
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234123412341234123412341234123400010001111000100abcd' });
+
+        const message = {
+            compilerVersion: '1',
+            evmVersion: 'berlin',
+            runs: 200,
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract',
+            constructorArguments: '0x00abcd'
+        };
+
+        await processContractVerification(db, message);
+        expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', expect.objectContaining({
+            constructorArguments: '00abcd'
+        }));
+    });
+
+    it.each([
+        ['odd length', '00abc'],
+        ['non-hex characters', '00abzz'],
+        ['not a string', { length: 2 }]
+    ])('Should reject constructor arguments that are not even-length hex (%s)', async (_, constructorArguments) => {
+        const message = {
+            compilerVersion: '1',
+            code: { sources: { source: 'source' } },
+            publicExplorerParams: { userId: 1, workspaceId: 1 },
+            contractAddress: '0x123',
+            contractName: 'MyContract',
+            constructorArguments
+        };
+
+        await expect(processContractVerification(db, message)).rejects.toThrow('Invalid constructor arguments');
+    });
+
+    it('Should reject constructor arguments longer than the deployment data', async () => {
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234' });
+
+        const message = {
+            compilerVersion: '1',
+            code: { sources: { source: 'source' } },
+            publicExplorerParams: { userId: 1, workspaceId: 1 },
+            contractAddress: '0x123',
+            contractName: 'MyContract',
+            constructorArguments: 'aa'.repeat(10)
+        };
+
+        await expect(processContractVerification(db, message)).rejects.toThrow('Invalid constructor arguments');
+    });
+
+    // NOTE: before the fix this call never returned (synchronous infinite loop), so jest's own timeout cannot
+    // interrupt it. Run this file under an external timeout when checking for regressions.
+    it('Should terminate and not verify a factory contract when the constructor arguments end with a metadata marker', async () => {
+        const metadata = (fill) => fill.repeat(51) + '0033';
+        // Runtime code embedding a second metadata blob, followed by its own trailing metadata.
+        const compiled = 'cc'.repeat(10) + metadata('dd') + metadata('ee');
+        const nested = 'ff'.repeat(8) + metadata('aa');
+        const maliciousArguments = metadata('aa');
+
+        jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+            cb(null, {
+                compile: jest.fn().mockReturnValue(JSON.stringify({
+                    contracts: {
+                        source: {
+                            Factory: { abi: [], evm: { bytecode: { object: compiled }}},
+                            Product: { abi: [], evm: { bytecode: { object: nested }}}
+                        }
+                    }
+                }))
+            });
+        });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x' + '99'.repeat(10) + metadata('88') + metadata('77') });
+
+        const message = {
+            compilerVersion: '1',
+            code: { sources: { source: 'source' } },
+            publicExplorerParams: { userId: 1, workspaceId: 1 },
+            contractAddress: '0x123',
+            contractName: 'Factory',
+            constructorArguments: maliciousArguments
+        };
+
+        await expect(processContractVerification(db, message)).rejects.toThrow("Compiled bytecode doesn't match runtime bytecode");
+        expect(db.storeContractVerificationData).not.toHaveBeenCalled();
+    }, 5000);
 });
